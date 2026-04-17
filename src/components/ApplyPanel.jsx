@@ -1,0 +1,169 @@
+import { useState } from 'react'
+import { submitApplication } from '../lib/applications'
+
+export default function ApplyPanel({ job, onClose, onSubmit }) {
+  const [fields, setFields] = useState({
+    first:'', last:'', email:'', country:'', state:'', city:'',
+    zip:'', address:'', linkedin:'', dob:'', lang1:'', lang2:''
+  })
+  const [cvFile, setCvFile] = useState(null)
+  const [cvLabel, setCvLabel] = useState('Drop your CV here or browse')
+  const [errors, setErrors] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [done, setDone] = useState(false)
+  const [submitError, setSubmitError] = useState('')
+
+  const set = k => e => setFields(f => ({ ...f, [k]: e.target.value }))
+
+  const validate = () => {
+    const e = {}
+    if (!fields.first)  e.first = true
+    if (!fields.last)   e.last  = true
+    if (!fields.email)  e.email = true
+    if (!fields.address) e.address = true
+    if (!fields.dob)    e.dob   = true
+    if (!cvFile)        e.cv    = true
+    setErrors(e)
+    return Object.keys(e).length === 0
+  }
+
+  const submit = async () => {
+    if (!validate()) return
+    setLoading(true)
+    setSubmitError('')
+    try {
+      await submitApplication({ fields, cvFile, job })
+      onSubmit && onSubmit({ name: `${fields.first} ${fields.last}`, job: job.title })
+      setDone(true)
+    } catch (err) {
+      console.error(err)
+      setSubmitError('Something went wrong. Please try again.')
+    }
+    setLoading(false)
+  }
+
+  if (done) return (
+    <div className="success-view">
+      <div className="suc-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="4 11 9 16 18 6"/>
+        </svg>
+      </div>
+      <div className="suc-h">Application Received</div>
+      <p className="suc-msg">We've received your application and will review it shortly. Expect a response within 48 hours.</p>
+      <button className="btn-ghost" onClick={onClose}>Close</button>
+    </div>
+  )
+
+  const countries = ['United States','United Kingdom','Canada','Australia','Germany','France','China','India','Nigeria','Brazil','South Africa','Japan','UAE','Italy','Spain','Netherlands','Sweden','Switzerland','Singapore','Other']
+  const langs = ['English','Spanish','French','German','Chinese','Arabic','Hindi','Portuguese']
+
+  return (
+    <>
+      <div className="panel-head">
+        <div>
+          <div className="panel-dept">{job.dept} · {job.type}</div>
+          <div className="panel-title">{job.title}</div>
+        </div>
+        <button className="close-btn" onClick={onClose}>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+            <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
+          </svg>
+        </button>
+      </div>
+
+      <div className="panel-body">
+        <div className="fg2">
+          <div className="fg">
+            <label className="fl">First Name <span>*</span></label>
+            <input className={`fi ${errors.first ? 'fi-error' : ''}`} value={fields.first} onChange={set('first')} />
+          </div>
+          <div className="fg">
+            <label className="fl">Surname <span>*</span></label>
+            <input className={`fi ${errors.last ? 'fi-error' : ''}`} value={fields.last} onChange={set('last')} />
+          </div>
+        </div>
+
+        <div className="fg">
+          <label className="fl">Email <span>*</span></label>
+          <input type="email" className={`fi ${errors.email ? 'fi-error' : ''}`} value={fields.email} onChange={set('email')} />
+        </div>
+
+        <div className="fg">
+          <label className="fl">Country</label>
+          <select className="fi" value={fields.country} onChange={set('country')}>
+            <option value="">Select country</option>
+            {countries.map(c => <option key={c}>{c}</option>)}
+          </select>
+        </div>
+
+        <div className="fg2">
+          <div className="fg"><label className="fl">State</label><input className="fi" value={fields.state} onChange={set('state')} /></div>
+          <div className="fg"><label className="fl">City</label><input className="fi" value={fields.city} onChange={set('city')} /></div>
+        </div>
+        <div className="fg2">
+          <div className="fg"><label className="fl">Zip Code</label><input className="fi" value={fields.zip} onChange={set('zip')} /></div>
+          <div className="fg">
+            <label className="fl">House Address <span>*</span></label>
+            <input className={`fi ${errors.address ? 'fi-error' : ''}`} value={fields.address} onChange={set('address')} />
+          </div>
+        </div>
+
+        <div className="fg"><label className="fl">LinkedIn</label><input className="fi" value={fields.linkedin} onChange={set('linkedin')} /></div>
+
+        <div className="fg">
+          <label className="fl">Upload CV (PDF/DOCX) <span>*</span></label>
+          <div className={`cv-upload`} style={{ border: errors.cv ? '1px solid #a03030' : 'none' }}>
+            <input type="file" accept=".pdf,.doc,.docx" onChange={e => {
+              const f = e.target.files[0]
+              if (f) { setCvFile(f); setCvLabel(f.name); setErrors(er => ({ ...er, cv: false })) }
+            }} />
+            <div className="cv-drop">
+              <div className="cv-drop-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </div>
+              <div style={{ flex: 1 }}>
+                <div className="cv-drop-main">{cvLabel}</div>
+                <div className="cv-drop-sub">PDF or DOCX · Max 10MB</div>
+              </div>
+              <div className="cv-btn">Browse</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="fg">
+          <label className="fl">Date of Birth <span>*</span></label>
+          <input type="text" className={`fi ${errors.dob ? 'fi-error' : ''}`} value={fields.dob} onChange={set('dob')} placeholder="MM/DD/YYYY" />
+        </div>
+
+        <div className="fg2">
+          <div className="fg">
+            <label className="fl">Language 1</label>
+            <select className="fi" value={fields.lang1} onChange={set('lang1')}>
+              <option value="">Select language</option>
+              {langs.map(l => <option key={l}>{l}</option>)}
+            </select>
+          </div>
+          <div className="fg">
+            <label className="fl">Language 2</label>
+            <select className="fi" value={fields.lang2} onChange={set('lang2')}>
+              <option value="">Select language</option>
+              {langs.map(l => <option key={l}>{l}</option>)}
+            </select>
+          </div>
+        </div>
+
+        {submitError && <div style={{ fontSize: 12, color: '#E24B4A', marginTop: 8 }}>{submitError}</div>}
+      </div>
+
+      <div className="panel-foot">
+        <button className="sub-btn" onClick={submit} disabled={loading}>
+          {loading ? <><div className="spinner" /> Submitting…</> : 'Submit Application →'}
+        </button>
+      </div>
+    </>
+  )
+}

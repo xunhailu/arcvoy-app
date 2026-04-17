@@ -1,0 +1,72 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 48px 24px;
+}
+.orb {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px; height: 500px;
+  background: radial-gradient(ellipse, rgba(217,119,87,.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+}
+.brandRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 48px;
+}
+.brand {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--tx);
+}
+.code {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(100px, 16vw, 160px);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--gd);
+  opacity: .15;
+  letter-spacing: -.04em;
+  margin-bottom: -20px;
+}
+.title {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 400;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  color: var(--tx);
+}
+.title em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--gd) 0%, #f0a472 50%, var(--gl) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.desc {
+  font-size: 15px;
+  color: var(--tm);
+  line-height: 1.8;
+  margin-bottom: 40px;
+}
+.btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}

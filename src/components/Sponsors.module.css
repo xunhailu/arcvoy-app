@@ -1,0 +1,82 @@
+.section {
+  padding: 72px 0 64px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0.025) 0%,
+    transparent 100%);
+  overflow: hidden;
+  position: relative;
+}
+[data-theme="light"] .section {
+  border-top-color: var(--bd);
+  border-bottom-color: var(--bd);
+  background: linear-gradient(180deg, rgba(0,0,0,.02) 0%, transparent 100%);
+}
+
+.label {
+  font-size: 10px; letter-spacing: .26em; text-transform: uppercase;
+  color: var(--td); font-weight: 600; text-align: center;
+  margin-bottom: 44px; padding: 0 48px;
+}
+
+/* mask fades on left + right edges */
+.wrapper {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 14%,
+    black 86%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 14%,
+    black 86%,
+    transparent 100%
+  );
+  overflow: hidden;
+}
+
+/* infinite scrolling ticker */
+.track {
+  display: flex; width: max-content;
+  animation: marquee 32s linear infinite;
+  will-change: transform;
+}
+.section:hover .track { animation-play-state: paused; }
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* individual logo cell */
+.item {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px; padding: 16px 52px;
+  opacity: 0.65; flex-shrink: 0;
+  transition: opacity .35s ease;
+  cursor: default;
+}
+.item:hover { opacity: 1; }
+
+.logo {
+  height: 56px; width: auto; max-width: 140px;
+  object-fit: contain; display: block;
+}
+
+.logoName {
+  font-size: 9px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--td);
+  transition: color .35s ease;
+}
+.item:hover .logoName { color: var(--tm); }
+
+@media (max-width: 900px) {
+  .section { padding: 52px 0 44px; }
+  .item { padding: 12px 36px; }
+  .logo { height: 44px; }
+}
