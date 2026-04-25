@@ -52,14 +52,24 @@ export function useBookmarks() {
   const toggle = useCallback(async (id) => {
     const user = userRef.current
 
+    if (!user) {
+      setSaved(prev => {
+        const next = new Set(prev)
+        next.has(id) ? next.delete(id) : next.add(id)
+        lsSet(next)
+        return next
+      })
+      return
+    }
+
+    const wasBookmarked = saved.has(id)
     setSaved(prev => {
       const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
-      if (!user) lsSet(next)
+      wasBookmarked ? next.delete(id) : next.add(id)
       return next
     })
 
-    if (user) {
+    try {
       const { data: existing } = await supabase
         .from('bookmarks')
         .select('id')
@@ -68,12 +78,21 @@ export function useBookmarks() {
         .maybeSingle()
 
       if (existing) {
-        await supabase.from('bookmarks').delete().eq('id', existing.id)
+        const { error } = await supabase.from('bookmarks').delete().eq('id', existing.id)
+        if (error) throw error
       } else {
-        await supabase.from('bookmarks').insert({ user_id: user.id, job_id: id })
+        const { error } = await supabase.from('bookmarks').insert({ user_id: user.id, job_id: id })
+        if (error) throw error
       }
+    } catch (err) {
+      console.error('Bookmark sync failed:', err)
+      setSaved(prev => {
+        const next = new Set(prev)
+        wasBookmarked ? next.add(id) : next.delete(id)
+        return next
+      })
     }
-  }, [])
+  }, [saved])
 
   const isBookmarked = useCallback((id) => saved.has(id), [saved])
 

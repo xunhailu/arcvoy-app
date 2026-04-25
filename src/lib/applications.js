@@ -68,6 +68,7 @@ export async function submitApplication({ fields, cvFile, job }) {
       state: fields.state,
       zip: fields.zip,
       country: fields.country,
+      dob: fields.dob || null,
       linkedin: fields.linkedin,
       lang1: fields.lang1,
       lang2: fields.lang2,

@@ -227,12 +227,12 @@ export default function Home({ onNavigate, onApply }) {
     try {
       const { error } = await supabase.from('subscribers').insert([{ email }])
       if (error && error.code !== '23505') throw error
+      setEmail('')
+      setToastVisible(true)
+      setTimeout(() => setToastVisible(false), 3200)
     } catch (err) {
       console.error('Subscribe failed:', err)
     }
-    setEmail('')
-    setToastVisible(true)
-    setTimeout(() => setToastVisible(false), 3200)
   }
 
   return (

@@ -30,6 +30,7 @@ export const JOBS = [
     desc: 'Join a confidential AI initiative working on experimental workflows and next-generation automation. You will contribute to systems still taking shape, using advanced tooling at the forefront of the field.',
     reqs: ['Adaptability', 'Problem solving', 'Curiosity', 'Tech awareness'],
     bonus: ['Startup experience', 'AI experimentation'],
+    locations: ['Worldwide'],
   },
   {
     id: 4,
@@ -40,6 +41,7 @@ export const JOBS = [
     desc: 'Represent Arcvoy as the first point of contact for clients and candidates. Handle inquiries with speed and care, resolve issues thoroughly, and uphold our standard for every interaction.',
     reqs: ['Communication skills', 'Problem solving', 'Empathy', 'CRM experience'],
     bonus: ['Recruitment background', 'Multilingual'],
+    locations: ['United States', 'United Kingdom', 'Canada'],
   },
   {
     id: 5,
@@ -50,6 +52,7 @@ export const JOBS = [
     desc: 'Transform hiring and operations data into clear, actionable insights. Build dashboards, surface trends, and help leadership make decisions grounded in real numbers across the business.',
     reqs: ['SQL', 'Data visualisation', 'Analytical thinking', 'Excel / Sheets'],
     bonus: ['Python or R', 'BI tools (Tableau, Looker)'],
+    locations: ['United States'],
   },
 ]
 
