@@ -81,8 +81,8 @@ export default function ApplyPanel({ job, onClose, onSubmit, user }) {
           <polyline points="4 11 9 16 18 6"/>
         </svg>
       </div>
-      <div className="suc-h">Application Received</div>
-      <p className="suc-msg">We've received your application and will review it shortly. Expect a response within 48 hours.</p>
+      <div className="suc-h">Application Submitted</div>
+      <p className="suc-msg">Your application has been submitted successfully and is now under review. A confirmation email has been sent to your inbox.</p>
       <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
         {user && (
           <button className="btn-primary" onClick={() => { onClose(); navigate('/dashboard') }}>
