@@ -744,7 +744,7 @@ export default function AdminDashboard({ onClose }) {
 
   return (
     <div className={styles.overlay} onClick={e => e.target === e.currentTarget && onClose()}>
-      <motion.div className={styles.panel}
+      <motion.div className={`${styles.panel} ${!session ? styles.panelLogin : ''}`}
         initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
         transition={{ duration: 0.35, ease: [0.25, 0, 0, 1] }}>
 
