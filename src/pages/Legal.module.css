@@ -23,7 +23,7 @@
 
 .sub {
   font-size: 13px; color: var(--tm);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Manrope', sans-serif;
 }
 
 .body {
@@ -43,7 +43,7 @@
 }
 
 .sectionTitle {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-size: 14px; font-weight: 700;
   letter-spacing: -.01em; color: var(--tx);
   margin-bottom: 12px;

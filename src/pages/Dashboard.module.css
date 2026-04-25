@@ -167,7 +167,7 @@
   flex-shrink: 0; margin-left: 12px;
   background: none; border: 1px solid rgba(220,60,60,0.35);
   color: #c04040; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase;
-  font-family: 'Inter', sans-serif; font-weight: 600;
+  font-family: 'Manrope', sans-serif; font-weight: 600;
   padding: 5px 12px; border-radius: 5px; cursor: pointer;
   transition: background .2s, border-color .2s;
 }

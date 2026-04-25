@@ -76,7 +76,7 @@
 }
 .searchInput {
   width: 100%; background: transparent; border: none; outline: none;
-  color: var(--tx); font-family: 'Inter', sans-serif; font-size: 14px;
+  color: var(--tx); font-family: 'Manrope', sans-serif; font-size: 14px;
   padding: 13px 40px 13px 40px;
   line-height: 1;
 }
@@ -168,7 +168,7 @@
   padding: 18px 18px;
   text-align: left;
   font-size: 14.5px; font-weight: 500; color: var(--tx);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Manrope', sans-serif;
   transition: color .2s;
 }
 .question:hover { color: var(--gd); }

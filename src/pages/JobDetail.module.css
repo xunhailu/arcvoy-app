@@ -9,7 +9,7 @@
 [data-theme="light"] .breadcrumb { border-bottom-color: var(--bd); }
 .bcLink {
   cursor: pointer; color: var(--tm); background: none; border: none;
-  font-size: 11px; font-family: 'Inter', sans-serif; padding: 0;
+  font-size: 11px; font-family: 'Manrope', sans-serif; padding: 0;
   transition: color .2s;
 }
 .bcLink:hover { color: var(--gd); }
@@ -30,7 +30,7 @@
   display: inline-flex; align-items: center; gap: 7px;
   background: none; border: none; color: var(--tm); font-size: 12px;
   cursor: pointer; padding: 0; margin-bottom: 24px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Manrope', sans-serif;
   transition: color .2s, gap .2s;
 }
 .backBtn:hover { color: var(--gd); gap: 10px; }
@@ -47,13 +47,13 @@
   padding: 5px 14px; border-radius: 100px; font-weight: 600;
 }
 .title {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-size: clamp(28px, 3.6vw, 44px); font-weight: 700;
   letter-spacing: -.03em; color: var(--tx);
   margin-bottom: 14px; line-height: 1.1;
 }
 .salary {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-size: 20px; font-weight: 600; letter-spacing: -.02em;
   background: linear-gradient(135deg, var(--tx) 30%, var(--gd));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
@@ -163,7 +163,7 @@
   display: flex; align-items: center; justify-content: center; gap: 8px;
   background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
   color: var(--tm); font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
-  font-family: 'Inter', sans-serif; font-weight: 600;
+  font-family: 'Manrope', sans-serif; font-weight: 600;
   padding: 10px 0; border-radius: 8px; cursor: pointer;
   transition: all .25s;
 }

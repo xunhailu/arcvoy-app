@@ -24,9 +24,9 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
   color: var(--tx);
-  font-family: 'Inter', Arial, system-ui, sans-serif;
+  font-family: 'Manrope', Arial, system-ui, sans-serif;
   font-size: 16px;
-  line-height: 1.65;
+  line-height: 1.7;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
@@ -75,7 +75,7 @@ body::after {
   background: linear-gradient(135deg, var(--gd) 0%, var(--gl) 100%);
   color: #fff; border: none;
   padding: 13px 32px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
-  cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 700;
+  cursor: pointer; font-family: 'Manrope', sans-serif; font-weight: 700;
   position: relative; overflow: hidden;
   transition: transform .2s, box-shadow .25s, filter .2s;
   border-radius: 8px; will-change: transform;
@@ -101,7 +101,7 @@ body::after {
   border: 1px solid var(--bd2);
   padding: 13px 32px;
   font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
-  cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 600;
+  cursor: pointer; font-family: 'Manrope', sans-serif; font-weight: 600;
   transition: all .25s; border-radius: 8px; position: relative; overflow: hidden;
 }
 .btn-ghost:hover {
@@ -125,7 +125,7 @@ body::after {
 .fl span { color: var(--gd); }
 .fi, .ft {
   width: 100%; background: var(--input-bg); border: 1px solid var(--bd2);
-  color: var(--tx); font-family: 'Inter', sans-serif; font-size: 13px;
+  color: var(--tx); font-family: 'Manrope', sans-serif; font-size: 13px;
   padding: 11px 14px; outline: none;
   transition: border-color .2s, box-shadow .2s;
   font-weight: 400; border-radius: 6px;
@@ -156,7 +156,7 @@ select.fi:focus {
   background: linear-gradient(135deg, var(--gd) 0%, var(--gl) 100%);
   color: #fff; border: none;
   padding: 14px; font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
-  cursor: pointer; transition: all .2s; font-family: 'Inter', sans-serif;
+  cursor: pointer; transition: all .2s; font-family: 'Manrope', sans-serif;
   font-weight: 700; display: flex; align-items: center; justify-content: center;
   gap: 10px; border-radius: 8px;
   box-shadow: 0 4px 16px rgba(217,119,87,.2);
@@ -176,7 +176,7 @@ select.fi:focus {
 .center-panel { width: min(380px, 90vw); background: var(--sf); border: 1px solid var(--bd); border-radius: 14px; display: flex; flex-direction: column; }
 .panel-head { padding: 28px 34px 24px; border-bottom: 1px solid var(--bd); position: sticky; top: 0; background: var(--sf); z-index: 1; display: flex; justify-content: space-between; align-items: flex-start; }
 .panel-dept { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--gd); margin-bottom: 5px; font-weight: 600; }
-.panel-title { font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 700; color: var(--tx); letter-spacing: -.03em; }
+.panel-title { font-family: 'Manrope', sans-serif; font-size: 22px; font-weight: 700; color: var(--tx); letter-spacing: -.03em; }
 .close-btn { background: none; border: 1px solid var(--bd2); cursor: pointer; color: var(--td); padding: 7px 10px; transition: all .2s; display: flex; align-items: center; justify-content: center; border-radius: 6px; }
 .close-btn:hover { color: var(--tx); border-color: var(--gd); background: var(--ga); }
 .panel-body { padding: 28px 34px; flex: 1; }
@@ -195,7 +195,7 @@ select.fi:focus {
 .cv-upload:hover .cv-drop-icon { border-color: var(--gd); color: var(--gd); }
 .cv-drop-main { font-size: 12px; color: var(--tx); font-weight: 500; }
 .cv-drop-sub { font-size: 10.5px; color: var(--td); margin-top: 3px; }
-.cv-btn { flex-shrink: 0; background: var(--ga); border: 1px solid var(--gb); color: var(--gd); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; padding: 7px 14px; font-family: 'Inter', sans-serif; font-weight: 600; pointer-events: none; white-space: nowrap; border-radius: 4px; }
+.cv-btn { flex-shrink: 0; background: var(--ga); border: 1px solid var(--gb); color: var(--gd); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; padding: 7px 14px; font-family: 'Manrope', sans-serif; font-weight: 600; pointer-events: none; white-space: nowrap; border-radius: 4px; }
 
 /* success */
 .success-view { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 34px; text-align: center; flex: 1; }
@@ -275,7 +275,7 @@ select.fi:focus {
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .job-title-text {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-size: 21px;
   font-weight: 600; margin-bottom: 10px;
   transition: color .2s; color: var(--tx); letter-spacing: -.02em; display: block;
@@ -308,7 +308,7 @@ select.fi:focus {
   display: inline-block; font-size: 10px; letter-spacing: .06em; color: var(--tm);
   border: 1px solid var(--bd2); padding: 5px 14px; margin: 0 4px 6px 0;
   cursor: pointer; transition: all .2s; background: transparent;
-  font-family: 'Inter', sans-serif; font-weight: 500; border-radius: 100px;
+  font-family: 'Manrope', sans-serif; font-weight: 500; border-radius: 100px;
 }
 .filter-chip:hover, .filter-chip.active {
   color: var(--gd); border-color: var(--gb);

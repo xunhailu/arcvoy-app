@@ -83,7 +83,7 @@
   background: none; border: none; color: var(--tm);
   font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
   cursor: pointer; transition: background .2s, color .2s, box-shadow .2s;
-  font-family: 'Inter', sans-serif; padding: 7px 18px;
+  font-family: 'Manrope', sans-serif; padding: 7px 18px;
   font-weight: 500; border-radius: 100px; position: relative; overflow: hidden;
 }
 .link:hover { color: var(--tx); background: rgba(255,255,255,0.09); }
@@ -112,7 +112,7 @@
   background: var(--ga); border: 1px solid var(--gb);
   color: var(--gd); font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
   padding: 7px 16px; cursor: pointer; transition: all .2s;
-  font-family: 'Inter', sans-serif; font-weight: 600; border-radius: 6px;
+  font-family: 'Manrope', sans-serif; font-weight: 600; border-radius: 6px;
   position: relative; overflow: hidden;
 }
 .navBtn::after {
@@ -146,7 +146,7 @@
   font-family: 'Instrument Serif', Georgia, serif;
   box-shadow: 0 0 10px rgba(217,119,87,.2);
 }
-.avatarName { font-size: 10.5px; color: var(--tm); font-weight: 500; font-family: 'Inter', sans-serif; }
+.avatarName { font-size: 10.5px; color: var(--tm); font-weight: 500; font-family: 'Manrope', sans-serif; }
 
 /* ── theme toggle pill ── */
 .themeToggle {
@@ -239,7 +239,7 @@
 }
 .mobileLink {
   background: none; border: none;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Manrope', sans-serif;
   font-size: 14px; font-weight: 500;
   color: var(--tm);
   padding: 13px 4px;

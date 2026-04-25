@@ -40,7 +40,7 @@
   background: var(--ga); border: 1px solid var(--gb);
   color: var(--gd); font-size: 11px; font-weight: 600;
   padding: 7px 16px; border-radius: 100px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Manrope', sans-serif;
   cursor: default; transition: background .2s, border-color .2s;
 }
 button.chip {
@@ -110,7 +110,7 @@ button.chip:hover {
 
 .progressLabel {
   font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
-  font-weight: 700; color: var(--gd); font-family: 'Inter', sans-serif;
+  font-weight: 700; color: var(--gd); font-family: 'Manrope', sans-serif;
   background: var(--ga); border: 1px solid var(--gb);
   padding: 5px 12px; border-radius: 100px;
   white-space: nowrap; flex-shrink: 0;
@@ -150,7 +150,7 @@ button.chip:hover {
 /* character counter */
 .charCount {
   font-size: 10.5px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Manrope', sans-serif;
   color: var(--tm);
   letter-spacing: .04em;
   transition: color .2s;
