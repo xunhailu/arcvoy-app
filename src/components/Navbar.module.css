@@ -1,15 +1,22 @@
+@keyframes brandIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .nav {
   position: sticky; top: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 40px; height: 68px;
+  padding: 18px 40px;
   background: transparent;
   border-bottom: 1px solid transparent;
   backdrop-filter: none; -webkit-backdrop-filter: none;
-  transition: all 0.35s var(--ease);
+  transition: padding 0.35s var(--ease), background 0.35s var(--ease),
+              backdrop-filter 0.35s, -webkit-backdrop-filter 0.35s,
+              box-shadow 0.35s, border-color 0.35s;
   overflow: visible;
 }
 .scrolled {
-  height: 60px;
+  padding: 10px 40px;
   background: var(--nav-bg);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 1px 0 rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.25);
@@ -39,7 +46,7 @@
 
 .brandMark {
   display: inline-flex; align-items: center;
-  margin-right: 11px;
+  margin-right: 10px;
   color: var(--gd);
   filter: drop-shadow(0 0 6px rgba(217,119,87,.45));
   transition: transform .45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity .2s, filter .2s;
@@ -51,18 +58,17 @@
 }
 
 .brandText {
-  font-family: 'Instrument Serif', Georgia, serif;
-  font-size: 26px;
-  font-weight: 400;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 28px;
+  font-weight: 500;
   font-style: italic;
-  letter-spacing: -.01em;
+  letter-spacing: -0.3px;
   line-height: 1;
   color: var(--tx);
   transition: color .2s;
+  animation: brandIn 0.4s ease-out both;
 }
-.brand:hover .brandText {
-  color: var(--gd);
-}
+.brand:hover .brandText { color: var(--gd); }
 
 /* ── glass nav links pill ── */
 .links {
@@ -81,9 +87,9 @@
 
 .link {
   background: none; border: none; color: var(--tm);
-  font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+  font-size: 0.9375rem; letter-spacing: 0.025em; text-transform: none;
   cursor: pointer; transition: background .2s, color .2s, box-shadow .2s;
-  font-family: 'Manrope', sans-serif; padding: 7px 18px;
+  font-family: 'Manrope', sans-serif; padding: 6px 16px;
   font-weight: 500; border-radius: 100px; position: relative; overflow: hidden;
 }
 .link:hover { color: var(--tx); background: rgba(255,255,255,0.09); }
@@ -111,7 +117,7 @@
 .navBtn {
   background: var(--ga); border: 1px solid var(--gb);
   color: var(--gd); font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
-  padding: 7px 16px; cursor: pointer; transition: all .2s;
+  padding: 8px 16px; cursor: pointer; transition: all .2s;
   font-family: 'Manrope', sans-serif; font-weight: 600; border-radius: 6px;
   position: relative; overflow: hidden;
 }
@@ -143,10 +149,10 @@
   background: linear-gradient(135deg, var(--ga), rgba(217,119,87,.2));
   border: 1px solid var(--gb); color: var(--gd); font-size: 10px; font-weight: 700;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Instrument Serif', Georgia, serif;
+  font-family: 'Manrope', sans-serif;
   box-shadow: 0 0 10px rgba(217,119,87,.2);
 }
-.avatarName { font-size: 10.5px; color: var(--tm); font-weight: 500; font-family: 'Manrope', sans-serif; }
+.avatarName { font-size: 14px; color: var(--tm); font-weight: 500; font-family: 'Manrope', sans-serif; letter-spacing: 0.02em; }
 
 /* ── theme toggle pill ── */
 .themeToggle {
@@ -186,7 +192,6 @@
   background: linear-gradient(135deg, rgba(217,119,87,.35) 0%, rgba(217,119,87,.18) 100%);
   box-shadow: 0 0 20px rgba(217,119,87,.5), inset 0 1px 0 rgba(255,255,255,0.2);
 }
-/* slide right when light — 28px icon + 2px gap = 30px */
 .themeSliderLight { transform: translateX(30px); }
 
 /* icon slots */
@@ -228,7 +233,7 @@
 
 /* ── mobile menu dropdown ── */
 .mobileMenu {
-  position: fixed; top: 68px; left: 0; right: 0;
+  position: fixed; top: 72px; left: 0; right: 0;
   background: var(--bg);
   border-bottom: 1px solid var(--bd);
   padding: 8px 20px 16px;
@@ -240,27 +245,27 @@
 .mobileLink {
   background: none; border: none;
   font-family: 'Manrope', sans-serif;
-  font-size: 14px; font-weight: 500;
+  font-size: 15px; font-weight: 500;
   color: var(--tm);
-  padding: 13px 4px;
+  padding: 14px 4px;
   cursor: pointer;
   text-align: left;
   border-bottom: 1px solid var(--bd);
   transition: color .2s;
-  letter-spacing: .01em;
+  letter-spacing: 0.02em;
 }
 .mobileLink:last-child { border-bottom: none; }
 .mobileLink:hover { color: var(--gd); }
 .mobileLinkActive { color: var(--gd) !important; }
 .mobileDivider { height: 1px; background: var(--bd); margin: 6px 0; }
 
-/* hide Admin Login text on 900px, show short label */
 .adminBtn { display: flex; }
 
 @media (max-width: 900px) {
-  .nav { padding: 0 20px; }
+  .nav { padding: 16px 20px; }
+  .scrolled { padding: 10px 20px; }
   .links { gap: 0; }
-  .link { padding: 6px 12px; font-size: 9.5px; }
+  .link { padding: 5px 12px; font-size: 13px; }
   .avatarName { display: none; }
   .adminBtn { display: flex; }
 }

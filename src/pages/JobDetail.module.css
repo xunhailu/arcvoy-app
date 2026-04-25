@@ -152,7 +152,7 @@
   background: linear-gradient(90deg, transparent, var(--gd), var(--gl), transparent);
 }
 .applyTitle {
-  font-family: 'Instrument Serif', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 22px; font-weight: 400; color: var(--tx);
   margin-bottom: 8px; letter-spacing: -.01em;
 }

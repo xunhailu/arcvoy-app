@@ -11,12 +11,13 @@
   --glow: 0 0 60px rgba(217,119,87,0.15);
 }
 [data-theme="light"] {
-  --bg: #F5F0EB; --sf: #EDE8E3; --sf2: #FAFAF8;
-  --bd: #D8D2C8; --bd2: #CCC6BC;
+  --bg: #FAF7F2; --sf: #F0EBE4; --sf2: #FDFCFA;
+  --bd: #DCCFC2; --bd2: #C9B8A6;
   --gd: #C1440E; --gl: #D4531A; --ga: rgba(193,68,14,.07); --gb: rgba(193,68,14,.18);
-  --tx: #1A1410; --tm: #6B6258; --td: #B0A89E;
-  --nav-bg: rgba(245,240,235,0.88); --card-bg: #EDE8E3;
-  --input-bg: #F5F0EB; --footer-bg: #E8E2DB;
+  --tx: #1A1A1A; --tm: #6B6258; --td: #B0A89E;
+  --nav-bg: rgba(250,247,242,0.88); --card-bg: #F0EBE4;
+  --input-bg: #FAF7F2; --footer-bg: #EDE8E1;
+  --na: #C9B8A6; --nb: #DCCFC2;
   --glow: 0 0 60px rgba(193,68,14,0.10);
 }
 
@@ -51,7 +52,7 @@ body::after {
 ::-webkit-scrollbar-thumb:hover { background: var(--gd); }
 
 /* typography */
-.serif { font-family: 'Instrument Serif', Georgia, serif; }
+.serif { font-family: 'Cormorant Garamond', Georgia, serif; }
 .label {
   font-size: 10px;
   letter-spacing: .24em;
@@ -200,7 +201,7 @@ select.fi:focus {
 /* success */
 .success-view { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 34px; text-align: center; flex: 1; }
 .suc-icon { width: 60px; height: 60px; border: 1px solid var(--gd); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gd); margin-bottom: 20px; box-shadow: 0 0 20px rgba(217,119,87,.2); }
-.suc-h { font-family: 'Instrument Serif', Georgia, serif; font-size: 32px; font-weight: 400; margin-bottom: 14px; color: var(--tx); }
+.suc-h { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 32px; font-weight: 400; margin-bottom: 14px; color: var(--tx); }
 .suc-msg { font-size: 13px; color: var(--tm); line-height: 1.8; max-width: 320px; margin: 0 auto 28px; font-style: italic; border-left: 2px solid var(--gd); padding-left: 16px; text-align: left; }
 
 /* spinner */
@@ -269,7 +270,7 @@ select.fi:focus {
 .job-right { text-align: right; }
 .job-type { font-size: 11px; color: var(--tm); letter-spacing: .06em; text-transform: uppercase; }
 .job-salary {
-  font-family: 'Instrument Serif', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 22px; margin-top: 4px; color: var(--tx); font-weight: 400;
   background: linear-gradient(135deg, var(--tx) 30%, var(--gd));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
