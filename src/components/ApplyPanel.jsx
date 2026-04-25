@@ -28,6 +28,22 @@ export default function ApplyPanel({ job, onClose, onSubmit, user }) {
 
   const setCountry = v => setFields(f => ({ ...f, country: v, state: '' }))
 
+  const dobDays = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0'))
+  const dobMonths = ['January','February','March','April','May','June','July','August','September','October','November','December']
+  const dobYears = Array.from({ length: 80 }, (_, i) => String(new Date().getFullYear() - 18 - i))
+
+  const dobParts = fields.dob ? fields.dob.split('-') : ['', '', '']
+  const dobYear = dobParts[0] || ''
+  const dobMonth = dobParts[1] || ''
+  const dobDay = dobParts[2] || ''
+
+  const setDobPart = (part, val) => {
+    const y = part === 'y' ? val : dobYear
+    const m = part === 'm' ? String(dobMonths.indexOf(val) + 1).padStart(2, '0') : dobMonth
+    const d = part === 'd' ? val : dobDay
+    setFields(f => ({ ...f, dob: (y && m && d) ? `${y}-${m}-${d}` : '' }))
+  }
+
   const stateOptions = STATES_BY_COUNTRY[fields.country] || []
 
   const validate = () => {
@@ -114,7 +130,26 @@ export default function ApplyPanel({ job, onClose, onSubmit, user }) {
 
         <div className="fg">
           <label className="fl">Date of Birth</label>
-          <input type="date" className="fi" value={fields.dob} onChange={set('dob')} />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr 1fr', gap: 8 }}>
+            <CustomSelect
+              value={dobDay}
+              onChange={v => setDobPart('d', v)}
+              options={dobDays}
+              placeholder="Day"
+            />
+            <CustomSelect
+              value={dobMonth ? dobMonths[parseInt(dobMonth, 10) - 1] : ''}
+              onChange={v => setDobPart('m', v)}
+              options={dobMonths}
+              placeholder="Month"
+            />
+            <CustomSelect
+              value={dobYear}
+              onChange={v => setDobPart('y', v)}
+              options={dobYears}
+              placeholder="Year"
+            />
+          </div>
         </div>
 
         <div className="fg">
