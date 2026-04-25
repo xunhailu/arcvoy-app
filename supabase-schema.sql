@@ -53,18 +53,23 @@ create policy "Anyone can apply"
   on applications for insert
   with check (true);
 
--- Only authenticated admin can SELECT / UPDATE / DELETE
+-- Admin (admin@arcvoy.com) can read/update/delete all applications
 create policy "Admin can read all"
   on applications for select
-  using (auth.role() = 'authenticated');
+  using (auth.email() = 'admin@arcvoy.com');
 
 create policy "Admin can update"
   on applications for update
-  using (auth.role() = 'authenticated');
+  using (auth.email() = 'admin@arcvoy.com');
 
 create policy "Admin can delete"
   on applications for delete
-  using (auth.role() = 'authenticated');
+  using (auth.email() = 'admin@arcvoy.com');
+
+-- Candidates can only read their own applications
+create policy "Candidates read own"
+  on applications for select
+  using (email = auth.email());
 
 -- =============================================
 -- STORAGE: CV uploads bucket

@@ -53,11 +53,16 @@ export default function CandidateAuth({ onClose, onSuccess }) {
   }
 
   /* ── Social OAuth ── */
-  const socialLogin = provider => {
-    supabase.auth.signInWithOAuth({
-      provider,
-      options: { redirectTo: window.location.origin },
-    })
+  const socialLogin = async provider => {
+    setLoading(true); setError('')
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: window.location.origin },
+      })
+      if (error) throw error
+    } catch (e) { setError(e.message) }
+    setLoading(false)
   }
 
   /* ── Forgot password ── */

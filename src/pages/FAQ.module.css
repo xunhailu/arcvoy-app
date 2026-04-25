@@ -39,6 +39,7 @@
   font-style: italic;
   background: linear-gradient(135deg, var(--gd) 0%, #f0a472 50%, var(--gl) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  padding-right: 0.08em;
 }
 .heroSub {
   font-size: 15px; color: var(--tm); line-height: 1.75;
@@ -114,19 +115,22 @@
   padding: 60px 48px 20px;
   max-width: 860px;
   margin: 0 auto;
-  display: flex; flex-direction: column; gap: 48px;
+  display: flex; flex-direction: column; gap: 0;
 }
 
-.section {}
+.section {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.section:first-child { padding-top: 0; }
+.section:last-child { border-bottom: none; }
+[data-theme="light"] .section { border-bottom-color: var(--bd); }
+
 .catLabel {
   font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
-  color: var(--gd); font-weight: 700; margin-bottom: 18px;
-  display: flex; align-items: center; gap: 10px;
-}
-.catLabel::before {
-  content: ''; display: inline-block;
-  width: 18px; height: 1.5px;
-  background: var(--gd); border-radius: 1px;
+  color: var(--gd); font-weight: 700; margin-bottom: 16px;
+  padding-left: 2px;
 }
 
 /* accordion */
@@ -221,13 +225,14 @@
   font-style: italic;
   background: linear-gradient(135deg, var(--gd) 0%, #f0a472 50%, var(--gl) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  padding-right: 0.08em;
 }
 .helpText { font-size: 14px; color: var(--tm); line-height: 1.7; max-width: 400px; margin: 0 auto 32px; }
 
 @media (max-width: 900px) {
   .hero       { padding: 48px 24px 40px; }
   .searchWrap { padding: 0 24px; margin-top: 28px; }
-  .body       { padding: 40px 24px 20px; }
+  .body       { padding: 32px 24px 20px; }
   .helpBanner { margin: 20px 24px 60px; }
   .helpInner  { padding: 36px 24px; }
 }

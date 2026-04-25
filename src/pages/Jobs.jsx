@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import JobCard from '../components/JobCard'
 import ApplyPanel from '../components/ApplyPanel'
@@ -32,7 +33,8 @@ const DeptIcon = ({ dept }) => {
   )
 }
 
-export default function Jobs({ initialJob, onClearInitial }) {
+export default function Jobs({ initialJob, onClearInitial, user }) {
+  const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [deptFilter, setDeptFilter] = useState(new Set())
   const [typeFilter, setTypeFilter] = useState(new Set())
@@ -42,6 +44,10 @@ export default function Jobs({ initialJob, onClearInitial }) {
   const [showSticky, setShowSticky] = useState(false)
   const [showSaved, setShowSaved] = useState(false)
   const { saved, toggle, isBookmarked } = useBookmarks()
+
+  useEffect(() => {
+    onClearInitial?.()
+  }, [onClearInitial])
 
   useEffect(() => {
     const fn = () => setShowSticky(window.scrollY > 320)
@@ -81,7 +87,7 @@ export default function Jobs({ initialJob, onClearInitial }) {
 
       {/* breadcrumb */}
       <div className={styles.breadcrumb}>
-        <span className={styles.bcLink} onClick={() => window.location.hash = '#/'}>Home</span>
+        <span className={styles.bcLink} onClick={() => navigate('/')}>Home</span>
         <span className={styles.bcSep}>/</span>
         <span className={styles.bcCurrent}>Careers</span>
       </div>
@@ -231,7 +237,7 @@ export default function Jobs({ initialJob, onClearInitial }) {
             <motion.div className="side-panel"
               initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               transition={{ duration: 0.32, ease: [0.25, 0, 0, 1] }}>
-              <ApplyPanel job={activeJob} onClose={() => setActiveJob(null)} onSubmit={onSubmit} />
+              <ApplyPanel job={activeJob} onClose={() => setActiveJob(null)} onSubmit={onSubmit} user={user} />
             </motion.div>
           </motion.div>
         )}

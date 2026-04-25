@@ -60,17 +60,34 @@ export default function Dashboard({ user, onNavigate }) {
 
   useEffect(() => {
     if (!user) { onNavigate('home'); return }
-    supabase
-      .from('applications')
-      .select('*')
-      .eq('email', user.email)
-      .order('created_at', { ascending: false })
-      .then(({ data }) => { setApps(data || []); setLoading(false) })
-  }, [user])
+    const fetchApps = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('applications')
+          .select('*')
+          .eq('email', user.email)
+          .order('created_at', { ascending: false })
+        if (error) throw error
+        setApps(data || [])
+      } catch (err) {
+        console.error('Failed to fetch applications:', err)
+        setApps([])
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchApps()
+  }, [user, onNavigate])
 
   const logout = async () => {
     await supabase.auth.signOut()
     onNavigate('home')
+  }
+
+  const withdraw = async (id) => {
+    if (!window.confirm('Withdraw this application? This cannot be undone.')) return
+    const { error } = await supabase.from('applications').delete().eq('id', id)
+    if (!error) setApps(prev => prev.filter(a => a.id !== id))
   }
 
   const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Candidate'
@@ -147,6 +164,14 @@ export default function Dashboard({ user, onNavigate }) {
                       Applied {new Date(a.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </div>
                   </div>
+                  {a.status === 'applied' && (
+                    <button
+                      className={styles.withdrawBtn}
+                      onClick={() => withdraw(a.id)}
+                      title="Withdraw application">
+                      Withdraw
+                    </button>
+                  )}
                 </div>
                 <Timeline status={a.status || 'applied'} />
               </motion.div>

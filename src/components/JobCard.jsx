@@ -7,7 +7,7 @@ export default function JobCard({ job, onClick, delay = 0, isBookmarked = false,
   return (
     <motion.div
       className="job-card"
-      onClick={onClick}
+      onClick={e => { if (window.getSelection()?.toString()) return; onClick(e) }}
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay, ease: [0.25, 0, 0, 1] }}

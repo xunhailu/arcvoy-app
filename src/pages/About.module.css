@@ -39,6 +39,7 @@
   font-style: italic;
   background: linear-gradient(135deg, var(--gd) 0%, #f0a472 50%, var(--gl) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  padding-right: 0.08em;
 }
 .heroSub {
   font-size: 17px; color: var(--tm); line-height: 1.75;
@@ -55,6 +56,7 @@
   font-style: italic;
   background: linear-gradient(135deg, var(--gd) 0%, #f0a472 50%, var(--gl) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  padding-right: 0.08em;
 }
 
 /* ════════════════════════════════════════
@@ -250,6 +252,7 @@
   font-style: italic;
   background: linear-gradient(135deg, var(--gd) 0%, #f0a472 50%, var(--gl) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  padding-right: 0.08em;
 }
 .ctaDesc {
   font-size: 15px; color: var(--tm); line-height: 1.8;

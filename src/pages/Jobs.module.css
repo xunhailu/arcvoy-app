@@ -49,6 +49,7 @@
   font-style: italic;
   background: linear-gradient(135deg, var(--gd) 0%, #f0a472 50%, var(--gl) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  padding-right: 0.08em;
 }
 .jobsHeroSub {
   color: var(--tm); font-size: 14px; line-height: 1.85;

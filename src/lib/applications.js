@@ -1,7 +1,7 @@
 import { supabase } from './supabase'
 
 const RESEND_KEY = import.meta.env.VITE_RESEND_API_KEY
-const ADMIN_EMAIL = 'admin@arcvoy.com' // change to your real email
+const ADMIN_EMAIL = 'support@arcvoy.com' // change to your real email
 
 /* ── Upload CV to Supabase Storage ── */
 async function uploadCV(file, applicationId) {
@@ -40,25 +40,25 @@ async function sendEmail({ to, subject, html }) {
 
 /* ── Submit application ── */
 export async function submitApplication({ fields, cvFile, job }) {
-  const tempId = crypto.randomUUID()
+  // 1. Guard: prevent duplicate applications to the same role
+  const { data: existing } = await supabase
+    .from('applications')
+    .select('id')
+    .eq('email', fields.email)
+    .eq('job_id', job.id)
+    .maybeSingle()
 
-  // 1. Upload CV first
-  let cvPath = null
-  let cvFilename = null
-  if (cvFile) {
-    const uploaded = await uploadCV(cvFile, tempId)
-    cvPath = uploaded.path
-    cvFilename = uploaded.filename
+  if (existing) {
+    throw new Error('You have already applied for this role.')
   }
 
-  // 2. Insert application record
+  // 2. Insert application record first to get the real ID
   const { data, error } = await supabase
     .from('applications')
     .insert([{
       first_name: fields.first,
       last_name: fields.last,
       email: fields.email,
-      dob: fields.dob,
       address: fields.address,
       city: fields.city,
       state: fields.state,
@@ -71,14 +71,28 @@ export async function submitApplication({ fields, cvFile, job }) {
       job_title: job.title,
       job_dept: job.dept,
       job_type: job.type,
-      cv_path: cvPath,
-      cv_filename: cvFilename,
+      cv_path: null,
+      cv_filename: null,
       status: 'applied',
     }])
     .select()
     .single()
 
   if (error) throw error
+
+  // 2. Upload CV using the real application ID (no orphaned files on insert failure)
+  let cvPath = null
+  let cvFilename = null
+  if (cvFile) {
+    const uploaded = await uploadCV(cvFile, data.id)
+    cvPath = uploaded.path
+    cvFilename = uploaded.filename
+    const { error: cvUpdateError } = await supabase
+      .from('applications')
+      .update({ cv_path: cvPath, cv_filename: cvFilename })
+      .eq('id', data.id)
+    if (cvUpdateError) throw cvUpdateError
+  }
 
   // 3. Send confirmation email to applicant
   await sendEmail({
@@ -204,6 +218,34 @@ export async function getCVUrl(path) {
 
   if (error) throw error
   return data.signedUrl
+}
+
+/* ── Fetch tickets (admin only) ── */
+export async function fetchTickets() {
+  const { data, error } = await supabase
+    .from('tickets')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+export async function updateTicketStatus(id, status) {
+  const { error } = await supabase
+    .from('tickets')
+    .update({ status })
+    .eq('id', id)
+  if (error) throw error
+}
+
+/* ── Fetch subscribers (admin only) ── */
+export async function fetchSubscribers() {
+  const { data, error } = await supabase
+    .from('subscribers')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data
 }
 
 /* ── Admin auth ── */

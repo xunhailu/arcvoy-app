@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { supabase } from '../lib/supabase'
+import CustomSelect from '../components/CustomSelect'
 import styles from './HelpDesk.module.css'
 
 const CATEGORIES = ['Application Issue', 'Payment / Billing', 'Technical Problem', 'Account Access', 'Role Inquiry', 'Other']
@@ -8,13 +10,16 @@ const MAX_CHARS   = 1000
 
 /* ── email submit ── */
 async function submitTicket({ name, email, category, subject, message }) {
+  // Save to DB first — guaranteed even if email fails
+  await supabase.from('tickets').insert([{ name, email, category, subject, message, status: 'open' }])
+
   if (!RESEND_KEY || RESEND_KEY === 'your_new_resend_key_here') return
   await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       from: 'Arcvoy Help Desk <noreply@arcvoy.com>',
-      to: 'admin@arcvoy.com',
+      to: 'support@arcvoy.com',
       reply_to: email,
       subject: `[${category}] ${subject}`,
       html: `
@@ -58,14 +63,14 @@ function spawnConfetti(container) {
 /* ── field-level validator ── */
 function validateField(k, val) {
   if (k === 'name')    return val.trim()                         ? '' : 'Required'
-  if (k === 'email')   return val.includes('@') && val.includes('.') ? '' : 'Valid email required'
+  if (k === 'email')   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) ? '' : 'Valid email required'
   if (k === 'subject') return val.trim()                         ? '' : 'Required'
   if (k === 'message') return val.trim()                         ? '' : 'Required'
   return ''
 }
 
 export default function HelpDesk() {
-  const [form, setForm]       = useState({ name: '', email: '', category: CATEGORIES[0], subject: '', message: '' })
+  const [form, setForm]       = useState({ name: '', email: '', category: '', subject: '', message: '' })
   const [errors, setErrors]   = useState({})
   const [touched, setTouched] = useState({})
   const [loading, setLoading] = useState(false)
@@ -89,25 +94,27 @@ export default function HelpDesk() {
   /* full-form validate on submit */
   const validate = () => {
     const e = {}
-    if (!form.name.trim())                              e.name    = 'Required'
-    if (!form.email.includes('@') || !form.email.includes('.')) e.email = 'Valid email required'
-    if (!form.subject.trim())                           e.subject = 'Required'
-    if (!form.message.trim())                           e.message = 'Required'
+    if (!form.name.trim())                              e.name     = 'Required'
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email  = 'Valid email required'
+    if (!form.category)                                 e.category = 'Required'
+    if (!form.subject.trim())                           e.subject  = 'Required'
+    if (!form.message.trim())                           e.message  = 'Required'
     return e
   }
 
-  /* progress: how many of the 4 required fields are filled (0-100 in 25-steps) */
+  /* progress: how many of the 5 required fields are filled (0-100 in 20-steps) */
   const progress = [
     !!form.name.trim(),
-    form.email.includes('@') && form.email.includes('.'),
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email),
+    !!form.category,
     !!form.subject.trim(),
     !!form.message.trim(),
-  ].filter(Boolean).length * 25
+  ].filter(Boolean).length * 20
 
   /* clipboard copy */
   const copyEmail = async () => {
     try {
-      await navigator.clipboard.writeText('admin@arcvoy.com')
+      await navigator.clipboard.writeText('support@arcvoy.com')
       setCopied(true)
       setTimeout(() => setCopied(false), 2200)
     } catch { /* ignore */ }
@@ -118,7 +125,7 @@ export default function HelpDesk() {
     const e = validate()
     if (Object.keys(e).length) {
       setErrors(e)
-      setTouched({ name: true, email: true, subject: true, message: true })
+      setTouched({ name: true, email: true, category: true, subject: true, message: true })
       return
     }
     setLoading(true)
@@ -135,7 +142,7 @@ export default function HelpDesk() {
   /* reset after success */
   const reset = () => {
     setDone(false)
-    setForm({ name: '', email: '', category: CATEGORIES[0], subject: '', message: '' })
+    setForm({ name: '', email: '', category: '', subject: '', message: '' })
     setErrors({})
     setTouched({})
   }
@@ -180,7 +187,7 @@ export default function HelpDesk() {
               <AnimatePresence mode="wait">
                 {copied
                   ? <motion.span key="ok"    initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} style={{ color: '#4caf50' }}>Copied!</motion.span>
-                  : <motion.span key="addr"  initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}>admin@arcvoy.com</motion.span>
+                  : <motion.span key="addr"  initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}>support@arcvoy.com</motion.span>
                 }
               </AnimatePresence>
             </button>
@@ -299,10 +306,13 @@ export default function HelpDesk() {
                   {/* category */}
                   <div className={styles.field}>
                     <label className="fl">Category</label>
-                    <select className="fi" value={form.category}
-                      onChange={e => set('category', e.target.value)} style={{ cursor: 'pointer' }}>
-                      {CATEGORIES.map(c => <option key={c}>{c}</option>)}
-                    </select>
+                    <CustomSelect
+                      value={form.category}
+                      onChange={v => set('category', v)}
+                      options={CATEGORIES}
+                      placeholder="Select a category"
+                      error={!!errors.category}
+                    />
                   </div>
 
                   {/* subject */}
@@ -413,7 +423,7 @@ export default function HelpDesk() {
               </svg>
             </div>
             <h4 className={styles.infoTitle}>Direct Contact</h4>
-            <p className={styles.infoText}>admin@arcvoy.com</p>
+            <p className={styles.infoText}>support@arcvoy.com</p>
           </div>
 
         </motion.div>

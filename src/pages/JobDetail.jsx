@@ -1,23 +1,27 @@
 import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Navigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { JOBS } from '../data'
 import ApplyPanel from '../components/ApplyPanel'
 import { useBookmarks } from '../hooks/useBookmarks'
+import { useSEO } from '../hooks/useSEO'
 import styles from './JobDetail.module.css'
 
-export default function JobDetail() {
+export default function JobDetail({ user }) {
   const { id }      = useParams()
   const navigate    = useNavigate()
-  const job         = JOBS.find(j => j.id === Number(id))
+  const jobId       = parseInt(id, 10)
+  const job         = !isNaN(jobId) ? JOBS.find(j => j.id === jobId) : null
   const [applying, setApplying] = useState(false)
   const [done, setDone]         = useState(false)
   const { isBookmarked, toggle } = useBookmarks()
 
-  if (!job) {
-    navigate('/jobs')
-    return null
-  }
+  useSEO({
+    title: job ? job.title : 'Job Not Found',
+    description: job ? `${job.title} at Arcvoy — ${job.type} · ${job.salary}. ${job.desc.slice(0, 120)}…` : null,
+  })
+
+  if (!job) return <Navigate to="/jobs" replace />
 
   const bookmarked = isBookmarked(job.id)
 
@@ -193,7 +197,7 @@ export default function JobDetail() {
               initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               transition={{ duration: 0.32, ease: [0.25, 0, 0, 1] }}>
               <ApplyPanel job={job} onClose={() => setApplying(false)}
-                onSubmit={() => { setApplying(false); setDone(true) }} />
+                onSubmit={() => { setApplying(false); setDone(true) }} user={user} />
             </motion.div>
           </motion.div>
         )}

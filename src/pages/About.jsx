@@ -10,11 +10,9 @@ const TEAM_VALUES = [
 ]
 
 const MILESTONES = [
-  { year: '2022', event: 'Arcvoy founded with a clear mission: put human intelligence at the centre of AI development.' },
-  { year: '2023', event: 'Expanded into 20+ countries. Signed our first enterprise AI training partnership.' },
-  { year: '2024', event: 'Launched our contributor workflow platform. Network surpassed 1,000 active specialists.' },
-  { year: '2025', event: 'Partnered with Fortune 500 AI teams. Now active across 40+ countries.' },
-  { year: '2026', event: 'Still growing. Still hiring.' },
+  { year: '2024', event: 'Arcvoy founded with a clear mission: put human intelligence at the centre of AI development.' },
+  { year: '2025', event: 'Expanded into 40+ countries. Launched our contributor workflow platform and signed our first enterprise AI training partnerships.' },
+  { year: '2026', event: 'Partnered with Fortune 500 AI teams. Network surpassed 1,000 active specialists. Still growing. Still hiring.' },
 ]
 
 export default function About({ onNavigate }) {
@@ -45,7 +43,7 @@ export default function About({ onNavigate }) {
           { num: '1,000+', label: 'Active Contributors' },
           { num: '40+',    label: 'Countries' },
           { num: '<48h',   label: 'Response Guarantee' },
-          { num: '2022',   label: 'Founded' },
+          { num: '2024',   label: 'Founded' },
         ].map((s, i) => (
           <motion.div key={s.label} className={styles.stripCard}
             initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}

@@ -1,10 +1,21 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { submitApplication } from '../lib/applications'
+import CustomSelect from './CustomSelect'
+import { STATES_BY_COUNTRY } from '../data/states'
 
-export default function ApplyPanel({ job, onClose, onSubmit }) {
-  const [fields, setFields] = useState({
-    first:'', last:'', email:'', country:'', state:'', city:'',
-    zip:'', address:'', linkedin:'', dob:'', lang1:'', lang2:''
+export default function ApplyPanel({ job, onClose, onSubmit, user }) {
+  const navigate = useNavigate()
+  const [fields, setFields] = useState(() => {
+    const meta = user?.user_metadata || {}
+    const nameParts = (meta.full_name || '').trim().split(/\s+/)
+    return {
+      first:   nameParts[0] || '',
+      last:    nameParts.slice(1).join(' ') || '',
+      email:   user?.email || '',
+      country: '', state: '', city: '',
+      zip: '', address: '', linkedin: meta.linkedin || '', lang1: '', lang2: '', dob: ''
+    }
   })
   const [cvFile, setCvFile] = useState(null)
   const [cvLabel, setCvLabel] = useState('Drop your CV here or browse')
@@ -15,13 +26,16 @@ export default function ApplyPanel({ job, onClose, onSubmit }) {
 
   const set = k => e => setFields(f => ({ ...f, [k]: e.target.value }))
 
+  const setCountry = v => setFields(f => ({ ...f, country: v, state: '' }))
+
+  const stateOptions = STATES_BY_COUNTRY[fields.country] || []
+
   const validate = () => {
     const e = {}
-    if (!fields.first)  e.first = true
-    if (!fields.last)   e.last  = true
-    if (!fields.email)  e.email = true
-    if (!fields.address) e.address = true
-    if (!fields.dob)    e.dob   = true
+    if (!fields.first.trim())  e.first = true
+    if (!fields.last.trim())   e.last  = true
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) e.email = true
+    if (!fields.address.trim()) e.address = true
     if (!cvFile)        e.cv    = true
     setErrors(e)
     return Object.keys(e).length === 0
@@ -37,7 +51,9 @@ export default function ApplyPanel({ job, onClose, onSubmit }) {
       setDone(true)
     } catch (err) {
       console.error(err)
-      setSubmitError('Something went wrong. Please try again.')
+      setSubmitError(err.message === 'You have already applied for this role.'
+        ? 'You have already applied for this role.'
+        : 'Something went wrong. Please try again.')
     }
     setLoading(false)
   }
@@ -51,11 +67,18 @@ export default function ApplyPanel({ job, onClose, onSubmit }) {
       </div>
       <div className="suc-h">Application Received</div>
       <p className="suc-msg">We've received your application and will review it shortly. Expect a response within 48 hours.</p>
-      <button className="btn-ghost" onClick={onClose}>Close</button>
+      <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+        {user && (
+          <button className="btn-primary" onClick={() => { onClose(); navigate('/dashboard') }}>
+            View Dashboard →
+          </button>
+        )}
+        <button className="btn-ghost" onClick={onClose}>Close</button>
+      </div>
     </div>
   )
 
-  const countries = ['United States','United Kingdom','Canada','Australia','Germany','France','China','India','Nigeria','Brazil','South Africa','Japan','UAE','Italy','Spain','Netherlands','Sweden','Switzerland','Singapore','Other']
+  const countries = ['United States','United Kingdom','Canada','Australia','Germany','France','China','India','Nigeria','Brazil','Japan','Italy','Spain','Netherlands','Sweden','Turkey','Poland','Denmark','Singapore','Other']
   const langs = ['English','Spanish','French','German','Chinese','Arabic','Hindi','Portuguese']
 
   return (
@@ -90,17 +113,47 @@ export default function ApplyPanel({ job, onClose, onSubmit }) {
         </div>
 
         <div className="fg">
+          <label className="fl">Date of Birth</label>
+          <input type="date" className="fi" value={fields.dob} onChange={set('dob')} />
+        </div>
+
+        <div className="fg">
           <label className="fl">Country</label>
-          <select className="fi" value={fields.country} onChange={set('country')}>
-            <option value="">Select country</option>
-            {countries.map(c => <option key={c}>{c}</option>)}
-          </select>
+          <CustomSelect
+            value={fields.country}
+            onChange={setCountry}
+            options={countries}
+            placeholder="Select country"
+          />
         </div>
 
         <div className="fg2">
-          <div className="fg"><label className="fl">State</label><input className="fi" value={fields.state} onChange={set('state')} /></div>
-          <div className="fg"><label className="fl">City</label><input className="fi" value={fields.city} onChange={set('city')} /></div>
+          <div className="fg">
+            <label className="fl">
+              {stateOptions.length > 0 ? 'State / Province' : 'State'}
+            </label>
+            {stateOptions.length > 0 ? (
+              <CustomSelect
+                value={fields.state}
+                onChange={v => setFields(f => ({ ...f, state: v }))}
+                options={stateOptions}
+                placeholder="Select state"
+              />
+            ) : (
+              <input
+                className="fi"
+                value={fields.state}
+                onChange={set('state')}
+                placeholder={fields.country ? 'Enter state / region' : ''}
+              />
+            )}
+          </div>
+          <div className="fg">
+            <label className="fl">City / Town</label>
+            <input className="fi" value={fields.city} onChange={set('city')} />
+          </div>
         </div>
+
         <div className="fg2">
           <div className="fg"><label className="fl">Zip Code</label><input className="fi" value={fields.zip} onChange={set('zip')} /></div>
           <div className="fg">
@@ -116,7 +169,13 @@ export default function ApplyPanel({ job, onClose, onSubmit }) {
           <div className={`cv-upload`} style={{ border: errors.cv ? '1px solid #a03030' : 'none' }}>
             <input type="file" accept=".pdf,.doc,.docx" onChange={e => {
               const f = e.target.files[0]
-              if (f) { setCvFile(f); setCvLabel(f.name); setErrors(er => ({ ...er, cv: false })) }
+              if (!f) return
+              if (f.size > 10 * 1024 * 1024) {
+                setCvFile(null); setCvLabel('File too large — max 10MB')
+                setErrors(er => ({ ...er, cv: true }))
+                return
+              }
+              setCvFile(f); setCvLabel(f.name); setErrors(er => ({ ...er, cv: false }))
             }} />
             <div className="cv-drop">
               <div className="cv-drop-icon">
@@ -134,25 +193,24 @@ export default function ApplyPanel({ job, onClose, onSubmit }) {
           </div>
         </div>
 
-        <div className="fg">
-          <label className="fl">Date of Birth <span>*</span></label>
-          <input type="text" className={`fi ${errors.dob ? 'fi-error' : ''}`} value={fields.dob} onChange={set('dob')} placeholder="MM/DD/YYYY" />
-        </div>
-
         <div className="fg2">
           <div className="fg">
             <label className="fl">Language 1</label>
-            <select className="fi" value={fields.lang1} onChange={set('lang1')}>
-              <option value="">Select language</option>
-              {langs.map(l => <option key={l}>{l}</option>)}
-            </select>
+            <CustomSelect
+              value={fields.lang1}
+              onChange={v => setFields(f => ({ ...f, lang1: v }))}
+              options={langs}
+              placeholder="Select language"
+            />
           </div>
           <div className="fg">
             <label className="fl">Language 2</label>
-            <select className="fi" value={fields.lang2} onChange={set('lang2')}>
-              <option value="">Select language</option>
-              {langs.map(l => <option key={l}>{l}</option>)}
-            </select>
+            <CustomSelect
+              value={fields.lang2}
+              onChange={v => setFields(f => ({ ...f, lang2: v }))}
+              options={langs}
+              placeholder="Select language"
+            />
           </div>
         </div>
 

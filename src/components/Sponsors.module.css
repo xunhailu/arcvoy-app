@@ -63,10 +63,14 @@
 }
 .item:hover { opacity: 1; }
 
-.logo {
-  height: 56px; width: auto; max-width: 140px;
-  object-fit: contain; display: block;
+.icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  background: var(--sf2); border: 1px solid var(--bd);
+  border-radius: 10px; color: var(--tm);
+  transition: color .35s ease, border-color .35s ease;
 }
+.item:hover .icon { color: var(--gd); border-color: var(--gb); }
 
 .logoName {
   font-size: 9px; font-weight: 700; letter-spacing: .12em;

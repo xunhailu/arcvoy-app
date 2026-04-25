@@ -1,20 +1,24 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, lazy, Suspense } from 'react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Navbar from './components/Navbar'
-import Home from './pages/Home'
-import Jobs from './pages/Jobs'
-import About from './pages/About'
-import Dashboard from './pages/Dashboard'
-import FAQ from './pages/FAQ'
-import HelpDesk from './pages/HelpDesk'
-import NotFound from './pages/NotFound'
-import AdminDashboard from './components/AdminDashboard'
-import CandidateAuth from './components/CandidateAuth'
-import JobDetail from './pages/JobDetail'
-import ResetPassword from './pages/ResetPassword'
 import { useTheme } from './hooks/useTheme'
 import { supabase } from './lib/supabase'
+import { useSEO } from './hooks/useSEO'
+
+const Home          = lazy(() => import('./pages/Home'))
+const Jobs          = lazy(() => import('./pages/Jobs'))
+const About         = lazy(() => import('./pages/About'))
+const Dashboard     = lazy(() => import('./pages/Dashboard'))
+const FAQ           = lazy(() => import('./pages/FAQ'))
+const HelpDesk      = lazy(() => import('./pages/HelpDesk'))
+const NotFound      = lazy(() => import('./pages/NotFound'))
+const JobDetail     = lazy(() => import('./pages/JobDetail'))
+const ResetPassword = lazy(() => import('./pages/ResetPassword'))
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
+const Terms         = lazy(() => import('./pages/Terms'))
+const AdminDashboard = lazy(() => import('./components/AdminDashboard'))
+const CandidateAuth  = lazy(() => import('./components/CandidateAuth'))
 
 /* ── Scroll progress bar ── */
 function ScrollProgress() {
@@ -42,6 +46,18 @@ const pageVariants = {
   exit:    { opacity: 0, y: -6, transition: { duration: 0.25 } },
 }
 
+const SEO_MAP = {
+  '/':               { title: null,             description: "Arcvoy connects AI professionals with the world's leading AI-first companies. Discover remote AI jobs and build the future." },
+  '/jobs':           { title: 'Careers',        description: 'Browse open AI roles at Arcvoy. Remote-first positions across AI research, engineering, evaluation, and support.' },
+  '/about':          { title: 'About',           description: "Learn about Arcvoy's mission to connect exceptional AI talent with the companies building the future of technology." },
+  '/dashboard':      { title: 'My Dashboard',   description: 'Track your Arcvoy job applications, view status updates, and manage your profile.' },
+  '/faq':            { title: 'FAQ',             description: 'Frequently asked questions about applying to Arcvoy, the hiring process, pay, and remote work policies.' },
+  '/helpdesk':       { title: 'Help Desk',       description: "Get in touch with the Arcvoy team. Submit a support request and we'll get back to you within 24 hours." },
+  '/reset-password': { title: 'Reset Password', description: null },
+  '/privacy':        { title: 'Privacy Policy', description: "Read Arcvoy's privacy policy and learn how we collect, use, and protect your personal data." },
+  '/terms':          { title: 'Terms of Use',   description: "Review Arcvoy's terms of use governing access to the platform and submission of applications." },
+}
+
 export default function App() {
   const { theme, toggle }             = useTheme()
   const [showAdmin, setShowAdmin]     = useState(false)
@@ -64,7 +80,7 @@ export default function App() {
       if (event === 'PASSWORD_RECOVERY') navigate('/reset-password')
     })
     return () => listener.subscription.unsubscribe()
-  }, [])
+  }, [navigate])
 
   /* custom cursor */
   useEffect(() => {
@@ -84,8 +100,11 @@ export default function App() {
     }
     const onEnter = () => { ring.classList.add('hovering'); dot.classList.add('hovering') }
     const onLeave = () => { ring.classList.remove('hovering'); dot.classList.remove('hovering') }
+    const bound = new WeakSet()
     const addListeners = () => {
       document.querySelectorAll('button, a, input, select, .job-card').forEach(el => {
+        if (bound.has(el)) return
+        bound.add(el)
         el.addEventListener('mouseenter', onEnter)
         el.addEventListener('mouseleave', onLeave)
       })
@@ -159,27 +178,24 @@ export default function App() {
     else if (page === 'dashboard') navigate('/dashboard')
     else if (page === 'faq')       navigate('/faq')
     else if (page === 'helpdesk')  navigate('/helpdesk')
+    else if (page === 'privacy')   navigate('/privacy')
+    else if (page === 'terms')     navigate('/terms')
   }
 
-  const currentPage = location.pathname === '/jobs'      ? 'jobs'
-    : location.pathname === '/about'     ? 'about'
-    : location.pathname === '/dashboard' ? 'dashboard'
-    : location.pathname === '/faq'       ? 'faq'
-    : location.pathname === '/helpdesk'  ? 'helpdesk'
+  const currentPage = location.pathname === '/jobs'           ? 'jobs'
+    : location.pathname === '/about'          ? 'about'
+    : location.pathname === '/dashboard'      ? 'dashboard'
+    : location.pathname === '/faq'            ? 'faq'
+    : location.pathname === '/helpdesk'       ? 'helpdesk'
+    : location.pathname === '/privacy'        ? 'privacy'
+    : location.pathname === '/terms'          ? 'terms'
+    : location.pathname.startsWith('/jobs/')  ? 'jobs'
     : 'home'
 
-  useEffect(() => {
-    const titles = {
-      '/':                'Arcvoy — Build the Future',
-      '/jobs':            'Careers — Arcvoy',
-      '/about':           'About — Arcvoy',
-      '/dashboard':       'My Dashboard — Arcvoy',
-      '/faq':             'FAQ — Arcvoy',
-      '/helpdesk':        'Help Desk — Arcvoy',
-      '/reset-password':  'Reset Password — Arcvoy',
-    }
-    document.title = titles[location.pathname] ?? 'Arcvoy'
-  }, [location.pathname])
+  const isJobDetail = location.pathname.startsWith('/jobs/')
+  const seo = isJobDetail ? {} : (SEO_MAP[location.pathname] ?? { title: null, description: null })
+
+  useSEO(seo)
 
   return (
     <>
@@ -197,6 +213,7 @@ export default function App() {
         user={candidateUser}
       />
 
+      <Suspense fallback={null}>
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={
@@ -209,7 +226,7 @@ export default function App() {
           } />
           <Route path="/jobs" element={
             <motion.div key="jobs" variants={pageVariants} initial="initial" animate="animate" exit="exit">
-              <Jobs initialJob={pendingJob} onClearInitial={() => setPendingJob(null)} />
+              <Jobs initialJob={pendingJob} onClearInitial={() => setPendingJob(null)} user={candidateUser} />
             </motion.div>
           } />
           <Route path="/about" element={
@@ -234,12 +251,22 @@ export default function App() {
           } />
           <Route path="/jobs/:id" element={
             <motion.div key="job-detail" variants={pageVariants} initial="initial" animate="animate" exit="exit">
-              <JobDetail />
+              <JobDetail user={candidateUser} />
             </motion.div>
           } />
           <Route path="/reset-password" element={
             <motion.div key="reset-password" variants={pageVariants} initial="initial" animate="animate" exit="exit">
               <ResetPassword />
+            </motion.div>
+          } />
+          <Route path="/privacy" element={
+            <motion.div key="privacy" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <PrivacyPolicy />
+            </motion.div>
+          } />
+          <Route path="/terms" element={
+            <motion.div key="terms" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <Terms />
             </motion.div>
           } />
           <Route path="*" element={
@@ -249,22 +276,27 @@ export default function App() {
           } />
         </Routes>
       </AnimatePresence>
+      </Suspense>
 
       {/* Admin dashboard */}
-      <AnimatePresence>
-        {showAdmin && <AdminDashboard key="admin" onClose={() => setShowAdmin(false)} />}
-      </AnimatePresence>
+      <Suspense fallback={null}>
+        <AnimatePresence>
+          {showAdmin && <AdminDashboard key="admin" onClose={() => setShowAdmin(false)} />}
+        </AnimatePresence>
+      </Suspense>
 
       {/* Candidate auth modal */}
-      <AnimatePresence>
-        {showCandAuth && (
-          <CandidateAuth
-            key="cand-auth"
-            onClose={() => setShowCandAuth(false)}
-            onSuccess={user => { setCandidateUser(user); setShowCandAuth(false); navigate('/dashboard') }}
-          />
-        )}
-      </AnimatePresence>
+      <Suspense fallback={null}>
+        <AnimatePresence>
+          {showCandAuth && (
+            <CandidateAuth
+              key="cand-auth"
+              onClose={() => setShowCandAuth(false)}
+              onSuccess={user => { setCandidateUser(user); setShowCandAuth(false); navigate('/dashboard') }}
+            />
+          )}
+        </AnimatePresence>
+      </Suspense>
     </>
   )
 }
