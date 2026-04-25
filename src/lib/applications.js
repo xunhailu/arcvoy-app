@@ -41,6 +41,7 @@ async function sendEmail({ to, subject, html }) {
 /* ── Submit application ── */
 export async function submitApplication({ fields, cvFile, job }) {
   // 1. Guard: prevent duplicate applications to the same role
+  // Uses maybeSingle — returns null (not error) if no rows visible due to RLS
   const { data: existing } = await supabase
     .from('applications')
     .select('id')
@@ -52,10 +53,13 @@ export async function submitApplication({ fields, cvFile, job }) {
     throw new Error('You have already applied for this role.')
   }
 
-  // 2. Insert application record first to get the real ID
-  const { data, error } = await supabase
+  // 2. Generate ID client-side so we never need to SELECT back the inserted row
+  const applicationId = crypto.randomUUID()
+
+  const { error } = await supabase
     .from('applications')
     .insert([{
+      id: applicationId,
       first_name: fields.first,
       last_name: fields.last,
       email: fields.email,
@@ -75,24 +79,24 @@ export async function submitApplication({ fields, cvFile, job }) {
       cv_filename: null,
       status: 'applied',
     }])
-    .select()
-    .single()
 
   if (error) throw error
 
-  // 2. Upload CV using the real application ID (no orphaned files on insert failure)
+  // 3. Upload CV and update the record with the file path
   let cvPath = null
   let cvFilename = null
   if (cvFile) {
-    const uploaded = await uploadCV(cvFile, data.id)
+    const uploaded = await uploadCV(cvFile, applicationId)
     cvPath = uploaded.path
     cvFilename = uploaded.filename
     const { error: cvUpdateError } = await supabase
       .from('applications')
       .update({ cv_path: cvPath, cv_filename: cvFilename })
-      .eq('id', data.id)
+      .eq('id', applicationId)
     if (cvUpdateError) throw cvUpdateError
   }
+
+  const data = { id: applicationId }
 
   // 3. Send confirmation email to applicant
   await sendEmail({
