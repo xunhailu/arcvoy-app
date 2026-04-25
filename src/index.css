@@ -168,29 +168,31 @@ select.fi:focus {
 }
 .sub-btn:disabled { opacity: .45; cursor: not-allowed; }
 
-/* cursor */
-.cursor-dot {
-  position: fixed; width: 8px; height: 8px;
-  background: var(--gd); border-radius: 50%;
-  pointer-events: none; z-index: 9999;
-  transform: translate(-50%,-50%);
-  transition: opacity .2s, transform .15s ease;
-  opacity: 0; will-change: transform;
-}
-.cursor-ring {
-  position: fixed; width: 34px; height: 34px;
-  border: 1.5px solid rgba(217,119,87,.4); border-radius: 50%;
-  pointer-events: none; z-index: 9998;
-  transform: translate(-50%,-50%);
-  transition: opacity .3s, width .25s, height .25s, border-color .25s;
-  opacity: 0; will-change: transform;
-}
-body:hover .cursor-dot, body:hover .cursor-ring { opacity: 1; }
-.cursor-dot.hovering { transform: translate(-50%,-50%) scale(2.5); background: var(--gl); }
-.cursor-ring.hovering {
-  width: 54px; height: 54px;
-  border-color: rgba(217,119,87,.65);
-  background: rgba(217,119,87,.04);
+/* cursor — desktop only */
+@media (hover: hover) and (pointer: fine) {
+  .cursor-dot {
+    position: fixed; width: 8px; height: 8px;
+    background: var(--gd); border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: opacity .2s, transform .15s ease;
+    opacity: 0; will-change: transform;
+  }
+  .cursor-ring {
+    position: fixed; width: 34px; height: 34px;
+    border: 1.5px solid rgba(217,119,87,.4); border-radius: 50%;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: opacity .3s, width .25s, height .25s, border-color .25s;
+    opacity: 0; will-change: transform;
+  }
+  body:hover .cursor-dot, body:hover .cursor-ring { opacity: 1; }
+  .cursor-dot.hovering { transform: translate(-50%,-50%) scale(2.5); background: var(--gl); }
+  .cursor-ring.hovering {
+    width: 54px; height: 54px;
+    border-color: rgba(217,119,87,.65);
+    background: rgba(217,119,87,.04);
+  }
 }
 
 /* overlay */
