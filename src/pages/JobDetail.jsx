@@ -191,8 +191,7 @@ export default function JobDetail({ user }) {
       <AnimatePresence>
         {applying && (
           <motion.div className="overlay" key="overlay"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            onClick={e => e.target === e.currentTarget && setApplying(false)}>
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <motion.div className="side-panel"
               initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               transition={{ duration: 0.32, ease: [0.25, 0, 0, 1] }}>
