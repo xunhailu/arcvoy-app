@@ -14,7 +14,8 @@ export default function ApplyPanel({ job, onClose, onSubmit, user }) {
       last:    nameParts.slice(1).join(' ') || '',
       email:   user?.email || '',
       country: '', state: '', city: '',
-      zip: '', address: '', linkedin: meta.linkedin || '', lang1: '', lang2: '', dob: ''
+      zip: '', address: '', linkedin: meta.linkedin || '', lang1: '', lang2: '',
+      dob: '', dobDay: '', dobMonth: '', dobYear: ''
     }
   })
   const [cvFile, setCvFile] = useState(null)
@@ -32,16 +33,14 @@ export default function ApplyPanel({ job, onClose, onSubmit, user }) {
   const dobMonths = ['January','February','March','April','May','June','July','August','September','October','November','December']
   const dobYears = Array.from({ length: 80 }, (_, i) => String(new Date().getFullYear() - 18 - i))
 
-  const dobParts = fields.dob ? fields.dob.split('-') : ['', '', '']
-  const dobYear = dobParts[0] || ''
-  const dobMonth = dobParts[1] || ''
-  const dobDay = dobParts[2] || ''
-
   const setDobPart = (part, val) => {
-    const y = part === 'y' ? val : dobYear
-    const m = part === 'm' ? String(dobMonths.indexOf(val) + 1).padStart(2, '0') : dobMonth
-    const d = part === 'd' ? val : dobDay
-    setFields(f => ({ ...f, dob: (y && m && d) ? `${y}-${m}-${d}` : '' }))
+    setFields(f => {
+      const next = { ...f, [part === 'y' ? 'dobYear' : part === 'm' ? 'dobMonth' : 'dobDay']: val }
+      const y = next.dobYear
+      const m = next.dobMonth ? String(dobMonths.indexOf(next.dobMonth) + 1).padStart(2, '0') : ''
+      const d = next.dobDay
+      return { ...next, dob: (y && m && d) ? `${y}-${m}-${d}` : '' }
+    })
   }
 
   const stateOptions = STATES_BY_COUNTRY[fields.country] || []
@@ -132,19 +131,19 @@ export default function ApplyPanel({ job, onClose, onSubmit, user }) {
           <label className="fl">Date of Birth</label>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr 1fr', gap: 8 }}>
             <CustomSelect
-              value={dobDay}
+              value={fields.dobDay}
               onChange={v => setDobPart('d', v)}
               options={dobDays}
               placeholder="Day"
             />
             <CustomSelect
-              value={dobMonth ? dobMonths[parseInt(dobMonth, 10) - 1] : ''}
+              value={fields.dobMonth}
               onChange={v => setDobPart('m', v)}
               options={dobMonths}
               placeholder="Month"
             />
             <CustomSelect
-              value={dobYear}
+              value={fields.dobYear}
               onChange={v => setDobPart('y', v)}
               options={dobYears}
               placeholder="Year"
