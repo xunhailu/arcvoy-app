@@ -47,9 +47,9 @@
   padding: 5px 14px; border-radius: 100px; font-weight: 600;
 }
 .title {
-  font-family: 'Manrope', sans-serif;
-  font-size: clamp(28px, 3.6vw, 44px); font-weight: 700;
-  letter-spacing: -.03em; color: var(--tx);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(32px, 3.8vw, 52px); font-weight: 400;
+  letter-spacing: -.02em; color: var(--tx);
   margin-bottom: 14px; line-height: 1.1;
 }
 .salary {

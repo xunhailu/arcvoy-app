@@ -276,9 +276,9 @@ select.fi:focus {
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .job-title-text {
-  font-family: 'Manrope', sans-serif;
-  font-size: 21px;
-  font-weight: 600; margin-bottom: 10px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 22px;
+  font-weight: 500; margin-bottom: 10px;
   transition: color .2s; color: var(--tx); letter-spacing: -.02em; display: block;
   line-height: 1.3;
 }

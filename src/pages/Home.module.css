@@ -93,15 +93,15 @@
   font-style: normal;
   color: rgba(217,119,87,.45);
   margin-right: 0.12em;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
 }
 
 /* main headline */
 .heroTitle {
-  font-family: 'Manrope', sans-serif;
-  font-size: clamp(48px, 8vw, 96px);
-  font-weight: 800; line-height: 1.04; letter-spacing: -.03em;
-  margin-bottom: 36px; position: relative; z-index: 1; max-width: 960px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(82px, 10.5vw, 136px);
+  font-weight: 400; line-height: 1.04; letter-spacing: -.03em;
+  margin-bottom: 36px; position: relative; z-index: 1; max-width: 880px;
 }
 .l1, .l2 { display: block; min-height: 1.02em; }
 

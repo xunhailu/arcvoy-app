@@ -58,10 +58,10 @@
 }
 
 .brandText {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 28px;
-  font-weight: 700;
-  font-style: italic;
+  font-weight: 500;
+  font-style: normal;
   letter-spacing: -0.3px;
   line-height: 1;
   color: var(--tx);
