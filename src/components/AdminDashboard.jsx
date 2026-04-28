@@ -12,6 +12,7 @@ import {
   updateTicketStatus,
   fetchSubscribers,
 } from '../lib/applications'
+import { fetchJobs, createJob, updateJob, deleteJob } from '../lib/jobs'
 import styles from './AdminDashboard.module.css'
 import authStyles from './CandidateAuth.module.css'
 
@@ -700,6 +701,137 @@ function SubscribersView() {
   )
 }
 
+/* ── Jobs View ── */
+const EMPTY_JOB = { title: '', dept: '', type: '', salary: '', desc: '', reqs: '', bonus: '', locations: '', active: true }
+
+function JobsView() {
+  const [jobs, setJobs]       = useState([])
+  const [loading, setLoading] = useState(true)
+  const [editing, setEditing] = useState(null)
+  const [form, setForm]       = useState(EMPTY_JOB)
+  const [saving, setSaving]   = useState(false)
+
+  const load = async () => {
+    setLoading(true)
+    try {
+      const { supabase } = await import('../lib/supabase')
+      const res = await supabase.from('jobs').select('*').order('created_at', { ascending: true })
+      setJobs(res.data || [])
+    } catch { setJobs([]) }
+    setLoading(false)
+  }
+
+  useEffect(() => { load() }, [])
+
+  const openNew = () => { setEditing('new'); setForm(EMPTY_JOB) }
+  const openEdit = j => {
+    setEditing(j.id)
+    setForm({ ...j, desc: j.description || '', reqs: (j.reqs || []).join(', '), bonus: (j.bonus || []).join(', '), locations: (j.locations || []).join(', ') })
+  }
+  const close = () => { setEditing(null); setForm(EMPTY_JOB) }
+
+  const save = async () => {
+    if (!form.title || !form.dept || !form.type) return
+    setSaving(true)
+    const payload = {
+      ...form,
+      desc: form.desc,
+      reqs: form.reqs.split(',').map(s => s.trim()).filter(Boolean),
+      bonus: form.bonus.split(',').map(s => s.trim()).filter(Boolean),
+      locations: form.locations.split(',').map(s => s.trim()).filter(Boolean),
+    }
+    try {
+      if (editing === 'new') await createJob(payload)
+      else await updateJob(editing, payload)
+      await load()
+      close()
+    } catch (e) { console.error(e) }
+    setSaving(false)
+  }
+
+  const toggle = async (j) => {
+    await updateJob(j.id, { ...j, desc: j.description, reqs: (j.reqs||[]).join(', '), bonus: (j.bonus||[]).join(', '), locations: (j.locations||[]).join(', '), active: !j.active })
+    await load()
+  }
+
+  return (
+    <div className={styles.viewInner}>
+      <div className={styles.viewHeader}>
+        <div className={styles.viewTitle}>Jobs <span className={styles.viewCount}>{jobs.length}</span></div>
+        <button className={styles.addBtn} onClick={openNew}>+ Add Job</button>
+      </div>
+
+      {loading ? <div className={styles.empty}>Loading…</div> : (
+        <div className={styles.table}>
+          {jobs.map(j => (
+            <div key={j.id} className={styles.jobRow} style={{ opacity: j.active ? 1 : 0.45 }}>
+              <div className={styles.jobRowMain}>
+                <div className={styles.tdNameMain}>{j.title}</div>
+                <div className={styles.tdRole}>{j.dept} · {j.type}</div>
+              </div>
+              <div className={styles.jobRowMeta}>
+                <span className={styles.tdDate}>{j.salary}</span>
+                <span className={styles.statusBadge} style={{ background: j.active ? '#1e2a1a' : '#2a1a1a', color: j.active ? '#639922' : '#E24B4A' }}>
+                  {j.active ? 'Active' : 'Hidden'}
+                </span>
+                <button className={styles.editBtn} onClick={() => openEdit(j)}>Edit</button>
+                <button className={styles.editBtn} onClick={() => toggle(j)}>{j.active ? 'Hide' : 'Show'}</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <AnimatePresence>
+        {editing && (
+          <motion.div className={styles.jobFormOverlay}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div className={styles.jobForm}
+              initial={{ y: 24, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 12, opacity: 0 }}>
+              <div className={styles.jobFormHead}>
+                <div className={styles.sectionTitle}>{editing === 'new' ? 'New Job' : 'Edit Job'}</div>
+                <button className="close-btn" onClick={close}>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                    <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
+                  </svg>
+                </button>
+              </div>
+              <div className={styles.jobFormBody}>
+                {[
+                  { label: 'Job Title *', key: 'title', placeholder: 'e.g. Senior AI Engineer' },
+                  { label: 'Department *', key: 'dept', placeholder: 'e.g. AI, Support, Analytics' },
+                  { label: 'Work Type *', key: 'type', placeholder: 'Remote / Hybrid / On-site' },
+                  { label: 'Salary', key: 'salary', placeholder: 'e.g. $25 / hr' },
+                  { label: 'Locations', key: 'locations', placeholder: 'Worldwide, United States (comma-separated)' },
+                  { label: 'Requirements', key: 'reqs', placeholder: 'SQL, Communication, Problem solving (comma-separated)' },
+                  { label: 'Bonus Skills', key: 'bonus', placeholder: 'Python, Multilingual (comma-separated)' },
+                ].map(f => (
+                  <div key={f.key} className={styles.field}>
+                    <label className="fl">{f.label}</label>
+                    <input className="fi" value={form[f.key]} placeholder={f.placeholder}
+                      onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))} />
+                  </div>
+                ))}
+                <div className={styles.field}>
+                  <label className="fl">Description</label>
+                  <textarea className="ft" rows={4} value={form.desc} placeholder="Job description…"
+                    onChange={e => setForm(p => ({ ...p, desc: e.target.value }))} />
+                </div>
+              </div>
+              <div className={styles.jobFormFooter}>
+                <button className="btn-ghost" onClick={close}>Cancel</button>
+                <button className="sub-btn" onClick={save} disabled={saving}>
+                  {saving ? 'Saving…' : editing === 'new' ? 'Create Job' : 'Save Changes'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
 /* ── Main Dashboard ── */
 export default function AdminDashboard({ onClose }) {
   const [session, setSession] = useState(null)
@@ -765,6 +897,7 @@ export default function AdminDashboard({ onClose }) {
                 { key: 'applications', label: 'Applications' },
                 { key: 'tickets',      label: 'Tickets' },
                 { key: 'subscribers',  label: 'Subscribers' },
+                { key: 'jobs',         label: 'Jobs' },
               ].map(tab => (
                 <button key={tab.key}
                   className={`${styles.topTab} ${activeView === tab.key ? styles.topTabActive : ''}`}
@@ -781,6 +914,7 @@ export default function AdminDashboard({ onClose }) {
             {activeView === 'applications' && <ApplicationsView apps={apps} loading={appsLoading} />}
             {activeView === 'tickets'      && <TicketsView />}
             {activeView === 'subscribers'  && <SubscribersView />}
+            {activeView === 'jobs'         && <JobsView />}
           </div>
 
         </div>

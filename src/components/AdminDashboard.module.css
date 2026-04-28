@@ -104,3 +104,18 @@
 .exportBtn:hover { background: var(--gb); }
 
 .ticketMessage { font-size: 13px; color: var(--tm); line-height: 1.7; white-space: pre-wrap; background: var(--sf2); border: 1px solid var(--bd); padding: 16px 18px; }
+
+/* jobs view */
+.addBtn { background: var(--gd); border: none; color: #fff; font-size: 11px; font-family: 'Manrope',sans-serif; font-weight: 700; letter-spacing: .05em; padding: 8px 16px; cursor: pointer; border-radius: 4px; transition: opacity .2s; }
+.addBtn:hover { opacity: .85; }
+.jobRow { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--bd); }
+.jobRowMain { flex: 1; min-width: 0; }
+.jobRowMeta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.editBtn { background: var(--sf2); border: 1px solid var(--bd); color: var(--tm); font-size: 10px; font-family: 'Manrope',sans-serif; font-weight: 600; letter-spacing: .06em; padding: 5px 12px; cursor: pointer; border-radius: 3px; transition: all .15s; text-transform: uppercase; }
+.editBtn:hover { color: var(--tx); border-color: var(--tm); }
+.jobFormOverlay { position: absolute; inset: 0; background: rgba(0,0,0,.6); z-index: 10; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.jobForm { background: var(--bg); border: 1px solid var(--bd); width: 100%; max-width: 560px; max-height: 90vh; display: flex; flex-direction: column; border-radius: 6px; overflow: hidden; }
+.jobFormHead { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--bd); flex-shrink: 0; }
+.jobFormBody { padding: 24px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+.jobFormFooter { padding: 16px 24px; border-top: 1px solid var(--bd); display: flex; gap: 10px; justify-content: flex-end; flex-shrink: 0; }
+.field { display: flex; flex-direction: column; gap: 6px; }
