@@ -94,8 +94,9 @@ export async function submitApplication({ fields, cvFile, job }) {
     subject: `Application received — ${job.title}`,
     html: `
       <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#1c1710">
-        <div style="border-bottom:2px solid #cc6633;padding-bottom:16px;margin-bottom:24px">
-          <span style="font-size:22px;font-weight:700;letter-spacing:-.02em">✳ Arcvoy</span>
+        <div style="border-bottom:2px solid #cc6633;padding-bottom:16px;margin-bottom:24px;display:flex;align-items:center;gap:10px">
+          <svg width="28" height="28" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#cc6633"/></svg>
+          <span style="font-family:Georgia,serif;font-size:22px;font-weight:500;letter-spacing:-.02em;color:#1c1710">Arcvoy</span>
         </div>
         <h2 style="font-size:24px;font-weight:600;margin-bottom:8px">Application Received</h2>
         <p style="color:#6b5e4e;line-height:1.7">Hi ${fields.first},</p>
@@ -181,8 +182,9 @@ export async function updateStatus(id, status, applicant) {
       subject: msg.subject,
       html: `
         <div style="font-family:sans-serif;max-width:560px;margin:0 auto;color:#1c1710">
-          <div style="border-bottom:2px solid #cc6633;padding-bottom:16px;margin-bottom:24px">
-            <span style="font-size:22px;font-weight:700">✳ Arcvoy</span>
+          <div style="border-bottom:2px solid #cc6633;padding-bottom:16px;margin-bottom:24px;display:flex;align-items:center;gap:10px">
+            <svg width="28" height="28" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#cc6633"/></svg>
+            <span style="font-family:Georgia,serif;font-size:22px;font-weight:500;letter-spacing:-.02em;color:#1c1710">Arcvoy</span>
           </div>
           <p style="color:#6b5e4e;line-height:1.7">Hi ${applicant.first_name},</p>
           <p style="color:#6b5e4e;line-height:1.7">${msg.body}</p>

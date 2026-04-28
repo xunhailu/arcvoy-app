@@ -18,7 +18,8 @@ async function submitTicket({ name, email, category, subject, message }) {
       subject: `[${category}] ${subject}`,
       html: `
         <div style="font-family:sans-serif;max-width:560px;color:#1c1710">
-          <h2 style="border-bottom:2px solid #cc6633;padding-bottom:12px">New Support Ticket</h2>
+          <div style="border-bottom:2px solid #cc6633;padding-bottom:16px;margin-bottom:20px;display:flex;align-items:center;gap:10px"><svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#cc6633"/></svg><span style="font-family:Georgia,serif;font-size:20px;font-weight:500;color:#1c1710">Arcvoy</span></div>
+          <h2 style="margin:0 0 12px;font-size:18px">New Support Ticket</h2>
           <table style="width:100%;border-collapse:collapse;margin:16px 0">
             <tr><td style="padding:7px 0;color:#6b5e4e;width:120px">From</td><td><strong>${name}</strong> &lt;${email}&gt;</td></tr>
             <tr><td style="padding:7px 0;color:#6b5e4e">Category</td><td>${category}</td></tr>
