@@ -1,26 +1,32 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Navigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { JOBS } from '../data'
+import { fetchJob } from '../lib/jobs'
 import ApplyPanel from '../components/ApplyPanel'
 import { useBookmarks } from '../hooks/useBookmarks'
 import { useSEO } from '../hooks/useSEO'
 import styles from './JobDetail.module.css'
 
 export default function JobDetail({ user }) {
-  const { id }      = useParams()
-  const navigate    = useNavigate()
-  const jobId       = parseInt(id, 10)
-  const job         = !isNaN(jobId) ? JOBS.find(j => j.id === jobId) : null
+  const { id }     = useParams()
+  const navigate   = useNavigate()
+  const [job, setJob]           = useState(null)
+  const [loading, setLoading]   = useState(true)
   const [applying, setApplying] = useState(false)
   const [done, setDone]         = useState(false)
   const { isBookmarked, toggle } = useBookmarks()
 
+  useEffect(() => {
+    if (!id) { setLoading(false); return }
+    fetchJob(id).then(setJob).catch(() => setJob(null)).finally(() => setLoading(false))
+  }, [id])
+
   useSEO({
     title: job ? job.title : 'Job Not Found',
-    description: job ? `${job.title} at Arcvoy — ${job.type} · ${job.salary}. ${job.desc.slice(0, 120)}…` : null,
+    description: job ? `${job.title} at Arcvoy — ${job.type} · ${job.salary}. ${job.desc?.slice(0, 120)}…` : null,
   })
 
+  if (loading) return null
   if (!job) return <Navigate to="/jobs" replace />
 
   const bookmarked = isBookmarked(job.id)

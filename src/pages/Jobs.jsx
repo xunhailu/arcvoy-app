@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import JobCard from '../components/JobCard'
 import ApplyPanel from '../components/ApplyPanel'
-import { JOBS } from '../data'
+import { fetchJobs } from '../lib/jobs'
 import { useBookmarks } from '../hooks/useBookmarks'
 import styles from './Jobs.module.css'
 
@@ -43,7 +43,13 @@ export default function Jobs({ initialJob, onClearInitial, user }) {
   const [apps, setApps] = useState([])
   const [showSticky, setShowSticky] = useState(false)
   const [showSaved, setShowSaved] = useState(false)
+  const [jobs, setJobs] = useState([])
+  const [jobsLoading, setJobsLoading] = useState(true)
   const { saved, toggle, isBookmarked } = useBookmarks()
+
+  useEffect(() => {
+    fetchJobs().then(setJobs).finally(() => setJobsLoading(false))
+  }, [])
 
   useEffect(() => {
     onClearInitial?.()
@@ -55,8 +61,8 @@ export default function Jobs({ initialJob, onClearInitial, user }) {
     return () => window.removeEventListener('scroll', fn)
   }, [])
 
-  const depts = [...new Set(JOBS.map(j => j.dept))]
-  const types = [...new Set(JOBS.map(j => j.type))]
+  const depts = [...new Set(jobs.map(j => j.dept))]
+  const types = [...new Set(jobs.map(j => j.type))]
 
   const toggleFilter = (set, setFn, val) => {
     setFn(prev => {
@@ -67,7 +73,7 @@ export default function Jobs({ initialJob, onClearInitial, user }) {
   }
 
   const filtered = useMemo(() => {
-    let list = JOBS.filter(j => {
+    let list = jobs.filter(j => {
       const q = search.toLowerCase()
       const mq = !q || j.title.toLowerCase().includes(q) || j.reqs.some(r => r.toLowerCase().includes(q))
       const md = deptFilter.size === 0 || deptFilter.has(j.dept)

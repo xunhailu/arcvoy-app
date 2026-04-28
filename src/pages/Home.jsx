@@ -6,7 +6,8 @@ import JobCard from '../components/JobCard'
 import BrandMark from '../components/BrandMark'
 import Particles from '../components/Particles'
 import { useTilt } from '../hooks/useTilt'
-import { JOBS, PILLARS, FEATURES, ABOUT_TEXT, HOW_IT_WORKS, TESTIMONIALS } from '../data'
+import { PILLARS, FEATURES, ABOUT_TEXT, HOW_IT_WORKS, TESTIMONIALS } from '../data'
+import { fetchJobs } from '../lib/jobs'
 import styles from './Home.module.css'
 
 /* ── feature icons ── */
@@ -193,6 +194,11 @@ function TiltCard({ children, className, style, ...rest }) {
 export default function Home({ onNavigate, onApply }) {
   const [email, setEmail] = useState('')
   const [toastVisible, setToastVisible] = useState(false)
+  const [jobs, setJobs] = useState([])
+
+  useEffect(() => {
+    fetchJobs().then(setJobs).catch(() => {})
+  }, [])
   const heroRef = useRef(null)
   const heroInView = useInView(heroRef, { once: true })
 
@@ -475,7 +481,7 @@ export default function Home({ onNavigate, onApply }) {
           <button className="btn-ghost" onClick={() => onNavigate('jobs')}>See All Roles →</button>
         </div>
         <div>
-          {JOBS.slice(0, 2).map((j, i) => (
+          {jobs.slice(0, 2).map((j, i) => (
             <JobCard key={j.id} job={j} delay={i * 0.1}
               onClick={() => { onNavigate('jobs'); setTimeout(() => onApply(j), 120) }} />
           ))}
