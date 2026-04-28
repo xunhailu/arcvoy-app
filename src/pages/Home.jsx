@@ -469,7 +469,8 @@ export default function Home({ onNavigate, onApply }) {
         <div>
           {jobs.slice(0, 2).map((j, i) => (
             <JobCard key={j.id} job={j} delay={i * 0.1}
-              onClick={() => { onNavigate('jobs'); setTimeout(() => onApply(j), 120) }} />
+              onClick={() => onNavigate('jobs/' + j.id)}
+              onApply={j => { onNavigate('jobs'); setTimeout(() => onApply(j), 120) }} />
           ))}
         </div>
       </section>

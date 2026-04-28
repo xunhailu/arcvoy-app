@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { useTilt } from '../hooks/useTilt'
 
-export default function JobCard({ job, onClick, delay = 0, isBookmarked = false, onBookmark }) {
+export default function JobCard({ job, onClick, onApply, delay = 0, isBookmarked = false, onBookmark }) {
   const tilt = useTilt(6)
 
   return (
@@ -11,7 +11,7 @@ export default function JobCard({ job, onClick, delay = 0, isBookmarked = false,
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay, ease: [0.25, 0, 0, 1] }}
-      style={tilt.style}
+      style={{ ...tilt.style, cursor: 'pointer' }}
       onMouseMove={tilt.onMouseMove}
       onMouseLeave={tilt.onMouseLeave}
     >
@@ -51,7 +51,13 @@ export default function JobCard({ job, onClick, delay = 0, isBookmarked = false,
       </div>
 
       <div className="job-cta-row">
-        Apply Now <span className="arrow">→</span>
+        <button
+          className="btn-primary"
+          style={{ fontSize: '10px', padding: '8px 18px' }}
+          onClick={e => { e.stopPropagation(); onApply ? onApply(job) : onClick(e) }}
+        >
+          Apply Now →
+        </button>
         {onBookmark && (
           <button
             style={{

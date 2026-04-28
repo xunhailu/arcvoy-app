@@ -210,7 +210,8 @@ export default function Jobs({ initialJob, onClearInitial, user }) {
                 </motion.div>
               : filtered.map((j, i) => (
                   <JobCard key={j.id} job={j} delay={i * 0.08}
-                    onClick={() => setActiveJob(j)}
+                    onClick={() => navigate('/jobs/' + j.id)}
+                    onApply={j => setActiveJob(j)}
                     isBookmarked={isBookmarked(j.id)}
                     onBookmark={toggle} />
                 ))
