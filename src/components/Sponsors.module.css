@@ -1,86 +1,92 @@
 .section {
-  padding: 72px 0 64px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  background: linear-gradient(180deg,
-    rgba(255,255,255,0.025) 0%,
-    transparent 100%);
+  padding: 64px 0;
+  border-top: 1px solid var(--bd);
+  border-bottom: 1px solid var(--bd);
+  background:
+    radial-gradient(ellipse 60% 80% at 50% 50%, rgba(217,119,87,0.04) 0%, transparent 65%),
+    var(--sf);
   overflow: hidden;
   position: relative;
 }
-[data-theme="light"] .section {
-  border-top-color: var(--bd);
-  border-bottom-color: var(--bd);
-  background: linear-gradient(180deg, rgba(0,0,0,.02) 0%, transparent 100%);
-}
 
 .label {
-  font-size: 10px; letter-spacing: .26em; text-transform: uppercase;
+  font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase;
   color: var(--td); font-weight: 600; text-align: center;
-  margin-bottom: 44px; padding: 0 48px;
+  margin-bottom: 36px; padding: 0 48px;
 }
 
-/* mask fades on left + right edges */
+.dividerLine {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--bd), transparent);
+  margin: 28px 0;
+}
+
+/* edge fades */
 .wrapper {
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 14%,
-    black 86%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 14%,
-    black 86%,
-    transparent 100%
-  );
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
   overflow: hidden;
 }
 
-/* infinite scrolling ticker */
+/* row 1 — left to right */
 .track {
   display: flex; width: max-content;
-  animation: marquee 32s linear infinite;
+  animation: marquee 36s linear infinite;
   will-change: transform;
 }
-.section:hover .track { animation-play-state: paused; }
 
-@keyframes marquee {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+/* row 2 — right to left */
+.trackReverse {
+  animation: marqueeRev 28s linear infinite;
 }
 
-/* individual logo cell */
+.section:hover .track { animation-play-state: paused; }
+
+@keyframes marquee    { 0% { transform: translateX(0); }    100% { transform: translateX(-50%); } }
+@keyframes marqueeRev { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+
+/* sector item */
 .item {
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 12px; padding: 16px 52px;
-  opacity: 0.65; flex-shrink: 0;
-  transition: opacity .35s ease;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 40px; flex-shrink: 0;
+  opacity: 0.55; transition: opacity .3s;
   cursor: default;
 }
 .item:hover { opacity: 1; }
 
 .icon {
   display: flex; align-items: center; justify-content: center;
-  width: 40px; height: 40px;
+  width: 32px; height: 32px;
   background: var(--sf2); border: 1px solid var(--bd);
-  border-radius: 10px; color: var(--tm);
-  transition: color .35s ease, border-color .35s ease;
+  border-radius: 8px; color: var(--tm); flex-shrink: 0;
+  transition: color .3s, border-color .3s;
 }
 .item:hover .icon { color: var(--gd); border-color: var(--gb); }
 
-.logoName {
-  font-size: 9px; font-weight: 700; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--td);
-  transition: color .35s ease;
+.name {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--td); white-space: nowrap;
+  transition: color .3s;
 }
-.item:hover .logoName { color: var(--tm); }
+.item:hover .name { color: var(--tm); }
+
+/* trust signal item */
+.signal {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 44px; flex-shrink: 0;
+  font-size: 11px; font-weight: 500; letter-spacing: .02em;
+  color: var(--td); white-space: nowrap;
+  opacity: 0.7; transition: opacity .3s; cursor: default;
+}
+.signal:hover { opacity: 1; color: var(--tm); }
+
+.signalDot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--gd); flex-shrink: 0; opacity: 0.7;
+}
 
 @media (max-width: 900px) {
-  .section { padding: 52px 0 44px; }
-  .item { padding: 12px 36px; }
-  .logo { height: 44px; }
+  .section { padding: 48px 0; }
+  .item { padding: 8px 28px; }
+  .signal { padding: 6px 32px; }
 }
