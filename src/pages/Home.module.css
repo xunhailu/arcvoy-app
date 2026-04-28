@@ -99,19 +99,19 @@
 /* main headline */
 .heroTitle {
   font-family: 'Manrope', sans-serif;
-  font-size: clamp(28px, 4vw, 56px);
-  font-weight: 800; line-height: 1.12; letter-spacing: -.03em;
-  margin-bottom: 36px; position: relative; z-index: 1; max-width: none;
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 800; line-height: 1.04; letter-spacing: -.03em;
+  margin-bottom: 36px; position: relative; z-index: 1; max-width: 960px;
 }
-.l1, .l2 { display: inline; }
+.l1, .l2 { display: block; min-height: 1.02em; }
 
-/* gradient italic on the cycling phrase */
-.l2 {
+/* gradient text on the cycling italic phrase */
+.l2 em {
   font-style: italic;
   background: linear-gradient(135deg, #d97757 0%, #f0a472 45%, #e8956a 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   -webkit-box-decoration-break: clone; box-decoration-break: clone;
-  padding: 0.05em 0.15em 0.05em 0.05em;
+  padding: 0.05em 0.15em 0.05em 0.12em;
 }
 
 .heroSub {
