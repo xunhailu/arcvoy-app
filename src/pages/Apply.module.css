@@ -98,6 +98,19 @@
 .fg { display: flex; flex-direction: column; gap: 7px; }
 .fl { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--td); font-weight: 600; }
 .fl span { color: var(--gd); }
+
+.ageCheck {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  font-size: 12px; color: var(--tm); padding: 12px 14px;
+  border: 1px solid var(--bd2); border-radius: 6px;
+  background: var(--input-bg); transition: border-color .2s;
+}
+.ageCheck:hover { border-color: rgba(217,119,87,.4); }
+.ageCheck input[type="checkbox"] {
+  width: 15px; height: 15px; flex-shrink: 0;
+  accent-color: var(--gd); cursor: pointer;
+}
+.ageCheckError { border-color: #a03030 !important; }
 .fi {
   background: var(--input-bg); border: 1px solid var(--bd2);
   color: var(--tx); font-family: 'Manrope', sans-serif; font-size: 13px;

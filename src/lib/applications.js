@@ -57,7 +57,6 @@ export async function submitApplication({ fields, cvFile, job }) {
       state: fields.state,
       zip: fields.zip,
       country: fields.country,
-      dob: fields.dob || null,
       linkedin: fields.linkedin,
       lang1: fields.lang1,
       lang2: fields.lang2,
@@ -150,7 +149,6 @@ export async function submitApplication({ fields, cvFile, job }) {
             <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Role</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${job.title}</td></tr>
             <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Department</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${job.dept}</td></tr>
             <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Country</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${fields.country || '—'}</td></tr>
-            <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Date of Birth</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${fields.dob || '—'}</td></tr>
             <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">LinkedIn</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${fields.linkedin || '—'}</td></tr>
             <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;">CV</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;">${cvFilename || 'Not uploaded'}</td></tr>
           </table>

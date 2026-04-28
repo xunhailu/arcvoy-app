@@ -20,6 +20,7 @@ export default function Apply({ user }) {
   const [cvFile, setCvFile] = useState(null)
   const [cvLabel, setCvLabel] = useState('Drop your CV here or browse')
 
+  const [ageConfirmed, setAgeConfirmed] = useState(false)
   const [fields, setFields] = useState(() => {
     const meta = user?.user_metadata || {}
     const nameParts = (meta.full_name || '').trim().split(/\s+/)
@@ -27,7 +28,7 @@ export default function Apply({ user }) {
       first: nameParts[0] || '', last: nameParts.slice(1).join(' ') || '',
       email: user?.email || '', country: '', state: '', city: '',
       zip: '', address: '', linkedin: meta.linkedin || '',
-      lang1: '', lang2: '', dob: '', dobDay: '', dobMonth: '', dobYear: ''
+      lang1: '', lang2: ''
     }
   })
 
@@ -38,24 +39,12 @@ export default function Apply({ user }) {
 
   useSEO({ title: job ? `Apply — ${job.title}` : 'Apply', description: null })
 
-  const dobDays   = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0'))
-  const dobMonths = ['January','February','March','April','May','June','July','August','September','October','November','December']
-  const dobYears  = Array.from({ length: 80 }, (_, i) => String(new Date().getFullYear() - 18 - i))
   const countries = ['United States','United Kingdom','Canada','Australia','Germany','France','China','India','Nigeria','Brazil','Japan','Italy','Spain','Netherlands','Sweden','Turkey','Poland','Denmark','Singapore','Other']
   const langs     = ['English','Spanish','French','German','Chinese','Arabic','Hindi','Portuguese']
   const stateOptions = STATES_BY_COUNTRY[fields.country] || []
 
   const set = k => e => setFields(f => ({ ...f, [k]: e.target.value }))
   const setCountry = v => setFields(f => ({ ...f, country: v, state: '' }))
-  const setDobPart = (part, val) => {
-    setFields(f => {
-      const next = { ...f, [part === 'y' ? 'dobYear' : part === 'm' ? 'dobMonth' : 'dobDay']: val }
-      const y = next.dobYear
-      const m = next.dobMonth ? String(dobMonths.indexOf(next.dobMonth) + 1).padStart(2, '0') : ''
-      const d = next.dobDay
-      return { ...next, dob: (y && m && d) ? `${y}-${m}-${d}` : '' }
-    })
-  }
 
   const validate = () => {
     const e = {}
@@ -63,6 +52,7 @@ export default function Apply({ user }) {
     if (!fields.last.trim())   e.last  = true
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) e.email = true
     if (!fields.address.trim()) e.address = true
+    if (!ageConfirmed) e.age = true
     if (!cvFile) e.cv = true
     setErrors(e)
     return Object.keys(e).length === 0
@@ -198,14 +188,11 @@ export default function Apply({ user }) {
                   <label className={styles.fl}>Email <span>*</span></label>
                   <input type="email" className={`${styles.fi} ${errors.email ? styles.fiError : ''}`} value={fields.email} onChange={set('email')} />
                 </div>
-                <div className={styles.fg}>
-                  <label className={styles.fl}>Date of Birth</label>
-                  <div className={styles.grid3}>
-                    <CustomSelect value={fields.dobDay}   onChange={v => setDobPart('d', v)} options={dobDays}   placeholder="Day" />
-                    <CustomSelect value={fields.dobMonth} onChange={v => setDobPart('m', v)} options={dobMonths} placeholder="Month" />
-                    <CustomSelect value={fields.dobYear}  onChange={v => setDobPart('y', v)} options={dobYears}  placeholder="Year" />
-                  </div>
-                </div>
+                <label className={`${styles.ageCheck} ${errors.age ? styles.ageCheckError : ''}`}>
+                  <input type="checkbox" checked={ageConfirmed}
+                    onChange={e => { setAgeConfirmed(e.target.checked); setErrors(er => ({ ...er, age: false })) }} />
+                  <span>I confirm I am 18 years of age or older <span style={{ color: 'var(--gd)' }}>*</span></span>
+                </label>
               </div>
 
               <div className={styles.sectionDivider} />
