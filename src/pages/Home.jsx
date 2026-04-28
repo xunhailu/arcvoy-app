@@ -2,12 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import Sponsors from '../components/Sponsors'
-import JobCard from '../components/JobCard'
 import BrandMark from '../components/BrandMark'
 import Particles from '../components/Particles'
 import { useTilt } from '../hooks/useTilt'
 import { PILLARS, FEATURES, ABOUT_TEXT, HOW_IT_WORKS, TESTIMONIALS } from '../data'
-import { fetchJobs } from '../lib/jobs'
 import styles from './Home.module.css'
 
 /* ── feature icons ── */
@@ -194,11 +192,6 @@ function TiltCard({ children, className, style, ...rest }) {
 export default function Home({ onNavigate, onApply }) {
   const [email, setEmail] = useState('')
   const [toastVisible, setToastVisible] = useState(false)
-  const [jobs, setJobs] = useState([])
-
-  useEffect(() => {
-    fetchJobs().then(setJobs).catch(() => {})
-  }, [])
   const heroRef = useRef(null)
   const heroInView = useInView(heroRef, { once: true })
 
@@ -451,26 +444,6 @@ export default function Home({ onNavigate, onApply }) {
         <div className={styles.carouselDots}>
           {TESTIMONIALS.map((_, i) => (
             <button key={i} className={`${styles.dot} ${i === activeT ? styles.dotActive : ''}`} onClick={() => setActiveT(i)} />
-          ))}
-        </div>
-      </section>
-
-      {/* ── OPEN ROLES PREVIEW ── */}
-      <section className={styles.rolesSection}>
-        <motion.div className={styles.rolesHeader}
-          initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.25,0,0,1] }}>
-          <div>
-            <div className="label" style={{ marginBottom: 8 }}>Open Positions</div>
-            <h2 className={styles.secH}>Join our <em style={{ color: 'var(--gd)', fontStyle: 'italic' }}>growing</em> team</h2>
-          </div>
-          <button className="btn-ghost" onClick={() => onNavigate('jobs')}>See All Roles →</button>
-        </motion.div>
-        <div>
-          {jobs.slice(0, 2).map((j, i) => (
-            <JobCard key={j.id} job={j} delay={i * 0.1}
-              onClick={() => onNavigate('jobs/' + j.id)}
-              onApply={j => { onNavigate('jobs'); setTimeout(() => onApply(j), 120) }} />
           ))}
         </div>
       </section>
