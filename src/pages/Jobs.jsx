@@ -2,7 +2,6 @@ import { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import JobCard from '../components/JobCard'
-import ApplyPanel from '../components/ApplyPanel'
 import { fetchJobs } from '../lib/jobs'
 import { useBookmarks } from '../hooks/useBookmarks'
 import styles from './Jobs.module.css'
@@ -39,8 +38,6 @@ export default function Jobs({ initialJob, onClearInitial, user }) {
   const [deptFilter, setDeptFilter] = useState(new Set())
   const [typeFilter, setTypeFilter] = useState(new Set())
   const [sort, setSort] = useState('def')
-  const [activeJob, setActiveJob] = useState(initialJob || null)
-  const [apps, setApps] = useState([])
   const [showSticky, setShowSticky] = useState(false)
   const [showSaved, setShowSaved] = useState(false)
   const [jobs, setJobs] = useState([])
@@ -85,8 +82,6 @@ export default function Jobs({ initialJob, onClearInitial, user }) {
     if (sort === 'dept') list = [...list].sort((a, b) => a.dept.localeCompare(b.dept))
     return list
   }, [jobs, search, deptFilter, typeFilter, sort, showSaved, saved])
-
-  const onSubmit = (app) => setApps(prev => [...prev, { ...app, time: new Date() }])
 
   return (
     <div className={styles.page}>
@@ -211,7 +206,7 @@ export default function Jobs({ initialJob, onClearInitial, user }) {
               : filtered.map((j, i) => (
                   <JobCard key={j.id} job={j} delay={i * 0.08}
                     onClick={() => navigate('/jobs/' + j.id)}
-                    onApply={j => setActiveJob(j)}
+                    onApply={j => navigate('/jobs/' + j.id + '/apply')}
                     isBookmarked={isBookmarked(j.id)}
                     onBookmark={toggle} />
                 ))
@@ -222,30 +217,16 @@ export default function Jobs({ initialJob, onClearInitial, user }) {
 
       {/* sticky apply button */}
       <AnimatePresence>
-        {showSticky && !activeJob && (
+        {showSticky && (
           <motion.button
             className={styles.stickyApply}
             initial={{ y: 80, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 80, opacity: 0 }}
             transition={{ duration: 0.3, ease: [0.25, 0, 0, 1] }}
-            onClick={() => filtered.length > 0 && setActiveJob(filtered[0])}>
+            onClick={() => filtered.length > 0 && navigate('/jobs/' + filtered[0].id + '/apply')}>
             Apply Now →
           </motion.button>
-        )}
-      </AnimatePresence>
-
-      {/* apply overlay */}
-      <AnimatePresence>
-        {activeJob && (
-          <motion.div className="overlay" key="overlay"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <motion.div className="side-panel"
-              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
-              transition={{ duration: 0.32, ease: [0.25, 0, 0, 1] }}>
-              <ApplyPanel job={activeJob} onClose={() => setActiveJob(null)} onSubmit={onSubmit} user={user} />
-            </motion.div>
-          </motion.div>
         )}
       </AnimatePresence>
     </div>

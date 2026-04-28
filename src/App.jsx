@@ -15,6 +15,7 @@ const FAQ           = lazy(() => import('./pages/FAQ'))
 const HelpDesk      = lazy(() => import('./pages/HelpDesk'))
 const NotFound      = lazy(() => import('./pages/NotFound'))
 const JobDetail     = lazy(() => import('./pages/JobDetail'))
+const Apply         = lazy(() => import('./pages/Apply'))
 const ResetPassword = lazy(() => import('./pages/ResetPassword'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const Terms         = lazy(() => import('./pages/Terms'))
@@ -215,6 +216,11 @@ export default function App() {
           <Route path="/jobs/:id" element={
             <motion.div key="job-detail" variants={pageVariants} initial="initial" animate="animate" exit="exit">
               <JobDetail user={candidateUser} />
+            </motion.div>
+          } />
+          <Route path="/jobs/:id/apply" element={
+            <motion.div key="apply" variants={pageVariants} initial="initial" animate="animate" exit="exit">
+              <Apply user={candidateUser} />
             </motion.div>
           } />
           <Route path="/reset-password" element={

@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Navigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { fetchJob } from '../lib/jobs'
-import ApplyPanel from '../components/ApplyPanel'
 import { useBookmarks } from '../hooks/useBookmarks'
 import { useSEO } from '../hooks/useSEO'
 import styles from './JobDetail.module.css'
@@ -12,8 +11,6 @@ export default function JobDetail({ user }) {
   const navigate   = useNavigate()
   const [job, setJob]           = useState(null)
   const [loading, setLoading]   = useState(true)
-  const [applying, setApplying] = useState(false)
-  const [done, setDone]         = useState(false)
   const { isBookmarked, toggle } = useBookmarks()
 
   useEffect(() => {
@@ -144,36 +141,24 @@ export default function JobDetail({ user }) {
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.12 }}>
 
-            {done ? (
-              <div className={styles.applyCard}>
-                <div className={styles.successIcon}>
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                </div>
-                <div className={styles.applyTitle}>Application sent!</div>
-                <p className={styles.applyDesc}>We'll review your application and follow up personally.</p>
-              </div>
-            ) : (
-              <div className={styles.applyCard}>
-                <div className={styles.applyTitle}>Ready to apply?</div>
-                <p className={styles.applyDesc}>Join our global network. We review every application and follow up with every person.</p>
-                <button className="btn-primary" style={{ width:'100%', marginTop:20 }}
-                  onClick={() => setApplying(true)}>
-                  Apply for this Role →
-                </button>
-                <button
-                  className={`${styles.bookmarkBtn} ${bookmarked ? styles.bookmarkBtnSaved : ''}`}
-                  onClick={() => toggle(job.id)}>
-                  <svg width="14" height="14" viewBox="0 0 24 24"
-                    fill={bookmarked ? 'currentColor' : 'none'}
-                    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-                  </svg>
-                  {bookmarked ? 'Saved' : 'Save for Later'}
-                </button>
-              </div>
-            )}
+            <div className={styles.applyCard}>
+              <div className={styles.applyTitle}>Ready to apply?</div>
+              <p className={styles.applyDesc}>Join our global network. We review every application and follow up with every person.</p>
+              <button className="btn-primary" style={{ width:'100%', marginTop:20 }}
+                onClick={() => navigate(`/jobs/${id}/apply`)}>
+                Apply for this Role →
+              </button>
+              <button
+                className={`${styles.bookmarkBtn} ${bookmarked ? styles.bookmarkBtnSaved : ''}`}
+                onClick={() => toggle(job.id)}>
+                <svg width="14" height="14" viewBox="0 0 24 24"
+                  fill={bookmarked ? 'currentColor' : 'none'}
+                  stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                </svg>
+                {bookmarked ? 'Saved' : 'Save for Later'}
+              </button>
+            </div>
 
             <div className={styles.infoCard}>
               <div className={styles.infoCardHead}>At a Glance</div>
@@ -193,20 +178,6 @@ export default function JobDetail({ user }) {
         </aside>
       </div>
 
-      {/* apply panel overlay */}
-      <AnimatePresence>
-        {applying && (
-          <motion.div className="overlay" key="overlay"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <motion.div className="side-panel"
-              initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
-              transition={{ duration: 0.32, ease: [0.25, 0, 0, 1] }}>
-              <ApplyPanel job={job} onClose={() => setApplying(false)}
-                onSubmit={() => { setApplying(false); setDone(true) }} user={user} />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   )
 }
