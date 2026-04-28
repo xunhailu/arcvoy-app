@@ -17,16 +17,29 @@ async function submitTicket({ name, email, category, subject, message }) {
       to: 'support@arcvoy.com',
       subject: `[${category}] ${subject}`,
       html: `
-        <div style="font-family:sans-serif;max-width:560px;color:#1c1710">
-          <div style="border-bottom:2px solid #cc6633;padding-bottom:16px;margin-bottom:20px;display:flex;align-items:center;gap:10px"><svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#cc6633"/></svg><span style="font-family:Georgia,serif;font-size:20px;font-weight:500;color:#1c1710">Arcvoy</span></div>
-          <h2 style="margin:0 0 12px;font-size:18px">New Support Ticket</h2>
-          <table style="width:100%;border-collapse:collapse;margin:16px 0">
-            <tr><td style="padding:7px 0;color:#6b5e4e;width:120px">From</td><td><strong>${name}</strong> &lt;${email}&gt;</td></tr>
-            <tr><td style="padding:7px 0;color:#6b5e4e">Category</td><td>${category}</td></tr>
-            <tr><td style="padding:7px 0;color:#6b5e4e">Subject</td><td>${subject}</td></tr>
-          </table>
-          <div style="background:#faf8f4;border-left:3px solid #cc6633;padding:16px 20px;font-size:14px;line-height:1.7;color:#3a2a1a">
-            ${message.replace(/\n/g, '<br>')}
+        <div style="font-family:Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
+          <div style="background:#1A1410;padding:22px 32px;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#d97757" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#d97757" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#d97757"/></svg>
+              <span style="font-family:Georgia,serif;font-size:20px;color:#F5F0EB;font-weight:400;">Arcvoy</span>
+            </div>
+            <span style="font-size:10px;color:#6a5a4a;letter-spacing:0.1em;text-transform:uppercase;">Support</span>
+          </div>
+          <div style="padding:38px 32px;background:#ffffff;">
+            <p style="font-size:10px;color:#b0a090;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 12px;">New Support Ticket</p>
+            <h2 style="font-size:14px;color:#1A1410;font-weight:700;margin:0 0 28px;letter-spacing:0.06em;text-transform:uppercase;">${subject}</h2>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:28px;">
+              <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;width:42%;border-bottom:1px solid #F5F0EB;">From</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${name} &lt;${email}&gt;</td></tr>
+              <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Category</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${category}</td></tr>
+            </table>
+            <p style="font-size:10px;color:#b0a090;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 12px;">Message</p>
+            <div style="background:#FAF7F4;border-left:3px solid #d97757;padding:18px 20px;font-size:14px;line-height:1.85;color:#3a2a1a;border-radius:0 4px 4px 0;">
+              ${message.replace(/\n/g, '<br>')}
+            </div>
+          </div>
+          <div style="background:#F5F0EB;padding:16px 32px;border-radius:0 0 10px 10px;display:flex;justify-content:space-between;align-items:center;">
+            <p style="margin:0;font-size:11px;color:#b0a090;">© 2026 Arcvoy</p>
+            <p style="margin:0;font-size:11px;color:#b0a090;">arcvoy.com</p>
           </div>
         </div>`,
     },
