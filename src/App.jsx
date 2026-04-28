@@ -2,6 +2,7 @@ import { useState, useEffect, lazy, Suspense } from 'react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Navbar from './components/Navbar'
+import CursorGlow from './components/CursorGlow'
 import { useTheme } from './hooks/useTheme'
 import { supabase } from './lib/supabase'
 import { useSEO } from './hooks/useSEO'
@@ -162,6 +163,7 @@ export default function App() {
 
   return (
     <>
+      <CursorGlow />
       <ScrollProgress />
 
       <Navbar

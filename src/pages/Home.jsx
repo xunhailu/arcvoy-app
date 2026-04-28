@@ -273,7 +273,7 @@ export default function Home({ onNavigate, onApply }) {
         <motion.p className={styles.heroSub}
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.5 }}>
-          Arcvoy connects exceptional remote professionals with companies building the next generation of AI. We are growing fast and the roles are open now.
+          We find and hire the people who make AI systems better. Remote work, flexible hours, weekly pay. Roles open right now.
         </motion.p>
 
         <motion.div className={styles.heroBtns}
@@ -325,16 +325,16 @@ export default function Home({ onNavigate, onApply }) {
 
       {/* ── ABOUT ── */}
       <section className={styles.about} id="about">
-        <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.5, ease: 'easeOut' }}>
+        <motion.div initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.25,0,0,1] }}>
           <div className="label" style={{ marginBottom: 16 }}>Who We Are</div>
           <h2 className={styles.secH}>
             Talent meets<br /><em style={{ color: 'var(--gd)', fontStyle: 'italic' }}>opportunity</em>,<br />precisely.
           </h2>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}>
+        <motion.div initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.25,0,0,1], delay: 0.12 }}>
           <div className={styles.aboutBody}>
             {ABOUT_TEXT.map((p, i) => <p key={i}>{p}</p>)}
           </div>
@@ -359,11 +359,9 @@ export default function Home({ onNavigate, onApply }) {
       {/* ── HOW IT WORKS ── */}
       <section className={styles.howSection}>
         <motion.div className={styles.howHead}
-          initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.6, ease: 'easeOut' }}>
-          <motion.div className="label" style={{ justifyContent: 'center' }}
-            initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.5, ease: 'easeOut' }}>The Process</motion.div>
+          initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.25,0,0,1] }}>
+          <div className="label" style={{ justifyContent: 'center' }}>The Process</div>
           <h2 className={styles.secH} style={{ textAlign: 'center' }}>
             From application to <em style={{ color: 'var(--gd)', fontStyle: 'italic' }}>day one</em>
           </h2>
@@ -372,8 +370,8 @@ export default function Home({ onNavigate, onApply }) {
         <div className={styles.howGrid}>
           {HOW_IT_WORKS.map((step, i) => (
             <TiltCard key={step.step} className={styles.howCard}
-              initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.6, ease: 'easeOut', delay: i * 0.12 }}>
+              initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.65, ease: [0.25,0,0,1], delay: i * 0.14 }}>
               <div className={styles.howIconWrap}>
                 <span className={styles.howIcon}>{howIcons[step.icon]}</span>
                 {i < HOW_IT_WORKS.length - 1 && <div className={styles.howConnector} />}
@@ -391,11 +389,9 @@ export default function Home({ onNavigate, onApply }) {
       {/* ── FEATURES ── */}
       <section className={styles.features}>
         <motion.div className={styles.featHead}
-          initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.6, ease: 'easeOut' }}>
-          <motion.div className="label" style={{ justifyContent: 'center' }}
-            initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.5, ease: 'easeOut' }}>Why Arcvoy</motion.div>
+          initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.25,0,0,1] }}>
+          <div className="label" style={{ justifyContent: 'center' }}>Why Arcvoy</div>
           <h2 className={styles.secH} style={{ fontSize: 'clamp(28px,4vw,48px)', textAlign: 'center' }}>
             Built for the <em style={{ color: 'var(--gd)', fontStyle: 'italic' }}>async era</em>
           </h2>
@@ -404,8 +400,8 @@ export default function Home({ onNavigate, onApply }) {
         <div className={styles.featGrid}>
           {FEATURES.map((f, i) => (
             <TiltCard key={f.title} className={styles.featCard}
-              initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.6, ease: 'easeOut', delay: [0, 120, 240][i] / 1000 }}>
+              initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.65, ease: [0.25,0,0,1], delay: i * 0.14 }}>
               <span className={styles.featIcon}>{icons[f.icon]}</span>
               <div className={styles.featTitle}>{f.title}</div>
               <p className={styles.featText}>{f.text}</p>
@@ -419,11 +415,9 @@ export default function Home({ onNavigate, onApply }) {
       {/* ── TESTIMONIALS ── */}
       <section className={styles.testimonialsSection}>
         <motion.div className={styles.testimonialsHead}
-          initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.6, ease: 'easeOut' }}>
-          <motion.div className="label" style={{ justifyContent: 'center' }}
-            initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.5, ease: 'easeOut' }}>Contributors Say</motion.div>
+          initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.25,0,0,1] }}>
+          <div className="label" style={{ justifyContent: 'center' }}>Contributors Say</div>
           <h2 className={styles.secH} style={{ textAlign: 'center' }}>
             Real people, <em style={{ color: 'var(--gd)', fontStyle: 'italic' }}>real results</em>
           </h2>
@@ -441,8 +435,8 @@ export default function Home({ onNavigate, onApply }) {
             <motion.div
               key={t.name}
               className={`${styles.testimonialCard} ${i === activeT ? styles.testimonialActive : ''}`}
-              initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ duration: 0.6, delay: i * 0.12 }}
+              initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.65, ease: [0.25,0,0,1], delay: i * 0.14 }}
               onClick={() => setActiveT(i)}
             >
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
@@ -473,13 +467,15 @@ export default function Home({ onNavigate, onApply }) {
 
       {/* ── OPEN ROLES PREVIEW ── */}
       <section className={styles.rolesSection}>
-        <div className={styles.rolesHeader}>
+        <motion.div className={styles.rolesHeader}
+          initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.25,0,0,1] }}>
           <div>
             <div className="label" style={{ marginBottom: 8 }}>Open Positions</div>
             <h2 className={styles.secH}>Join our <em style={{ color: 'var(--gd)', fontStyle: 'italic' }}>growing</em> team</h2>
           </div>
           <button className="btn-ghost" onClick={() => onNavigate('jobs')}>See All Roles →</button>
-        </div>
+        </motion.div>
         <div>
           {jobs.slice(0, 2).map((j, i) => (
             <JobCard key={j.id} job={j} delay={i * 0.1}
@@ -502,7 +498,7 @@ export default function Home({ onNavigate, onApply }) {
             Ready to shape the <em>future of AI?</em>
           </h2>
           <p className={styles.ctaDesc}>
-            Browse our open roles and apply today. We review every application within 48 hours and we always respond. No waiting in the dark.
+            Take a look at what is open. We go through every application within 48 hours and always get back to you — good news or not.
           </p>
           <div className={styles.ctaBtns}>
             <button className="btn-primary" onClick={() => onNavigate('jobs')} style={{ padding: '15px 40px', fontSize: '11px' }}>
@@ -521,14 +517,14 @@ export default function Home({ onNavigate, onApply }) {
           viewport={{ once: true }} transition={{ duration: 0.7 }}>
           <div className="label" style={{ marginBottom: 16 }}>Stay Connected</div>
           <h2 className={styles.ktTitle}>Keep in <em style={{ color: 'var(--gd)', fontStyle: 'italic' }}>touch</em> with us</h2>
-          <p className={styles.ktDesc}>Follow our journey, hear about new roles before anyone else, and stay connected to what is happening in distributed AI work around the world.</p>
+          <p className={styles.ktDesc}>New roles drop regularly. Get notified first and hear what is actually going on in the world of distributed AI work.</p>
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.15 }}>
           <div className={styles.newsletterBox}>
-            <span className={styles.nlLabel}>Subscribe to our Newsletter</span>
-            <p className={styles.nlDesc}>Get new job openings, company updates, and insights on the future of distributed work — delivered to your inbox.</p>
+            <span className={styles.nlLabel}>Get notified</span>
+            <p className={styles.nlDesc}>New openings, occasional updates. Nothing you did not ask for.</p>
             <div className={styles.nlRow}>
               <input className={styles.nlInput} type="email" placeholder="your@email.com"
                 value={email} onChange={e => setEmail(e.target.value)} />

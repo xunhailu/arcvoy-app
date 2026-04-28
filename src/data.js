@@ -57,25 +57,25 @@ export const JOBS = [
 ]
 
 export const PILLARS = [
-  { num: '01', title: 'Remote first', text: 'Every role is built for focused, independent work across time zones.' },
-  { num: '02', title: 'High ownership', text: 'We look for people who take initiative before they are asked.' },
-  { num: '03', title: 'Transparent process', text: 'You will know exactly where your application stands within 48 hours of submitting.' },
+  { num: '01', title: 'Remote first', text: 'Every role is built for focused, independent work. No office politics, no commutes.' },
+  { num: '02', title: 'High ownership', text: 'We hire people who get things done without being managed every step of the way.' },
+  { num: '03', title: 'Straight answers', text: 'You will know where your application stands within 48 hours. That is a promise, not a policy.' },
 ]
 
 export const FEATURES = [
   {
-    title: 'Fast Matching',
-    text: 'Our intelligent pipeline identifies the right candidates in hours, not weeks. One clear process, straight to the point.',
+    title: 'Fast turnaround',
+    text: 'We do not sit on applications. Most candidates hear back within 48 hours — not because we rush it, but because we know what we are looking for.',
     icon: 'lightning',
   },
   {
-    title: 'Global Talent',
-    text: 'We source exceptional professionals across 40+ countries, ready to work across any time zone your team operates in.',
+    title: 'Genuinely global',
+    text: 'Contributors across 40+ countries, working in every time zone. Wherever your team runs, we have people already in it.',
     icon: 'globe',
   },
   {
-    title: 'Vetted and Trusted',
-    text: 'Every candidate completes a thorough evaluation before they ever reach you. No surprises, no guesswork on day one.',
+    title: 'Properly vetted',
+    text: 'Every person goes through evaluation before they reach you. No guessing on day one — you know exactly what you are getting.',
     icon: 'lock',
   },
 ]
@@ -95,19 +95,19 @@ export const HOW_IT_WORKS = [
   {
     step: '01',
     title: 'Apply in minutes',
-    text: 'Browse open roles and submit your application. No lengthy forms. Just your background, your availability, and what you bring to the table.',
+    text: 'Pick a role, submit your details. No long forms, no hoops. Just tell us who you are and what you have done.',
     icon: 'apply',
   },
   {
     step: '02',
-    title: 'Get matched fast',
-    text: 'Our team reviews every application within 48 hours. If there is a fit, you will hear from us directly with clear next steps. No ghosting.',
+    title: 'Hear back fast',
+    text: 'We go through every application within 48 hours. If there is a fit, we reach out directly with clear next steps. No ghosting, no silence.',
     icon: 'match',
   },
   {
     step: '03',
-    title: 'Start contributing',
-    text: 'Onboard quickly, work to your own schedule, and get paid weekly. You join a global network of contributors building AI that actually works.',
+    title: 'Get to work',
+    text: 'Onboard quickly, work on your schedule, and get paid every week. You join a global team doing real work on live AI systems.',
     icon: 'start',
   },
 ]
@@ -137,9 +137,9 @@ export const TESTIMONIALS = [
 ]
 
 export const ABOUT_TEXT = [
-  'Arcvoy builds the human intelligence layer behind modern artificial intelligence.',
-  'AI systems improve because people improve them. People who test, train, and teach machines how to understand the world. Arcvoy brings that global talent together and puts it to work.',
-  'We recruit and manage AI trainers, data annotators, social evaluators, and quality reviewers who refine how machines interpret language, behaviour, and context. Every contributor is selected for sharp judgment, genuine attention to detail, and the ability to think critically under pressure.',
-  'Our partners rely on Arcvoy to scale their AI systems with dependable human feedback at every stage of development. From language models to conversational tools, we help ensure outputs are accurate, well-aligned, and grounded in real human understanding.',
-  'Our focus is one thing: making AI systems work better by keeping human insight at the centre of how they learn.',
+  'AI gets better because people make it better. That is the honest version of what we do.',
+  'Behind every search result and every chatbot response is a person who tested it, trained it, and flagged when it got something wrong. We find those people, hire them, and pay them well for it.',
+  'Our contributors work on live AI projects — search quality, output evaluation, edge case testing. They are careful, consistent, and take the work seriously. That is what we hire for.',
+  'We help companies who need that kind of talent quickly, without the overhead of sourcing it themselves.',
+  'That is the whole model. Straightforward, on purpose.',
 ]
