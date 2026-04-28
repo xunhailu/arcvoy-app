@@ -36,8 +36,8 @@
 }
 .jobDept { font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--gd); font-weight: 700; margin-bottom: 10px; }
 .jobTitle {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 28px; font-weight: 500; color: var(--tx);
+  font-family: 'Manrope', sans-serif;
+  font-size: 26px; font-weight: 700; color: var(--tx);
   line-height: 1.15; margin-bottom: 6px;
 }
 .jobSalary { font-size: 13px; color: var(--tm); font-weight: 500; }
@@ -81,8 +81,8 @@
 .formHead { margin-bottom: 40px; }
 .formLabel { font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--gd); font-weight: 700; margin-bottom: 10px; }
 .formTitle {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 40px; font-weight: 400; color: var(--tx);
+  font-family: 'Manrope', sans-serif;
+  font-size: 36px; font-weight: 700; color: var(--tx);
   line-height: 1.1; margin-bottom: 10px;
 }
 .formSub { font-size: 13px; color: var(--td); }
@@ -145,8 +145,8 @@
   box-shadow: 0 0 32px rgba(217,119,87,.2);
 }
 .successTitle {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 40px; font-weight: 400; color: var(--tx); margin-bottom: 14px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 36px; font-weight: 700; color: var(--tx); margin-bottom: 14px;
 }
 .successDesc { font-size: 14px; color: var(--tm); line-height: 1.8; margin-bottom: 32px; }
 .successBtns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
