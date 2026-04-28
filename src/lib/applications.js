@@ -122,7 +122,7 @@ export async function submitApplication({ fields, cvFile, job }) {
         </div>
         <div style="background:#F5F0EB;padding:16px 32px;border-radius:0 0 10px 10px;display:flex;justify-content:space-between;align-items:center;">
           <p style="margin:0;font-size:11px;color:#b0a090;">© 2026 Arcvoy</p>
-          <p style="margin:0;font-size:11px;color:#b0a090;">arcvoy.com</p>
+          <p style="margin:0;font-size:11px;color:#b0a090;"><a href="https://arcvoy.com" style="color:#b0a090;text-decoration:none;">arcvoy.com</a> &nbsp;·&nbsp; <a href="https://x.com/helloarcvoy" style="color:#b0a090;text-decoration:none;">@helloarcvoy</a></p>
         </div>
       </div>
     `,
@@ -159,7 +159,7 @@ export async function submitApplication({ fields, cvFile, job }) {
         </div>
         <div style="background:#F5F0EB;padding:16px 32px;border-radius:0 0 10px 10px;display:flex;justify-content:space-between;align-items:center;">
           <p style="margin:0;font-size:11px;color:#b0a090;">© 2026 Arcvoy</p>
-          <p style="margin:0;font-size:11px;color:#b0a090;">arcvoy.com</p>
+          <p style="margin:0;font-size:11px;color:#b0a090;"><a href="https://arcvoy.com" style="color:#b0a090;text-decoration:none;">arcvoy.com</a> &nbsp;·&nbsp; <a href="https://x.com/helloarcvoy" style="color:#b0a090;text-decoration:none;">@helloarcvoy</a></p>
         </div>
       </div>
     `,
@@ -222,7 +222,7 @@ export async function updateStatus(id, status, applicant) {
           </div>
           <div style="background:#F5F0EB;padding:16px 32px;border-radius:0 0 10px 10px;display:flex;justify-content:space-between;align-items:center;">
             <p style="margin:0;font-size:11px;color:#b0a090;">© 2026 Arcvoy</p>
-            <p style="margin:0;font-size:11px;color:#b0a090;">arcvoy.com</p>
+            <p style="margin:0;font-size:11px;color:#b0a090;"><a href="https://arcvoy.com" style="color:#b0a090;text-decoration:none;">arcvoy.com</a> &nbsp;·&nbsp; <a href="https://x.com/helloarcvoy" style="color:#b0a090;text-decoration:none;">@helloarcvoy</a></p>
           </div>
         </div>
       `,
