@@ -75,7 +75,7 @@ export default function Jobs({ initialJob, onClearInitial, user }) {
   const filtered = useMemo(() => {
     let list = jobs.filter(j => {
       const q = search.toLowerCase()
-      const mq = !q || j.title.toLowerCase().includes(q) || j.reqs.some(r => r.toLowerCase().includes(q))
+      const mq = !q || j.title.toLowerCase().includes(q) || (j.reqs || []).some(r => r.toLowerCase().includes(q))
       const md = deptFilter.size === 0 || deptFilter.has(j.dept)
       const mt = typeFilter.size === 0 || typeFilter.has(j.type)
       const ms = !showSaved || saved.has(j.id)
@@ -84,7 +84,7 @@ export default function Jobs({ initialJob, onClearInitial, user }) {
     if (sort === 'az') list = [...list].sort((a, b) => a.title.localeCompare(b.title))
     if (sort === 'dept') list = [...list].sort((a, b) => a.dept.localeCompare(b.dept))
     return list
-  }, [search, deptFilter, typeFilter, sort, showSaved, saved])
+  }, [jobs, search, deptFilter, typeFilter, sort, showSaved, saved])
 
   const onSubmit = (app) => setApps(prev => [...prev, { ...app, time: new Date() }])
 
