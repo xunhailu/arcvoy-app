@@ -93,12 +93,12 @@
   font-style: normal;
   color: rgba(217,119,87,.45);
   margin-right: 0.12em;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'DM Serif Display', Georgia, serif;
 }
 
 /* main headline */
 .heroTitle {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'DM Serif Display', Georgia, serif;
   font-size: clamp(82px, 10.5vw, 136px);
   font-weight: 400; line-height: 1.04; letter-spacing: -.03em;
   margin-bottom: 36px; position: relative; z-index: 1; max-width: 880px;
@@ -183,7 +183,7 @@
 [data-theme="light"] .statItem + .statItem { border-left-color: var(--bd); }
 
 .statNum {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'DM Serif Display', Georgia, serif;
   font-size: 52px; display: block; line-height: 1; font-weight: 400;
   letter-spacing: -.03em;
   background: linear-gradient(135deg, var(--tx) 20%, var(--gd) 100%);
@@ -212,7 +212,7 @@
 
 /* gradient text on section headings */
 .secH {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'DM Serif Display', Georgia, serif;
   font-size: clamp(30px, 3.4vw, 46px);
   font-weight: 400; line-height: 1.1; color: var(--tx); letter-spacing: -.018em;
 }
@@ -270,7 +270,7 @@
   box-shadow: 0 4px 16px rgba(193,68,14,.08);
 }
 .pillarNum {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'DM Serif Display', Georgia, serif;
   font-size: 20px; color: var(--gd); min-width: 28px;
   margin-top: 1px; font-weight: 400;
   background: linear-gradient(135deg, var(--gd), var(--gl));
@@ -349,7 +349,7 @@
 .featCard:hover .featIcon { box-shadow: 0 4px 20px rgba(217,119,87,.35); }
 
 .featTitle {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'DM Serif Display', Georgia, serif;
   font-size: 23px; color: var(--tx); margin-bottom: 12px;
   font-weight: 400; letter-spacing: -.01em; line-height: 1.2;
 }
@@ -420,7 +420,7 @@
   color: var(--gd); font-weight: 700; margin-bottom: 10px;
 }
 .howTitle {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'DM Serif Display', Georgia, serif;
   font-size: 23px; font-weight: 400; color: var(--tx);
   margin-bottom: 14px; letter-spacing: -.01em;
 }
@@ -532,7 +532,7 @@
 .ctaOrb { display: none; }
 .ctaInner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
 .ctaTitle {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'DM Serif Display', Georgia, serif;
   font-size: clamp(40px, 4.8vw, 68px);
   font-weight: 400; line-height: 1.06; letter-spacing: -.025em;
   margin-bottom: 28px; color: var(--tx);
@@ -576,7 +576,7 @@
   gap: 80px; align-items: start;
 }
 .ktTitle {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'DM Serif Display', Georgia, serif;
   font-size: clamp(32px, 3.8vw, 54px); font-weight: 400;
   line-height: 1.08; margin-bottom: 18px; letter-spacing: -.02em;
 }
