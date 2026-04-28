@@ -706,24 +706,45 @@
    RESPONSIVE
 ════════════════════════════════════════ */
 @media (max-width: 900px) {
-  .hero { padding: 60px 24px 110px; }
-  .heroTitle { font-size: clamp(60px, 14vw, 100px); }
+  .hero { padding: 56px 24px 80px; }
+  .heroTitle { font-size: clamp(46px, 12vw, 80px); max-width: 100%; }
+  .heroSub { max-width: 100%; font-size: 15px; margin-bottom: 36px; }
+  .heroSubLink { margin-bottom: 44px; }
   .heroStats { max-width: 100%; }
-  .statItem { padding: 0 18px; }
+  .statItem { padding: 0 14px; }
+  .statNum { font-size: 36px; }
   .scrollHint { display: none; }
-  .about { grid-template-columns: 1fr; padding: 72px 24px; gap: 40px; }
-  .features { padding: 72px 24px; }
+  .about { grid-template-columns: 1fr; padding: 56px 24px; gap: 40px; }
+  .features { padding: 56px 24px; }
   .featGrid { grid-template-columns: 1fr; }
-  .howSection { padding: 72px 24px; }
+  .howSection { padding: 56px 24px; }
   .howGrid { grid-template-columns: 1fr; }
   .howConnector { display: none; }
-  .testimonialsSection { padding: 72px 24px; }
+  .testimonialsSection { padding: 56px 24px; }
   .testimonialsGrid { grid-template-columns: 1fr; }
-  .ctaBanner { padding: 88px 24px; }
+  .ctaBanner { padding: 64px 24px; }
   .ctaBtns { flex-direction: column; align-items: center; }
-  .rolesSection { padding: 72px 24px; }
+  .rolesSection { padding: 56px 24px; }
   .rolesHeader { flex-direction: column; align-items: flex-start; gap: 20px; }
-  .keepTouch { grid-template-columns: 1fr; padding: 72px 24px; gap: 48px; }
+  .keepTouch { grid-template-columns: 1fr; padding: 56px 24px; gap: 40px; }
   .footerMain { grid-template-columns: 1fr 1fr; padding: 40px 24px 0; gap: 32px; }
   .footerBottom { padding: 18px 24px; flex-direction: column; gap: 12px; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .hero { padding: 48px 20px 64px; }
+  .heroTitle { font-size: clamp(38px, 11vw, 60px); }
+  .heroChip { flex-wrap: wrap; height: auto; padding: 12px 16px; gap: 8px; }
+  .heroStats { flex-wrap: wrap; gap: 24px 0; padding-top: 28px; }
+  .statItem { flex: 0 0 50%; border-left: none !important; padding: 0; }
+  .statItem:nth-child(2) { border-left: 1px solid rgba(255,255,255,0.08) !important; }
+  [data-theme="light"] .statItem:nth-child(2) { border-left-color: var(--bd) !important; }
+  .statNum { font-size: 30px; }
+  .footerMain { grid-template-columns: 1fr; gap: 32px; }
+  .about { padding: 48px 20px; }
+  .features { padding: 48px 20px; }
+  .howSection { padding: 48px 20px; }
+  .testimonialsSection { padding: 48px 20px; }
+  .ctaBanner { padding: 52px 20px; }
+  .keepTouch { padding: 48px 20px; }
 }

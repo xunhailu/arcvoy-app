@@ -267,15 +267,24 @@
 
 /* responsive */
 @media (max-width: 900px) {
-  .hero { padding: 72px 24px 60px; }
+  .hero { padding: 56px 24px 48px; }
   .statsStrip { grid-template-columns: repeat(2, 1fr); }
   .stripCard { padding: 32px 20px; border-right-color: var(--bd); }
   .stripCard:nth-child(2) { border-right: none; }
-  .mission { grid-template-columns: 1fr; padding: 72px 24px; gap: 40px; }
-  .values  { padding: 72px 24px; }
+  .mission { grid-template-columns: 1fr; padding: 56px 24px; gap: 40px; }
+  .values  { padding: 56px 24px; }
   .valuesGrid { grid-template-columns: 1fr; }
-  .timeline { padding: 72px 24px; }
+  .timeline { padding: 56px 24px; }
   .timelineLine { left: calc(72px + 24px + 12px - 1px); }
-  .cta { padding: 88px 24px; }
+  .cta { padding: 64px 24px; }
   .ctaBtns { flex-direction: column; align-items: center; }
+}
+
+@media (max-width: 480px) {
+  .hero { padding: 44px 20px 36px; }
+  .statsStrip { grid-template-columns: 1fr 1fr; }
+  .mission { padding: 44px 20px; }
+  .values { padding: 44px 20px; }
+  .timeline { padding: 44px 20px; }
+  .cta { padding: 52px 20px; }
 }

@@ -198,7 +198,15 @@
   .layout { grid-template-columns: 1fr; }
   .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--bd); }
   .breadcrumb { padding: 12px 20px; }
-  .jobsHero { padding: 52px 20px 40px; }
+  .jobsHero { padding: 48px 20px 36px; }
+  .jobsHeroSub { max-width: 100%; }
   .main { padding: 20px; }
   .toolbar { padding: 10px 14px; }
+}
+
+@media (max-width: 480px) {
+  .jobsHero { padding: 36px 16px 28px; }
+  .breadcrumb { padding: 10px 16px; }
+  .main { padding: 16px; }
+  .deptPills { gap: 7px; }
 }

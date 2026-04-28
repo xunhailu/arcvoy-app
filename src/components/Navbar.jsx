@@ -104,13 +104,13 @@ export default function Navbar({ theme, onToggleTheme, onShowLogin, onShowCandid
         ].map(([p, label]) => (
           <button key={p}
             className={`${styles.mobileLink} ${page === p ? styles.mobileLinkActive : ''}`}
-            onClick={() => nav(p)}>
+            onClick={() => { nav(p); setMenuOpen(false) }}>
             {label}
           </button>
         ))}
         <div className={styles.mobileDivider} />
         {user ? (
-          <button className={styles.mobileLink} onClick={() => nav('dashboard')}>My Dashboard</button>
+          <button className={styles.mobileLink} onClick={() => { nav('dashboard'); setMenuOpen(false) }}>My Dashboard</button>
         ) : (
           <button className={styles.mobileLink} onClick={() => { onShowCandidateAuth(); setMenuOpen(false) }}>Sign In</button>
         )}

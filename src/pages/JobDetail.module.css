@@ -222,3 +222,10 @@
   .sidebar { position: static; }
   .section { padding: 24px 22px; }
 }
+
+@media (max-width: 480px) {
+  .layout { padding: 16px; gap: 20px; }
+  .breadcrumb { padding: 10px 16px; }
+  .title { font-size: 26px; }
+  .section { padding: 20px 16px; }
+}
