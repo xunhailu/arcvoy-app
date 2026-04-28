@@ -154,8 +154,8 @@
   background: linear-gradient(90deg, transparent, var(--gd), var(--gl), transparent);
 }
 .applyTitle {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 22px; font-weight: 400; color: var(--tx);
+  font-family: 'Manrope', sans-serif;
+  font-size: 22px; font-weight: 700; color: var(--tx);
   margin-bottom: 8px; letter-spacing: -.01em;
 }
 .applyDesc { font-size: 13px; color: var(--tm); line-height: 1.65; }

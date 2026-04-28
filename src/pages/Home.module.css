@@ -93,25 +93,25 @@
   font-style: normal;
   color: rgba(217,119,87,.45);
   margin-right: 0.12em;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Manrope', sans-serif;
 }
 
 /* main headline */
 .heroTitle {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(82px, 10.5vw, 136px);
-  font-weight: 400; line-height: 1.04; letter-spacing: -.03em;
-  margin-bottom: 36px; position: relative; z-index: 1; max-width: 880px;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(28px, 4vw, 56px);
+  font-weight: 800; line-height: 1.12; letter-spacing: -.03em;
+  margin-bottom: 36px; position: relative; z-index: 1; max-width: none;
 }
-.l1, .l2, .l3 { display: block; min-height: 1.02em; }
+.l1, .l2 { display: inline; }
 
-/* gradient text on the cycling italic phrase */
-.l2 em {
+/* gradient italic on the cycling phrase */
+.l2 {
   font-style: italic;
   background: linear-gradient(135deg, #d97757 0%, #f0a472 45%, #e8956a 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   -webkit-box-decoration-break: clone; box-decoration-break: clone;
-  padding: 0.05em 0.15em 0.05em 0.12em;
+  padding: 0.05em 0.15em 0.05em 0.05em;
 }
 
 .heroSub {
@@ -184,8 +184,8 @@
 [data-theme="light"] .statItem + .statItem { border-left-color: var(--bd); }
 
 .statNum {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 52px; display: block; line-height: 1; font-weight: 400;
+  font-family: 'Manrope', sans-serif;
+  font-size: 52px; display: block; line-height: 1; font-weight: 700;
   letter-spacing: -.03em;
   background: linear-gradient(135deg, var(--tx) 20%, var(--gd) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
@@ -213,9 +213,9 @@
 
 /* gradient text on section headings */
 .secH {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Manrope', sans-serif;
   font-size: clamp(30px, 3.4vw, 46px);
-  font-weight: 400; line-height: 1.1; color: var(--tx); letter-spacing: -.018em;
+  font-weight: 700; line-height: 1.1; color: var(--tx); letter-spacing: -.018em;
 }
 .secH em {
   font-style: italic;
@@ -277,9 +277,9 @@
   box-shadow: 0 4px 16px rgba(193,68,14,.08);
 }
 .pillarNum {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Manrope', sans-serif;
   font-size: 20px; color: var(--gd); min-width: 28px;
-  margin-top: 1px; font-weight: 400;
+  margin-top: 1px; font-weight: 700;
   background: linear-gradient(135deg, var(--gd), var(--gl));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
@@ -356,9 +356,9 @@
 .featCard:hover .featIcon { box-shadow: 0 4px 20px rgba(217,119,87,.35); }
 
 .featTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Manrope', sans-serif;
   font-size: 23px; color: var(--tx); margin-bottom: 12px;
-  font-weight: 400; letter-spacing: -.01em; line-height: 1.2;
+  font-weight: 700; letter-spacing: -.01em; line-height: 1.2;
 }
 .featText { font-size: 14px; color: var(--tm); line-height: 1.85; }
 
@@ -428,8 +428,8 @@
   color: var(--gd); font-weight: 700; margin-bottom: 10px;
 }
 .howTitle {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 23px; font-weight: 400; color: var(--tx);
+  font-family: 'Manrope', sans-serif;
+  font-size: 23px; font-weight: 700; color: var(--tx);
   margin-bottom: 14px; letter-spacing: -.01em;
 }
 .howText { font-size: 14px; color: var(--tm); line-height: 1.85; }
@@ -541,9 +541,9 @@
 .ctaOrb { display: none; }
 .ctaInner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
 .ctaTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Manrope', sans-serif;
   font-size: clamp(40px, 4.8vw, 68px);
-  font-weight: 400; line-height: 1.06; letter-spacing: -.025em;
+  font-weight: 700; line-height: 1.06; letter-spacing: -.025em;
   margin-bottom: 28px; color: var(--tx);
 }
 .ctaTitle em {
@@ -589,8 +589,8 @@
   gap: 80px; align-items: start;
 }
 .ktTitle {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(32px, 3.8vw, 54px); font-weight: 400;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(32px, 3.8vw, 54px); font-weight: 700;
   line-height: 1.08; margin-bottom: 18px; letter-spacing: -.02em;
 }
 .ktTitle em {

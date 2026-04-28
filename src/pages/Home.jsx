@@ -256,13 +256,11 @@ export default function Home({ onNavigate, onApply }) {
           initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.15 }}>
           <span className={styles.l1}>
-            {display[0]}
-            {curLine === 0 && <span className="tw-cursor">|</span>}
-          </span>
-          <span className={styles.l2} style={{ opacity: phraseVisible ? 1 : 0, transition: 'opacity 0.4s ease' }}>
-            <span className={styles.heroArrow}>›</span>
-            <em>{CYCLE_PHRASES[phraseIdx]}</em>
-          </span>
+            {display[0]}{curLine === 0 && <span className="tw-cursor">|</span>}
+          </span>{' '}
+          <em className={styles.l2} style={{ opacity: phraseVisible ? 1 : 0, transition: 'opacity 0.4s ease' }}>
+            {CYCLE_PHRASES[phraseIdx]}
+          </em>
         </motion.h1>
 
         <motion.p className={styles.heroSub}
@@ -507,7 +505,7 @@ export default function Home({ onNavigate, onApply }) {
           <div>
             <div className={styles.footerBrand}>
               <BrandMark size={15} />
-              <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 22, fontWeight: 500 }}>Arcvoy</span>
+              <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 22, fontWeight: 700 }}>Arcvoy</span>
             </div>
             <p className={styles.footerDesc}>We put the right people behind AI systems that actually work.</p>
             <div className={styles.footerSocials}>

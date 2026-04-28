@@ -40,7 +40,7 @@
   border: 1px solid var(--gb); color: var(--gd);
   font-size: 15px; font-weight: 700;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Manrope', sans-serif;
   box-shadow: 0 0 16px rgba(217,119,87,.2), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
@@ -106,8 +106,8 @@
   transform: rotate(6deg) scale(1.05);
 }
 .statNum {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 52px; font-weight: 400; line-height: 1;
+  font-family: 'Manrope', sans-serif;
+  font-size: 52px; font-weight: 700; line-height: 1;
   letter-spacing: -.03em;
   background: linear-gradient(135deg, var(--tx) 20%, var(--gd) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
