@@ -196,11 +196,11 @@
 
 @media (max-width: 900px) {
   .layout { grid-template-columns: 1fr; }
-  .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--bd); }
+  .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--bd); order: 2; }
+  .main { padding: 20px; order: 1; }
   .breadcrumb { padding: 12px 20px; }
   .jobsHero { padding: 48px 20px 36px; }
   .jobsHeroSub { max-width: 100%; }
-  .main { padding: 20px; }
   .toolbar { padding: 10px 14px; }
 }
 

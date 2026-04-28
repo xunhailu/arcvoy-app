@@ -560,22 +560,6 @@
 .ctaBtns { display: flex; gap: 14px; justify-content: center; }
 
 /* ════════════════════════════════════════
-   OPEN ROLES PREVIEW
-════════════════════════════════════════ */
-.rolesSection {
-  padding: 110px 48px;
-  background:
-    radial-gradient(ellipse 55% 50% at 8% 50%, rgba(217,119,87,0.07) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 50% at 95% 70%, rgba(90,110,220,0.06) 0%, transparent 50%),
-    var(--sf);
-  border-top: 1px solid var(--bd); border-bottom: 1px solid var(--bd);
-}
-.rolesHeader {
-  display: flex; justify-content: space-between; align-items: flex-end;
-  margin-bottom: 48px;
-}
-
-/* ════════════════════════════════════════
    KEEP IN TOUCH
 ════════════════════════════════════════ */
 .keepTouch {
@@ -724,8 +708,6 @@
   .testimonialsGrid { grid-template-columns: 1fr; }
   .ctaBanner { padding: 64px 24px; }
   .ctaBtns { flex-direction: column; align-items: center; }
-  .rolesSection { padding: 56px 24px; }
-  .rolesHeader { flex-direction: column; align-items: flex-start; gap: 20px; }
   .keepTouch { grid-template-columns: 1fr; padding: 56px 24px; gap: 40px; }
   .footerMain { grid-template-columns: 1fr 1fr; padding: 40px 24px 0; gap: 32px; }
   .footerBottom { padding: 18px 24px; flex-direction: column; gap: 12px; text-align: center; }

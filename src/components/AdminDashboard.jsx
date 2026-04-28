@@ -185,7 +185,6 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
           <div className={styles.sectionTitle}>Personal Details</div>
           <div className={styles.detailGrid}>
             <div className={styles.detailItem}><span>Email</span><strong>{app.email || '—'}</strong></div>
-            <div className={styles.detailItem}><span>Date of Birth</span><strong>{app.dob || '—'}</strong></div>
             <div className={styles.detailItem}><span>Country</span><strong>{app.country || '—'}</strong></div>
             <div className={styles.detailItem}><span>City</span><strong>{app.city || '—'}</strong></div>
             <div className={styles.detailItem}><span>State</span><strong>{app.state || '—'}</strong></div>

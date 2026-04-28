@@ -191,7 +191,14 @@ export default function Apply({ user }) {
                 <label className={`${styles.ageCheck} ${errors.age ? styles.ageCheckError : ''}`}>
                   <input type="checkbox" checked={ageConfirmed}
                     onChange={e => { setAgeConfirmed(e.target.checked); setErrors(er => ({ ...er, age: false })) }} />
-                  <span>I confirm I am 18 years of age or older <span style={{ color: 'var(--gd)' }}>*</span></span>
+                  <span className={`${styles.ageBox} ${ageConfirmed ? styles.ageBoxChecked : ''}`}>
+                    {ageConfirmed && (
+                      <svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="1 3.5 3.5 6 8 1"/>
+                      </svg>
+                    )}
+                  </span>
+                  <span className={styles.ageLabel}>I confirm I am 18 years of age or older <span>*</span></span>
                 </label>
               </div>
 
