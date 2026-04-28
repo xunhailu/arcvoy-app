@@ -252,7 +252,9 @@ export default function Home({ onNavigate, onApply }) {
           Now Hiring · AI Specialists
         </motion.div>
 
-        <h1 className={styles.heroTitle}>
+        <motion.h1 className={styles.heroTitle}
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.15 }}>
           <span className={styles.l1}>
             {display[0]}
             {curLine === 0 && <span className="tw-cursor">|</span>}
@@ -261,7 +263,7 @@ export default function Home({ onNavigate, onApply }) {
             <span className={styles.heroArrow}>›</span>
             <em>{CYCLE_PHRASES[phraseIdx]}</em>
           </span>
-        </h1>
+        </motion.h1>
 
         <motion.p className={styles.heroSub}
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
@@ -505,7 +507,7 @@ export default function Home({ onNavigate, onApply }) {
           <div>
             <div className={styles.footerBrand}>
               <BrandMark size={15} />
-              <span style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 22, fontWeight: 500 }}>Arcvoy</span>
+              <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 22, fontWeight: 500 }}>Arcvoy</span>
             </div>
             <p className={styles.footerDesc}>We put the right people behind AI systems that actually work.</p>
             <div className={styles.footerSocials}>
