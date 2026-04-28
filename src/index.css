@@ -285,18 +285,23 @@ select.fi:focus {
 .job-desc { color: var(--tm); font-size: 14px; line-height: 1.75; max-width: 600px; margin-bottom: 16px; }
 .job-locations { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
 .loc-tag {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 10px; letter-spacing: .06em; color: var(--tm);
-  border: 1px solid var(--bd2); padding: 4px 12px; font-weight: 500;
-  transition: all .2s; border-radius: 100px;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--gd); font-weight: 700;
+  border: 1px solid var(--gb); padding: 4px 10px;
+  transition: all .2s; border-radius: 3px;
+  background: var(--ga);
 }
-.job-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+.loc-tag svg { color: var(--gd); opacity: .8; }
+.job-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px; }
 .chip {
-  font-size: 10px; letter-spacing: .04em; color: var(--tm);
-  border: 1px solid var(--bd2); padding: 4px 12px;
-  transition: all .2s; border-radius: 100px;
-  background: var(--sf);
+  font-size: 9px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--td); font-weight: 600;
+  border: 1px solid var(--bd); padding: 4px 10px;
+  transition: color .2s, border-color .2s; border-radius: 3px;
+  background: var(--sf2);
 }
+.job-card:hover .chip { color: var(--tm); border-color: var(--bd2); }
 .job-cta-row {
   display: flex; align-items: center; gap: 8px;
   font-size: 11px; letter-spacing: .12em; text-transform: uppercase;

@@ -174,7 +174,7 @@ export default function Jobs({ initialJob, onClearInitial, user }) {
             {[
               ['Open roles', filtered.length],
               ['Pay rate', '$20–$25 / hr'],
-              ['Response time', '48 hours'],
+              ['Hiring process', 'Personal & direct'],
               ['Work style', 'Remote'],
             ].map(([k, v]) => (
               <div key={k} className={styles.statRow}>

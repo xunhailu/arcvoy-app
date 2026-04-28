@@ -126,7 +126,7 @@ export default function JobDetail({ user }) {
                     ['Work Type',     job.type],
                     ['Contract',      'Flexible / Project-based'],
                     ['Payment',       'Weekly via bank transfer or PayPal'],
-                    ['Response',      'Within 48 hours guaranteed'],
+                    ['Response',      'Personal & prompt'],
                   ].map(([k, v]) => (
                     <div key={k} className={styles.termRow}>
                       <span>{k}</span>
@@ -152,12 +152,12 @@ export default function JobDetail({ user }) {
                   </svg>
                 </div>
                 <div className={styles.applyTitle}>Application sent!</div>
-                <p className={styles.applyDesc}>We'll review it and get back to you within 48 hours.</p>
+                <p className={styles.applyDesc}>We'll review your application and follow up personally.</p>
               </div>
             ) : (
               <div className={styles.applyCard}>
                 <div className={styles.applyTitle}>Ready to apply?</div>
-                <p className={styles.applyDesc}>Join our global network. We respond to every application within 48 hours.</p>
+                <p className={styles.applyDesc}>Join our global network. We review every application and follow up with every person.</p>
                 <button className="btn-primary" style={{ width:'100%', marginTop:20 }}
                   onClick={() => setApplying(true)}>
                   Apply for this Role →
@@ -181,7 +181,7 @@ export default function JobDetail({ user }) {
                 ['Department',  job.dept],
                 ['Work Type',   job.type],
                 ['Pay Rate',    job.salary],
-                ['Response',    '< 48 hours'],
+                ['Response',    'Personal & prompt'],
                 ['Contract',    'Flexible'],
               ].map(([k, v]) => (
                 <div key={k} className={styles.infoRow}>

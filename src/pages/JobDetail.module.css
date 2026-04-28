@@ -114,8 +114,10 @@
 .locTags { display: flex; flex-wrap: wrap; gap: 8px; }
 .locTag {
   display: inline-flex; align-items: center; gap: 6px;
-  font-size: 12px; color: var(--tm);
-  border: 1px solid var(--bd2); padding: 7px 16px; border-radius: 100px;
+  font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--gd); font-weight: 700;
+  border: 1px solid var(--gb); padding: 5px 12px;
+  border-radius: 3px; background: var(--ga);
 }
 
 /* terms table */

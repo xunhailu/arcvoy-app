@@ -14,7 +14,7 @@ const SECTORS = [
 ]
 
 const SIGNALS = [
-  { text: 'Response within 48 hours — guaranteed',   dot: true },
+  { text: 'Every application reviewed by a real person', dot: true },
   { text: 'Contributors in 40+ countries',           dot: true },
   { text: 'Weekly payments via bank transfer',       dot: true },
   { text: 'Every application reviewed by a person', dot: true },

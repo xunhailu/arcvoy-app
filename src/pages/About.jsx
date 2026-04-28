@@ -5,7 +5,7 @@ import styles from './About.module.css'
 const TEAM_VALUES = [
   { num: '01', title: 'People before process', text: 'Every model improves because a person shaped it. We keep those people visible, valued, and well compensated.' },
   { num: '02', title: 'Built for the world', text: 'Our contributor network spans 40+ countries. That geographic and cultural range is what makes the work meaningful.' },
-  { num: '03', title: 'Straight communication', text: 'We tell candidates where they stand within 48 hours. Clear, honest communication is not optional for us.' },
+  { num: '03', title: 'Straight communication', text: 'Every applicant hears back from us — accepted or not. Honest communication is not optional for us.' },
   { num: '04', title: 'Real ownership', text: 'We hire people who take initiative. High autonomy paired with real accountability and fair pay.' },
 ]
 
@@ -42,7 +42,7 @@ export default function About({ onNavigate }) {
         {[
           { num: '1,000+', label: 'Active Contributors' },
           { num: '40+',    label: 'Countries' },
-          { num: '<48h',   label: 'Response Guarantee' },
+          { num: '100%',   label: 'Applications Reviewed' },
           { num: '2024',   label: 'Founded' },
         ].map((s, i) => (
           <motion.div key={s.label} className={styles.stripCard}
@@ -125,7 +125,7 @@ export default function About({ onNavigate }) {
           <h2 className={styles.ctaTitle}>
             Ready to help shape<br /><em style={{ color: 'var(--gd)', fontStyle: 'italic' }}>the future of AI?</em>
           </h2>
-          <p className={styles.ctaDesc}>Browse our open roles and apply today. We review every application within 48 hours.</p>
+          <p className={styles.ctaDesc}>Browse our open roles. Every application gets a personal review and a real response.</p>
           <div className={styles.ctaBtns}>
             <button className="btn-primary" onClick={() => onNavigate('jobs')}>Browse Open Roles →</button>
             <button className="btn-ghost" onClick={() => onNavigate('home')}>Back to Home</button>

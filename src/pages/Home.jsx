@@ -286,7 +286,7 @@ export default function Home({ onNavigate, onApply }) {
             <span className={styles.chipSep}>·</span>
             <span className={styles.chipText}>100% Remote</span>
             <span className={styles.chipSep}>·</span>
-            <span className={styles.chipText}>&lt;48h Reply</span>
+            <span className={styles.chipText}>Vetted Talent</span>
           </div>
         </motion.div>
 
@@ -302,9 +302,9 @@ export default function Home({ onNavigate, onApply }) {
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.9 }}>
           {[
-            { n: 5,  suffix: '',   label: 'Open Roles' },
-            { n: 48, suffix: 'h',  label: 'Avg. Response' },
-            { n: 40, suffix: '+',  label: 'Countries' },
+            { n: 5,    suffix: '',  label: 'Open Roles' },
+            { n: 40,   suffix: '+', label: 'Countries' },
+            { n: 1000, suffix: '+', label: 'Contributors' },
           ].map(({ n, suffix, label }) => (
             <div key={label} className={styles.statItem}>
               <span className={styles.statNum}><Counter target={n} suffix={suffix} /></span>
@@ -489,7 +489,7 @@ export default function Home({ onNavigate, onApply }) {
             Ready to shape the <em>future of AI?</em>
           </h2>
           <p className={styles.ctaDesc}>
-            Take a look at what is open. We go through every application within 48 hours and always get back to you — good news or not.
+            Take a look at what is open. Every application gets a real review and a real response — good news or not.
           </p>
           <div className={styles.ctaBtns}>
             <button className="btn-primary" onClick={() => onNavigate('jobs')} style={{ padding: '15px 40px', fontSize: '11px' }}>

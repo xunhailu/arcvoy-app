@@ -59,13 +59,13 @@ export const JOBS = [
 export const PILLARS = [
   { num: '01', title: 'Remote first', text: 'Every role is built for focused, independent work. No office politics, no commutes.' },
   { num: '02', title: 'High ownership', text: 'We hire people who get things done without being managed every step of the way.' },
-  { num: '03', title: 'Straight answers', text: 'You will know where your application stands within 48 hours. That is a promise, not a policy.' },
+  { num: '03', title: 'Straight answers', text: 'We follow up with every applicant — not just the ones who made it through. You will always hear from us.' },
 ]
 
 export const FEATURES = [
   {
     title: 'Fast turnaround',
-    text: 'We do not sit on applications. Most candidates hear back within 48 hours — not because we rush it, but because we know what we are looking for.',
+    text: 'We move quickly because we know what we are looking for. No drawn-out processes, no silence. You get a real answer.',
     icon: 'lightning',
   },
   {
@@ -101,7 +101,7 @@ export const HOW_IT_WORKS = [
   {
     step: '02',
     title: 'Hear back fast',
-    text: 'We go through every application within 48 hours. If there is a fit, we reach out directly with clear next steps. No ghosting, no silence.',
+    text: 'We review every application personally. If there is a fit, we reach out with clear next steps. If not, we still tell you — no ghosting.',
     icon: 'match',
   },
   {
@@ -128,7 +128,7 @@ export const TESTIMONIALS = [
     initials: 'LB',
   },
   {
-    quote: "Within a week of applying I was already working on a live AI project. The 48-hour response promise is real. They said it and they did it.",
+    quote: "Within a week of applying I was already working on a live AI project. They actually followed up — which is more than I can say for most platforms.",
     name: 'Amara O.',
     role: 'Data Analyst',
     location: 'Lagos, Nigeria',
