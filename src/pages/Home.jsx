@@ -321,8 +321,6 @@ export default function Home({ onNavigate, onApply }) {
         </motion.div>
       </section>
 
-      <div className="divider" />
-
       {/* ── ABOUT ── */}
       <section className={styles.about} id="about">
         <motion.div initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
@@ -354,8 +352,6 @@ export default function Home({ onNavigate, onApply }) {
         </motion.div>
       </section>
 
-      <div className="divider" />
-
       {/* ── HOW IT WORKS ── */}
       <section className={styles.howSection}>
         <motion.div className={styles.howHead}
@@ -384,8 +380,6 @@ export default function Home({ onNavigate, onApply }) {
         </div>
       </section>
 
-      <div className="divider" />
-
       {/* ── FEATURES ── */}
       <section className={styles.features}>
         <motion.div className={styles.featHead}
@@ -409,8 +403,6 @@ export default function Home({ onNavigate, onApply }) {
           ))}
         </div>
       </section>
-
-      <div className="divider" />
 
       {/* ── TESTIMONIALS ── */}
       <section className={styles.testimonialsSection}>
@@ -462,8 +454,6 @@ export default function Home({ onNavigate, onApply }) {
           ))}
         </div>
       </section>
-
-      <div className="divider" />
 
       {/* ── OPEN ROLES PREVIEW ── */}
       <section className={styles.rolesSection}>

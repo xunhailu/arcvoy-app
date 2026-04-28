@@ -1,12 +1,12 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #080808; --sf: #0f0f0f; --sf2: #161616;
-  --bd: #1e1e1e; --bd2: #2a2a2a;
+  --bg: #0b0907; --sf: #120f0c; --sf2: #1a1612;
+  --bd: #231e1a; --bd2: #2e2820;
   --gd: #d97757; --gl: #e8956a; --ga: rgba(217,119,87,.10); --gb: rgba(217,119,87,.22);
-  --tx: #f0ede8; --tm: #8a8a8a; --td: #5e5e5e;
-  --nav-bg: rgba(8,8,8,0.88); --card-bg: #111111;
-  --input-bg: #080808; --footer-bg: #050505;
+  --tx: #f2ede7; --tm: #8a8278; --td: #5e5852;
+  --nav-bg: rgba(11,9,7,0.88); --card-bg: #141109;
+  --input-bg: #0b0907; --footer-bg: #070604;
   --ease: cubic-bezier(.25,0,0,1);
   --glow: 0 0 60px rgba(217,119,87,0.15);
 }
