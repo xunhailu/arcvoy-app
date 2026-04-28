@@ -87,10 +87,10 @@
 
 .link {
   background: none; border: none; color: var(--tm);
-  font-size: 0.9375rem; letter-spacing: 0.025em; text-transform: none;
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
   cursor: pointer; transition: background .2s, color .2s, box-shadow .2s;
-  font-family: 'Manrope', sans-serif; padding: 6px 16px;
-  font-weight: 500; border-radius: 100px; position: relative; overflow: hidden;
+  font-family: 'Manrope', sans-serif; padding: 7px 16px;
+  font-weight: 600; border-radius: 100px; position: relative; overflow: hidden;
 }
 .link:hover { color: var(--tx); background: rgba(255,255,255,0.09); }
 [data-theme="light"] .link:hover { background: rgba(0,0,0,0.06); color: var(--tx); }
@@ -245,14 +245,15 @@
 .mobileLink {
   background: none; border: none;
   font-family: 'Manrope', sans-serif;
-  font-size: 15px; font-weight: 500;
+  font-size: 10px; font-weight: 600;
   color: var(--tm);
   padding: 14px 4px;
   cursor: pointer;
   text-align: left;
   border-bottom: 1px solid var(--bd);
   transition: color .2s;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 .mobileLink:last-child { border-bottom: none; }
 .mobileLink:hover { color: var(--gd); }
