@@ -55,7 +55,7 @@
   color: var(--gd); font-weight: 700; margin-bottom: 6px;
 }
 .title {
-  font-family: 'DM Serif Display', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 26px; font-weight: 400; color: var(--tx);
   letter-spacing: -.01em;
 }
