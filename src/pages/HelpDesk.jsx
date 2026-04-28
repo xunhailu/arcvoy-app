@@ -5,22 +5,16 @@ import CustomSelect from '../components/CustomSelect'
 import styles from './HelpDesk.module.css'
 
 const CATEGORIES = ['Application Issue', 'Payment / Billing', 'Technical Problem', 'Account Access', 'Role Inquiry', 'Other']
-const RESEND_KEY  = import.meta.env.VITE_RESEND_API_KEY
 const MAX_CHARS   = 1000
 
 /* ── email submit ── */
 async function submitTicket({ name, email, category, subject, message }) {
-  // Save to DB first — guaranteed even if email fails
   await supabase.from('tickets').insert([{ name, email, category, subject, message, status: 'open' }])
 
-  if (!RESEND_KEY || RESEND_KEY === 'your_new_resend_key_here') return
-  await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
+  await supabase.functions.invoke('send-email', {
+    body: {
       from: 'Arcvoy Help Desk <noreply@arcvoy.com>',
       to: 'support@arcvoy.com',
-      reply_to: email,
       subject: `[${category}] ${subject}`,
       html: `
         <div style="font-family:sans-serif;max-width:560px;color:#1c1710">
@@ -34,7 +28,7 @@ async function submitTicket({ name, email, category, subject, message }) {
             ${message.replace(/\n/g, '<br>')}
           </div>
         </div>`,
-    }),
+    },
   })
 }
 

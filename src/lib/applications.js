@@ -1,7 +1,6 @@
 import { supabase } from './supabase'
 
-const RESEND_KEY = import.meta.env.VITE_RESEND_API_KEY
-const ADMIN_EMAIL = 'support@arcvoy.com' // change to your real email
+const ADMIN_EMAIL = 'support@arcvoy.com'
 
 /* ── Upload CV to Supabase Storage ── */
 async function uploadCV(file, applicationId) {
@@ -16,23 +15,13 @@ async function uploadCV(file, applicationId) {
   return { path: data.path, filename: file.name }
 }
 
-/* ── Send email via Resend ── */
-async function sendEmail({ to, subject, html }) {
-  if (!RESEND_KEY || RESEND_KEY === 'your_new_resend_key_here') return
+/* ── Send email via Supabase Edge Function ── */
+async function sendEmail({ to, subject, html, from: fromAddr }) {
   try {
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${RESEND_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: 'Arcvoy <noreply@arcvoy.com>',
-        to,
-        subject,
-        html,
-      }),
+    const { error } = await supabase.functions.invoke('send-email', {
+      body: { to, subject, html, from: fromAddr },
     })
+    if (error) console.warn('Email send failed:', error)
   } catch (err) {
     console.warn('Email send failed:', err)
   }
