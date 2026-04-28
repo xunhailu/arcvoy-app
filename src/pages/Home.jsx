@@ -499,7 +499,7 @@ export default function Home({ onNavigate, onApply }) {
           viewport={{ once: true }} transition={{ duration: 0.8 }}>
           <div className="label" style={{ justifyContent: 'center', marginBottom: 24 }}>Join the Network</div>
           <h2 className={styles.ctaTitle}>
-            Ready to shape the <em style={{ color: 'var(--gd)', fontStyle: 'italic', paddingRight: '0.08em' }}>future of AI?</em>
+            Ready to shape the <em>future of AI?</em>
           </h2>
           <p className={styles.ctaDesc}>
             Browse our open roles and apply today. We review every application within 48 hours and we always respond. No waiting in the dark.

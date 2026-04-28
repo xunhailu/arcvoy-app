@@ -110,7 +110,8 @@
   font-style: italic;
   background: linear-gradient(135deg, #d97757 0%, #f0a472 45%, #e8956a 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  padding-right: 0.08em;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  padding: 0.05em 0.15em 0.05em 0.12em;
 }
 
 .heroSub {
@@ -220,7 +221,8 @@
   font-style: italic;
   background: linear-gradient(135deg, var(--gd) 0%, #f0a472 50%, var(--gl) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  padding-right: 0.08em;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  padding: 0.05em 0.15em 0.05em 0.12em;
 }
 
 /* ════════════════════════════════════════
@@ -541,7 +543,8 @@
   font-style: italic;
   background: linear-gradient(135deg, var(--gd) 0%, #f0a472 50%, var(--gl) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  padding-right: 0.08em;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  padding: 0.05em 0.15em 0.05em 0.12em;
 }
 .ctaDesc {
   font-size: 16px; color: var(--tm); line-height: 1.8;
@@ -584,7 +587,8 @@
   font-style: italic;
   background: linear-gradient(135deg, var(--gd) 0%, var(--gl) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  padding-right: 0.08em;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  padding: 0.05em 0.15em 0.05em 0.12em;
 }
 .ktDesc { font-size: 14px; color: var(--tm); line-height: 1.9; max-width: 380px; }
 .socialRow { display: flex; gap: 4px; margin-top: 28px; }
