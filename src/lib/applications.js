@@ -64,6 +64,7 @@ export async function submitApplication({ fields, cvFile, job }) {
       job_title: job.title,
       job_dept: job.dept,
       job_type: job.type,
+      dob: null,
       cv_path: null,
       cv_filename: null,
       status: 'applied',

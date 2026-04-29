@@ -66,6 +66,7 @@ export default function Apply({ user }) {
       await submitApplication({ fields, cvFile, job })
       setDone(true)
     } catch (err) {
+      console.error('Application error:', err)
       setSubmitError(err.message === 'You have already applied for this role.'
         ? 'You have already applied for this role.'
         : 'Something went wrong. Please try again.')
