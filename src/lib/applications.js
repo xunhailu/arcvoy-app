@@ -42,8 +42,16 @@ export async function submitApplication({ fields, cvFile, job }) {
     throw new Error('You have already applied for this role.')
   }
 
-  // 2. Generate ID client-side so we never need to SELECT back the inserted row
+  // 2. Generate ID client-side, upload CV first, then insert in one shot (avoids a separate UPDATE)
   const applicationId = crypto.randomUUID()
+
+  let cvPath = null
+  let cvFilename = null
+  if (cvFile) {
+    const uploaded = await uploadCV(cvFile, applicationId)
+    cvPath = uploaded.path
+    cvFilename = uploaded.filename
+  }
 
   const { error } = await supabase
     .from('applications')
@@ -65,26 +73,12 @@ export async function submitApplication({ fields, cvFile, job }) {
       job_dept: job.dept,
       job_type: job.type,
       dob: null,
-      cv_path: null,
-      cv_filename: null,
+      cv_path: cvPath,
+      cv_filename: cvFilename,
       status: 'applied',
     }])
 
   if (error) throw error
-
-  // 3. Upload CV and update the record with the file path
-  let cvPath = null
-  let cvFilename = null
-  if (cvFile) {
-    const uploaded = await uploadCV(cvFile, applicationId)
-    cvPath = uploaded.path
-    cvFilename = uploaded.filename
-    const { error: cvUpdateError } = await supabase
-      .from('applications')
-      .update({ cv_path: cvPath, cv_filename: cvFilename })
-      .eq('id', applicationId)
-    if (cvUpdateError) throw cvUpdateError
-  }
 
   const data = { id: applicationId }
 
