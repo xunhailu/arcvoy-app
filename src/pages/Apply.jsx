@@ -3,6 +3,7 @@ import { useParams, useNavigate, Navigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { fetchJob } from '../lib/jobs'
 import { submitApplication } from '../lib/applications'
+import { supabase } from '../lib/supabase'
 import { useSEO } from '../hooks/useSEO'
 import CustomSelect from '../components/CustomSelect'
 import { STATES_BY_COUNTRY } from '../data/states'
@@ -19,6 +20,7 @@ export default function Apply({ user }) {
   const [errors, setErrors] = useState({})
   const [cvFile, setCvFile] = useState(null)
   const [cvLabel, setCvLabel] = useState('Drop your CV here or browse')
+  const [parsing, setParsing] = useState(false)
 
   const [ageConfirmed, setAgeConfirmed] = useState(false)
   const [fields, setFields] = useState(() => {
@@ -257,11 +259,43 @@ export default function Apply({ user }) {
                 <div className={styles.fg}>
                   <label className={styles.fl}>CV / Resume (PDF or DOCX) <span>*</span></label>
                   <div className={styles.cvUpload} style={{ borderColor: errors.cv ? '#a03030' : undefined }}>
-                    <input type="file" accept=".pdf,.doc,.docx" onChange={e => {
+                    <input type="file" accept=".pdf,.doc,.docx" onChange={async e => {
                       const f = e.target.files[0]
                       if (!f) return
                       if (f.size > 10 * 1024 * 1024) { setCvFile(null); setCvLabel('File too large — max 10MB'); setErrors(er => ({ ...er, cv: true })); return }
                       setCvFile(f); setCvLabel(f.name); setErrors(er => ({ ...er, cv: false }))
+                      if (f.type === 'application/pdf') {
+                        setParsing(true); setCvLabel('Reading your CV…')
+                        try {
+                          const base64 = await new Promise((res, rej) => {
+                            const r = new FileReader()
+                            r.onload = () => res(r.result.split(',')[1])
+                            r.onerror = rej
+                            r.readAsDataURL(f)
+                          })
+                          const { data } = await supabase.functions.invoke('parse-cv', {
+                            body: { fileBase64: base64, fileType: f.type }
+                          })
+                          if (data && !data.error) {
+                            const match = (val, list) => list.find(o => o.toLowerCase() === (val || '').toLowerCase()) || null
+                            setFields(prev => ({
+                              ...prev,
+                              first:    data.first    || prev.first,
+                              last:     data.last     || prev.last,
+                              email:    data.email    || prev.email,
+                              address:  data.address  || prev.address,
+                              city:     data.city     || prev.city,
+                              zip:      data.zip      || prev.zip,
+                              linkedin: data.linkedin || prev.linkedin,
+                              country:  match(data.country, countries) || prev.country,
+                              state:    data.state    || prev.state,
+                              lang1:    match(data.lang1, langs) || prev.lang1,
+                              lang2:    match(data.lang2, langs) || prev.lang2,
+                            }))
+                          }
+                        } catch { /* silent — user fills manually */ }
+                        setCvLabel(f.name); setParsing(false)
+                      }
                     }} />
                     <div className={styles.cvInner}>
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -270,7 +304,7 @@ export default function Apply({ user }) {
                       </svg>
                       <div>
                         <div className={styles.cvMain}>{cvLabel}</div>
-                        <div className={styles.cvSub}>PDF or DOCX · Max 10MB</div>
+                        <div className={styles.cvSub}>{parsing ? 'Filling in your details…' : 'PDF or DOCX · Max 10MB'}</div>
                       </div>
                       <span className={styles.cvBrowse}>Browse</span>
                     </div>
