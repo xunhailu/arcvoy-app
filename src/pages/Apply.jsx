@@ -273,9 +273,10 @@ export default function Apply({ user }) {
                             r.onerror = rej
                             r.readAsDataURL(f)
                           })
-                          const { data } = await supabase.functions.invoke('parse-cv', {
+                          const { data, error: fnError } = await supabase.functions.invoke('parse-cv', {
                             body: { fileBase64: base64, fileType: f.type }
                           })
+                          console.log('parse-cv result:', data, fnError)
                           if (data && !data.error) {
                             const match = (val, list) => list.find(o => o.toLowerCase() === (val || '').toLowerCase()) || null
                             setFields(prev => ({
