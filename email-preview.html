@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Email Preview — Arcvoy Verification</title>
+  <style>
+    body { margin: 0; padding: 40px 20px; background: #e8e4de; font-family: Arial, sans-serif; }
+    .wrap { max-width: 580px; margin: 0 auto; }
+    .label { font-size: 11px; color: #888; text-align: center; margin-bottom: 10px; letter-spacing: .12em; text-transform: uppercase; }
+    .spacer { height: 56px; }
+    .copy-row { display: flex; align-items: center; gap: 10px; background:#f0ece8; padding:10px 14px; border-radius:5px; }
+    .copy-link { font-family:'Courier New',monospace; font-size:11px; color:#999; word-break:break-all; line-height:1.5; flex:1; margin:0; }
+    .copy-btn { flex-shrink:0; background:#0e0d0c; color:#fff; border:none; border-radius:5px; padding:7px 14px; font-size:11px; font-weight:700; cursor:pointer; letter-spacing:.04em; font-family:Arial,sans-serif; white-space:nowrap; transition:background .2s; }
+    .copy-btn:hover { background:#cc6633; }
+    .copy-btn.copied { background:#1a9e4a; }
+  </style>
+  <script>
+    function copyLink(btn, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+  </script>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- EMAIL 1 — IDENTITY VERIFICATION -->
+  <div class="label">Email 1 — Identity Verification</div>
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 24px rgba(0,0,0,0.09);">
+
+    <tr>
+      <td style="background:#0e0d0c; padding:30px 40px; text-align:center;">
+        <span style="display:inline-block; vertical-align:middle; margin-right:8px;">
+          <svg width="20" height="20" viewBox="0 0 64 64" fill="none">
+            <path d="M10 50 Q32 6 54 50" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/>
+            <path d="M22 37 L42 37" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="54" cy="50" r="3.5" fill="#cc6633"/>
+          </svg>
+        </span>
+        <span style="font-family:Arial,sans-serif; font-size:19px; font-weight:700; color:#ffffff; vertical-align:middle;">Arcvoy</span>
+      </td>
+    </tr>
+    <tr><td style="background:linear-gradient(90deg,#cc6633,#e8956a,#cc6633); height:3px; font-size:0;">&nbsp;</td></tr>
+
+    <tr>
+      <td style="padding:40px 40px 32px;">
+        <p style="margin:0 0 6px; font-family:Arial,sans-serif; font-size:11px; font-weight:700; color:#cc6633; letter-spacing:.12em; text-transform:uppercase;">Action Required</p>
+        <h1 style="margin:0 0 22px; font-family:Arial,sans-serif; font-size:26px; font-weight:900; color:#0e0d0c; line-height:1.15; letter-spacing:.04em; text-transform:uppercase;">IDENTITY VERIFICATION</h1>
+
+        <p style="margin:0 0 28px; font-family:Arial,sans-serif; font-size:14px; color:#444; line-height:1.75;">
+          Hi <strong>Linda</strong>,<br/><br/>
+          Your application with Arcvoy is currently in progress. The next step is to complete your identity verification. This is a quick process and ensures we can move your application forward securely.
+        </p>
+
+        <!-- LINK CARD -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#faf8f6; border:1px solid #ede8e2; border-radius:10px; margin-bottom:28px;">
+          <tr>
+            <td style="padding:28px;">
+              <p style="margin:0 0 14px; font-family:Arial,sans-serif; font-size:13px; color:#555; line-height:1.65; font-weight:700;">To help your verification go through quickly, please follow these tips:</p>
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
+                <tr><td style="padding:5px 0; font-family:Arial,sans-serif; font-size:13px; color:#555; line-height:1.6;">
+                  <span style="color:#cc6633; font-weight:700; margin-right:6px;">·</span> Use a valid, non-expired ID<br/>
+                  <span style="color:#cc6633; font-weight:700; margin-right:6px;">·</span> Take photos in good lighting (no glare or shadows)<br/>
+                  <span style="color:#cc6633; font-weight:700; margin-right:6px;">·</span> Make sure the entire ID is visible and clear (not blurry)<br/>
+                  <span style="color:#cc6633; font-weight:700; margin-right:6px;">·</span> Ensure all details match what you entered<br/>
+                  <span style="color:#cc6633; font-weight:700; margin-right:6px;">·</span> For selfies: look straight at the camera and avoid hats or sunglasses
+                </td></tr>
+              </table>
+              <p style="margin:0 0 16px; font-family:Arial,sans-serif; font-size:13px; color:#555; line-height:1.65;">Click the button below to begin. If it doesn't open, use the copy button to copy the link and paste it directly into your browser.</p>
+              <table cellpadding="0" cellspacing="0" style="margin-bottom:18px;">
+                <tr>
+                  <td style="background:#cc6633; border-radius:7px;">
+                    <a href="#" style="display:inline-block; padding:13px 32px; font-family:Arial,sans-serif; font-size:13px; font-weight:900; color:#ffffff; text-decoration:none; letter-spacing:.1em; text-transform:uppercase;">VERIFY IDENTITY</a>
+                  </td>
+                </tr>
+              </table>
+              <div class="copy-row">
+                <p class="copy-link">https://verify.example.com/identity/abc123xyz</p>
+                <button class="copy-btn" onclick="copyLink(this, 'https://verify.example.com/identity/abc123xyz')">Copy Link</button>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <!-- NOTE -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-left:3px solid #cc6633; background:#fffaf7; margin-bottom:32px;">
+          <tr>
+            <td style="padding:14px 18px;">
+              <p style="margin:0; font-family:Arial,sans-serif; font-size:13px; color:#666; line-height:1.65;">If you have any issues completing this step, reply to this email and our team will assist you as soon as possible.</p>
+            </td>
+          </tr>
+        </table>
+
+        <p style="margin:0; font-family:Arial,sans-serif; font-size:14px; color:#444; line-height:1.7;">Warm regards,<br/><strong style="color:#0e0d0c;">The Arcvoy Team</strong></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="background:#f7f5f2; border-top:1px solid #ede8e2; padding:22px 40px; text-align:center;">
+        <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:12px; font-weight:700; color:#0e0d0c;">Arcvoy</p>
+        <p style="margin:0; font-family:Arial,sans-serif; font-size:11px; color:#aaa; line-height:1.6;">This email was sent regarding your application at Arcvoy.<br/>© 2026 Arcvoy. All rights reserved.</p>
+      </td>
+    </tr>
+  </table>
+
+  <div class="spacer"></div>
+
+  <!-- EMAIL 2 — COMPLIANCE VERIFICATION -->
+  <div class="label">Email 2 — Compliance Verification</div>
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 24px rgba(0,0,0,0.09);">
+
+    <tr>
+      <td style="background:#0e0d0c; padding:30px 40px; text-align:center;">
+        <span style="display:inline-block; vertical-align:middle; margin-right:8px;">
+          <svg width="20" height="20" viewBox="0 0 64 64" fill="none">
+            <path d="M10 50 Q32 6 54 50" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/>
+            <path d="M22 37 L42 37" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="54" cy="50" r="3.5" fill="#cc6633"/>
+          </svg>
+        </span>
+        <span style="font-family:Arial,sans-serif; font-size:19px; font-weight:700; color:#ffffff; vertical-align:middle;">Arcvoy</span>
+      </td>
+    </tr>
+    <tr><td style="background:linear-gradient(90deg,#cc6633,#e8956a,#cc6633); height:3px; font-size:0;">&nbsp;</td></tr>
+
+    <tr>
+      <td style="padding:40px 40px 32px;">
+        <p style="margin:0 0 6px; font-family:Arial,sans-serif; font-size:11px; font-weight:700; color:#cc6633; letter-spacing:.12em; text-transform:uppercase;">Final Step</p>
+        <h1 style="margin:0 0 22px; font-family:Arial,sans-serif; font-size:26px; font-weight:900; color:#0e0d0c; line-height:1.15; letter-spacing:.04em; text-transform:uppercase;">COMPLIANCE VERIFICATION</h1>
+
+        <p style="margin:0 0 28px; font-family:Arial,sans-serif; font-size:14px; color:#444; line-height:1.75;">
+          Hi <strong>Linda</strong>,<br/><br/>
+          Thank you for completing your identity verification. You are now one step away. Please complete your compliance verification to finalise your application with Arcvoy.
+        </p>
+
+        <!-- LINK CARD -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#faf8f6; border:1px solid #ede8e2; border-radius:10px; margin-bottom:28px;">
+          <tr>
+            <td style="padding:28px;">
+              <p style="margin:0 0 16px; font-family:Arial,sans-serif; font-size:13px; color:#555; line-height:1.65;">Click the button below to begin. If it does not open, use the copy button to copy the link and paste it directly into your browser.</p>
+              <table cellpadding="0" cellspacing="0" style="margin-bottom:18px;">
+                <tr>
+                  <td style="background:#cc6633; border-radius:7px;">
+                    <a href="#" style="display:inline-block; padding:13px 32px; font-family:Arial,sans-serif; font-size:13px; font-weight:900; color:#ffffff; text-decoration:none; letter-spacing:.1em; text-transform:uppercase;">VERIFY COMPLIANCE</a>
+                  </td>
+                </tr>
+              </table>
+              <div class="copy-row">
+                <p class="copy-link">https://verify.example.com/compliance/abc123xyz</p>
+                <button class="copy-btn" onclick="copyLink(this, 'https://verify.example.com/compliance/abc123xyz')">Copy Link</button>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <!-- NOTE -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-left:3px solid #cc6633; background:#fffaf7; margin-bottom:32px;">
+          <tr>
+            <td style="padding:14px 18px;">
+              <p style="margin:0; font-family:Arial,sans-serif; font-size:13px; color:#666; line-height:1.65;">If you have any issues completing this step, reply to this email and our team will assist you as soon as possible.</p>
+            </td>
+          </tr>
+        </table>
+
+        <p style="margin:0; font-family:Arial,sans-serif; font-size:14px; color:#444; line-height:1.7;">Warm regards,<br/><strong style="color:#0e0d0c;">The Arcvoy Team</strong></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="background:#f7f5f2; border-top:1px solid #ede8e2; padding:22px 40px; text-align:center;">
+        <p style="margin:0 0 5px; font-family:Arial,sans-serif; font-size:12px; font-weight:700; color:#0e0d0c;">Arcvoy</p>
+        <p style="margin:0; font-family:Arial,sans-serif; font-size:11px; color:#aaa; line-height:1.6;">This email was sent regarding your application at Arcvoy.<br/>© 2026 Arcvoy. All rights reserved.</p>
+      </td>
+    </tr>
+  </table>
+
+</div>
+</body>
+</html>

@@ -106,7 +106,7 @@
 .dot {
   width: 7px; height: 7px; border-radius: 50%;
   background: var(--gd); flex-shrink: 0; margin-top: 6px;
-  box-shadow: 0 0 6px rgba(217,119,87,.4);
+  box-shadow: 0 0 6px rgba(204,102,51,.4);
 }
 .dotBonus { background: var(--bd2); box-shadow: none; }
 
@@ -185,7 +185,7 @@
   background: var(--ga); border: 1px solid var(--gb);
   color: var(--gd); display: flex; align-items: center; justify-content: center;
   margin-bottom: 14px;
-  box-shadow: 0 0 20px rgba(217,119,87,.25);
+  box-shadow: 0 0 20px rgba(204,102,51,.25);
 }
 
 /* info card */

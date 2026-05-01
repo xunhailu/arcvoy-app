@@ -20,7 +20,7 @@ async function submitTicket({ name, email, category, subject, message }) {
         <div style="font-family:Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
           <div style="background:#1A1410;padding:22px 32px;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:10px;">
-              <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#d97757" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#d97757" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#d97757"/></svg>
+              <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#cc6633"/></svg>
               <span style="font-family:Georgia,serif;font-size:20px;color:#F5F0EB;font-weight:400;">Arcvoy</span>
             </div>
             <span style="font-size:10px;color:#6a5a4a;letter-spacing:0.1em;text-transform:uppercase;">Support</span>
@@ -33,7 +33,7 @@ async function submitTicket({ name, email, category, subject, message }) {
               <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Category</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${category}</td></tr>
             </table>
             <p style="font-size:10px;color:#b0a090;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 12px;">Message</p>
-            <div style="background:#FAF7F4;border-left:3px solid #d97757;padding:18px 20px;font-size:14px;line-height:1.85;color:#3a2a1a;border-radius:0 4px 4px 0;">
+            <div style="background:#FAF7F4;border-left:3px solid #cc6633;padding:18px 20px;font-size:14px;line-height:1.85;color:#3a2a1a;border-radius:0 4px 4px 0;">
               ${message.replace(/\n/g, '<br>')}
             </div>
           </div>
@@ -49,7 +49,7 @@ async function submitTicket({ name, email, category, subject, message }) {
 /* ── confetti burst ── */
 function spawnConfetti(container) {
   if (!container) return
-  const colors = ['#d97757', '#e8956a', '#f4c9a0', '#ffffff', '#cc6633', '#f0c04a']
+  const colors = ['#cc6633', '#e07a4a', '#f4c9a0', '#ffffff', '#cc6633', '#f0c04a']
   for (let i = 0; i < 64; i++) {
     const el = document.createElement('div')
     el.className = styles.confettiPiece

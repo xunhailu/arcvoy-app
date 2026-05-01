@@ -11,7 +11,7 @@
   content: '';
   position: absolute; top: -80px; right: -60px;
   width: 600px; height: 500px;
-  background: radial-gradient(ellipse, rgba(217,119,87,.12) 0%, rgba(217,119,87,.04) 45%, transparent 68%);
+  background: radial-gradient(ellipse, rgba(204,102,51,.12) 0%, rgba(204,102,51,.04) 45%, transparent 68%);
   pointer-events: none;
 }
 /* subtle dot grid */
@@ -68,8 +68,8 @@
   border-color: var(--bd2);
 }
 .searchBox:focus-within {
-  border-color: rgba(217,119,87,0.45);
-  box-shadow: 0 0 0 3px rgba(217,119,87,0.08);
+  border-color: rgba(204,102,51,0.45);
+  box-shadow: 0 0 0 3px rgba(204,102,51,0.08);
 }
 .searchIcon {
   position: absolute; left: 14px;
@@ -97,7 +97,7 @@
 
 /* highlight */
 .hlMark {
-  background: rgba(217,119,87,0.22);
+  background: rgba(204,102,51,0.22);
   color: var(--gd);
   border-radius: 2px;
   padding: 0 1px;
@@ -152,9 +152,9 @@
   box-shadow: 0 1px 6px rgba(0,0,0,.05);
 }
 .itemOpen {
-  background: linear-gradient(135deg, rgba(217,119,87,0.06) 0%, rgba(217,119,87,0.02) 100%);
-  border-color: rgba(217,119,87,.18);
-  box-shadow: 0 4px 16px rgba(217,119,87,.08);
+  background: linear-gradient(135deg, rgba(204,102,51,0.06) 0%, rgba(204,102,51,0.02) 100%);
+  border-color: rgba(204,102,51,.18);
+  box-shadow: 0 4px 16px rgba(204,102,51,.08);
 }
 [data-theme="light"] .itemOpen {
   background: rgba(255,255,255,0.72);
@@ -209,7 +209,7 @@
   position: absolute; top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   width: 600px; height: 300px;
-  background: radial-gradient(ellipse, rgba(217,119,87,.08) 0%, transparent 65%);
+  background: radial-gradient(ellipse, rgba(204,102,51,.08) 0%, transparent 65%);
   pointer-events: none;
 }
 .helpInner {

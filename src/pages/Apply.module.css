@@ -105,8 +105,8 @@
   background: var(--input-bg); transition: border-color .2s, box-shadow .2s;
   user-select: none;
 }
-.ageCheck:hover { border-color: rgba(217,119,87,.5); }
-.ageCheck:has(input:focus-visible) { border-color: rgba(217,119,87,.5); box-shadow: 0 0 0 3px rgba(217,119,87,.07); }
+.ageCheck:hover { border-color: rgba(204,102,51,.5); }
+.ageCheck:has(input:focus-visible) { border-color: rgba(204,102,51,.5); box-shadow: 0 0 0 3px rgba(204,102,51,.07); }
 .ageCheck input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; }
 .ageBox {
   width: 16px; height: 16px; flex-shrink: 0;
@@ -129,7 +129,7 @@
   padding: 12px 16px; outline: none; border-radius: 6px;
   transition: border-color .2s, box-shadow .2s;
 }
-.fi:focus { border-color: rgba(217,119,87,.5); box-shadow: 0 0 0 3px rgba(217,119,87,.07); }
+.fi:focus { border-color: rgba(204,102,51,.5); box-shadow: 0 0 0 3px rgba(204,102,51,.07); }
 .fiError { border-color: #a03030 !important; }
 
 .cvUpload {
@@ -167,7 +167,7 @@
   background: var(--ga); border: 1px solid var(--gb);
   display: flex; align-items: center; justify-content: center;
   color: var(--gd); margin: 0 auto 24px;
-  box-shadow: 0 0 32px rgba(217,119,87,.2);
+  box-shadow: 0 0 32px rgba(204,102,51,.2);
 }
 .successTitle {
   font-family: 'Manrope', sans-serif;

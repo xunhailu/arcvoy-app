@@ -33,7 +33,7 @@
 }
 .triggerOpen {
   border-color: var(--gd);
-  box-shadow: 0 0 0 3px rgba(217,119,87,.12);
+  box-shadow: 0 0 0 3px rgba(204,102,51,.12);
   background: var(--ga);
 }
 .triggerError {

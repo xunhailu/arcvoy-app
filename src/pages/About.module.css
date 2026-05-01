@@ -13,7 +13,7 @@
   position: absolute; top: 50%; left: 35%;
   transform: translate(-50%, -50%);
   width: 900px; height: 600px;
-  background: radial-gradient(ellipse, rgba(217,119,87,.15) 0%, rgba(217,119,87,.05) 40%, transparent 68%);
+  background: radial-gradient(ellipse, rgba(204,102,51,.15) 0%, rgba(204,102,51,.05) 40%, transparent 68%);
   animation: hero-orb 10s ease-in-out infinite;
   pointer-events: none;
 }
@@ -83,7 +83,7 @@
 .stripCard::after {
   content: '';
   position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 100%, rgba(217,119,87,.06) 0%, transparent 65%);
+  background: radial-gradient(circle at 50% 100%, rgba(204,102,51,.06) 0%, transparent 65%);
   opacity: 0; transition: opacity .35s;
 }
 .stripCard:hover::after { opacity: 1; }
@@ -117,7 +117,7 @@
 .values {
   padding: 110px 48px;
   background:
-    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(217,119,87,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(204,102,51,0.07) 0%, transparent 55%),
     var(--sf);
   border-bottom: 1px solid var(--bd);
 }
@@ -148,9 +148,9 @@
 }
 .valueCard:hover::before { transform: scaleX(1); }
 .valueCard:hover {
-  border-color: rgba(217,119,87,.22);
+  border-color: rgba(204,102,51,.22);
   transform: translateY(-5px);
-  box-shadow: 0 20px 48px rgba(0,0,0,.25), 0 0 0 1px rgba(217,119,87,.1), inset 0 1px 0 rgba(255,255,255,0.08);
+  box-shadow: 0 20px 48px rgba(0,0,0,.25), 0 0 0 1px rgba(204,102,51,.1), inset 0 1px 0 rgba(255,255,255,0.08);
 }
 [data-theme="light"] .valueCard:hover {
   box-shadow: 0 14px 36px rgba(193,68,14,.1), 0 0 0 1px rgba(193,68,14,.13);
@@ -169,7 +169,7 @@
 .timeline {
   padding: 110px 48px; border-bottom: 1px solid var(--bd);
   background:
-    radial-gradient(ellipse 50% 60% at 80% 50%, rgba(217,119,87,0.05) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 60% at 80% 50%, rgba(204,102,51,0.05) 0%, transparent 55%),
     var(--bg);
 }
 .timelineHead { max-width: 540px; margin-bottom: 60px; }
@@ -187,7 +187,7 @@
     to bottom,
     transparent 0%,
     var(--gd) 10%,
-    rgba(217,119,87,.25) 60%,
+    rgba(204,102,51,.25) 60%,
     transparent 100%
   );
   pointer-events: none; z-index: 0;
@@ -199,7 +199,7 @@
   transition: background .2s; border-radius: 8px;
 }
 .milestone:hover {
-  background: linear-gradient(90deg, rgba(217,119,87,0.04), transparent);
+  background: linear-gradient(90deg, rgba(204,102,51,0.04), transparent);
   padding-left: 12px;
 }
 .mYear {
@@ -212,7 +212,7 @@
 .mDot {
   width: 10px; height: 10px; border-radius: 50%;
   background: var(--gd); margin-top: 6px;
-  box-shadow: 0 0 0 3px var(--ga), 0 0 12px rgba(217,119,87,.4);
+  box-shadow: 0 0 0 3px var(--ga), 0 0 12px rgba(204,102,51,.4);
   flex-shrink: 0;
 }
 .mEvent { font-size: 14px; color: var(--tm); line-height: 1.8; padding-top: 2px; }
@@ -230,7 +230,7 @@
   position: absolute; top: 50%; left: 30%;
   transform: translate(-50%, -50%);
   width: 900px; height: 600px;
-  background: radial-gradient(ellipse, rgba(217,119,87,.18) 0%, rgba(217,119,87,.06) 40%, transparent 68%);
+  background: radial-gradient(ellipse, rgba(204,102,51,.18) 0%, rgba(204,102,51,.06) 40%, transparent 68%);
   animation: aurora-drift 13s ease-in-out infinite;
   pointer-events: none;
 }

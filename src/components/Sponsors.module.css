@@ -3,7 +3,7 @@
   border-top: 1px solid var(--bd);
   border-bottom: 1px solid var(--bd);
   background:
-    radial-gradient(ellipse 60% 80% at 50% 50%, rgba(217,119,87,0.04) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 80% at 50% 50%, rgba(204,102,51,0.04) 0%, transparent 65%),
     var(--sf);
   overflow: hidden;
   position: relative;

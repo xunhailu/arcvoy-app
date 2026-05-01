@@ -5,7 +5,7 @@
   content: '';
   position: fixed; top: -120px; right: -100px;
   width: 700px; height: 600px;
-  background: radial-gradient(ellipse, rgba(217,119,87,.07) 0%, transparent 65%);
+  background: radial-gradient(ellipse, rgba(204,102,51,.07) 0%, transparent 65%);
   pointer-events: none; z-index: 0;
 }
 .page::after {
@@ -36,12 +36,12 @@
 
 .avatar {
   width: 46px; height: 46px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--ga), rgba(217,119,87,.25));
+  background: linear-gradient(135deg, var(--ga), rgba(204,102,51,.25));
   border: 1px solid var(--gb); color: var(--gd);
   font-size: 15px; font-weight: 700;
   display: flex; align-items: center; justify-content: center;
   font-family: 'Manrope', sans-serif;
-  box-shadow: 0 0 16px rgba(217,119,87,.2), inset 0 1px 0 rgba(255,255,255,0.15);
+  box-shadow: 0 0 16px rgba(204,102,51,.2), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
 .userName  { font-size: 15px; font-weight: 600; color: var(--tx); letter-spacing: -.01em; }
@@ -85,9 +85,9 @@
 }
 .statCard:hover::before { transform: scaleX(1); }
 .statCard:hover {
-  border-color: rgba(217,119,87,.2);
+  border-color: rgba(204,102,51,.2);
   transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(0,0,0,.22), 0 0 0 1px rgba(217,119,87,.1), inset 0 1px 0 rgba(255,255,255,0.08);
+  box-shadow: 0 16px 40px rgba(0,0,0,.22), 0 0 0 1px rgba(204,102,51,.1), inset 0 1px 0 rgba(255,255,255,0.08);
 }
 [data-theme="light"] .statCard:hover {
   box-shadow: 0 12px 32px rgba(193,68,14,.1), 0 0 0 1px rgba(193,68,14,.12);
@@ -98,11 +98,11 @@
   background: var(--ga); border: 1px solid var(--gb);
   color: var(--gd); display: flex; align-items: center; justify-content: center;
   margin-bottom: 12px;
-  box-shadow: 0 2px 10px rgba(217,119,87,.15);
+  box-shadow: 0 2px 10px rgba(204,102,51,.15);
   transition: box-shadow .3s, transform .3s;
 }
 .statCard:hover .statIcon {
-  box-shadow: 0 4px 18px rgba(217,119,87,.3);
+  box-shadow: 0 4px 18px rgba(204,102,51,.3);
   transform: rotate(6deg) scale(1.05);
 }
 .statNum {
@@ -150,9 +150,9 @@
 }
 .card:hover::before { transform: scaleX(1); }
 .card:hover {
-  border-color: rgba(217,119,87,.22);
+  border-color: rgba(204,102,51,.22);
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(0,0,0,.2), 0 0 0 1px rgba(217,119,87,.1), inset 0 1px 0 rgba(255,255,255,0.08);
+  box-shadow: 0 12px 32px rgba(0,0,0,.2), 0 0 0 1px rgba(204,102,51,.1), inset 0 1px 0 rgba(255,255,255,0.08);
 }
 [data-theme="light"] .card:hover {
   box-shadow: 0 8px 24px rgba(193,68,14,.1), 0 0 0 1px rgba(193,68,14,.12);
@@ -195,7 +195,7 @@
   z-index: 0;
 }
 [data-theme="light"] .stepLine { background: var(--bd2); }
-.stepLineFilled { background: linear-gradient(90deg, var(--gd), rgba(217,119,87,.35)); }
+.stepLineFilled { background: linear-gradient(90deg, var(--gd), rgba(204,102,51,.35)); }
 
 /* dots */
 .stepDot {
@@ -208,10 +208,10 @@
   background: linear-gradient(135deg, var(--gd), var(--gl));
   border: 1.5px solid var(--gd);
   color: #fff;
-  box-shadow: 0 0 10px rgba(217,119,87,.45);
+  box-shadow: 0 0 10px rgba(204,102,51,.45);
 }
 .stepDot_current {
-  background: rgba(217,119,87,.15);
+  background: rgba(204,102,51,.15);
   border: 2px solid var(--gd);
   color: var(--gd);
 }
@@ -228,7 +228,7 @@
 /* pulse ring for current step */
 .stepPulse {
   position: absolute; width: 26px; height: 26px; border-radius: 50%;
-  border: 1.5px solid rgba(217,119,87,.35);
+  border: 1.5px solid rgba(204,102,51,.35);
   animation: pulse-ring 1.8s ease-out infinite;
 }
 @keyframes pulse-ring {
