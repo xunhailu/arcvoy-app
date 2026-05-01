@@ -184,8 +184,8 @@
 [data-theme="light"] .statItem + .statItem { border-left-color: var(--bd); }
 
 .statNum {
-  font-family: 'Manrope', sans-serif;
-  font-size: 52px; display: block; line-height: 1; font-weight: 700;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 52px; display: block; line-height: 1; font-weight: 500;
   letter-spacing: -.03em;
   background: linear-gradient(135deg, var(--tx) 20%, var(--gd) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
@@ -213,9 +213,9 @@
 
 /* gradient text on section headings */
 .secH {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(30px, 3.4vw, 46px);
-  font-weight: 700; line-height: 1.1; color: var(--tx); letter-spacing: -.018em;
+  font-weight: 500; line-height: 1.1; color: var(--tx); letter-spacing: -.018em;
 }
 .secH em {
   font-style: italic;
@@ -356,9 +356,9 @@
 .featCard:hover .featIcon { box-shadow: 0 4px 20px rgba(204,102,51,.35); }
 
 .featTitle {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 23px; color: var(--tx); margin-bottom: 12px;
-  font-weight: 700; letter-spacing: -.01em; line-height: 1.2;
+  font-weight: 500; letter-spacing: -.01em; line-height: 1.2;
 }
 .featText { font-size: 14px; color: var(--tm); line-height: 1.85; }
 
@@ -428,8 +428,8 @@
   color: var(--gd); font-weight: 700; margin-bottom: 10px;
 }
 .howTitle {
-  font-family: 'Manrope', sans-serif;
-  font-size: 23px; font-weight: 700; color: var(--tx);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 23px; font-weight: 500; color: var(--tx);
   margin-bottom: 14px; letter-spacing: -.01em;
 }
 .howText { font-size: 14px; color: var(--tm); line-height: 1.85; }
@@ -541,9 +541,9 @@
 .ctaOrb { display: none; }
 .ctaInner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
 .ctaTitle {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: clamp(40px, 4.8vw, 68px);
-  font-weight: 700; line-height: 1.06; letter-spacing: -.025em;
+  font-weight: 500; line-height: 1.06; letter-spacing: -.025em;
   margin-bottom: 28px; color: var(--tx);
 }
 .ctaTitle em {
@@ -573,8 +573,8 @@
   gap: 80px; align-items: start;
 }
 .ktTitle {
-  font-family: 'Manrope', sans-serif;
-  font-size: clamp(32px, 3.8vw, 54px); font-weight: 700;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(32px, 3.8vw, 54px); font-weight: 500;
   line-height: 1.08; margin-bottom: 18px; letter-spacing: -.02em;
 }
 .ktTitle em {
