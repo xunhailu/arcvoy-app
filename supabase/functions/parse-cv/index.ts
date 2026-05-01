@@ -57,7 +57,12 @@ For country use the full English name (e.g. "United States" not "US"). For langu
     })
 
     const result = await res.json()
-    const text = result.content?.[0]?.text || '{}'
+    if (!result.content) {
+      return new Response(JSON.stringify({ error: 'claude_error', detail: result }), {
+        status: 200, headers: { ...cors, 'Content-Type': 'application/json' },
+      })
+    }
+    const text = result.content[0]?.text || '{}'
     const extracted = extractJSON(text)
 
     return new Response(JSON.stringify(extracted), {

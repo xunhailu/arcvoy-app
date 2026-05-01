@@ -62,7 +62,6 @@ const SEO_MAP = {
 
 export default function App() {
   const { theme, toggle }             = useTheme()
-  const [showAdmin, setShowAdmin]     = useState(false)
   const [showCandAuth, setShowCandAuth] = useState(false)
   const [candidateUser, setCandidateUser] = useState(null)
   const [pendingJob, setPendingJob]   = useState(null)
@@ -128,7 +127,6 @@ export default function App() {
   useEffect(() => {
     const handler = e => {
       if (e.key === 'Escape') {
-        setShowAdmin(false)
         setShowCandAuth(false)
       }
     }
@@ -170,7 +168,7 @@ export default function App() {
       <Navbar
         theme={theme}
         onToggleTheme={toggle}
-        onShowLogin={() => setShowAdmin(true)}
+        onShowLogin={() => navigate('/admin')}
         onShowCandidateAuth={() => setShowCandAuth(true)}
         page={currentPage}
         onNavigate={onNavigate}
@@ -238,6 +236,9 @@ export default function App() {
               <Terms />
             </motion.div>
           } />
+          <Route path="/admin" element={
+            <AdminDashboard />
+          } />
           <Route path="*" element={
             <motion.div key="404" variants={pageVariants} initial="initial" animate="animate" exit="exit">
               <NotFound />
@@ -245,13 +246,6 @@ export default function App() {
           } />
         </Routes>
       </AnimatePresence>
-      </Suspense>
-
-      {/* Admin dashboard */}
-      <Suspense fallback={null}>
-        <AnimatePresence>
-          {showAdmin && <AdminDashboard key="admin" onClose={() => setShowAdmin(false)} />}
-        </AnimatePresence>
       </Suspense>
 
       {/* Candidate auth modal */}

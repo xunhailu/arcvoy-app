@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   fetchApplications,
@@ -123,9 +124,7 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
     setDownloading(true)
     try {
       const url = await getCVUrl(app.cv_path)
-      const a = document.createElement('a')
-      a.href = url; a.download = app.cv_filename || 'cv.pdf'
-      a.click()
+      window.open(url, '_blank')
     } catch (e) { alert('Could not download CV. Please try again.') }
     setDownloading(false)
   }
@@ -832,7 +831,8 @@ function JobsView() {
 }
 
 /* ── Main Dashboard ── */
-export default function AdminDashboard({ onClose }) {
+export default function AdminDashboard() {
+  const navigate = useNavigate()
   const [session, setSession] = useState(null)
   const [apps, setApps] = useState([])
   const [appsLoading, setAppsLoading] = useState(true)
@@ -869,24 +869,20 @@ export default function AdminDashboard({ onClose }) {
 
   if (!session) {
     return (
-      <div className={authStyles.overlay} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className={styles.loginPage}>
         <motion.div className={authStyles.box}
           initial={{ opacity: 0, scale: 0.96, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 8 }}
           transition={{ duration: 0.3, ease: [0.25, 0, 0, 1] }}>
-          <LoginScreen onLogin={login} onClose={onClose} />
+          <LoginScreen onLogin={login} onClose={() => navigate('/')} />
         </motion.div>
       </div>
     )
   }
 
   return (
-    <div className={styles.overlay} onClick={e => e.target === e.currentTarget && onClose()}>
-      <motion.div className={styles.panel}
-        initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
-        transition={{ duration: 0.35, ease: [0.25, 0, 0, 1] }}>
-        <div className={styles.adminShell}>
+    <div className={styles.adminPage}>
+      <div className={styles.adminShell}>
 
           {/* Top nav bar */}
           <div className={styles.topNav}>
@@ -917,7 +913,6 @@ export default function AdminDashboard({ onClose }) {
           </div>
 
         </div>
-      </motion.div>
     </div>
   )
 }
