@@ -880,33 +880,57 @@ function JobsView() {
     await load()
   }
 
-  return (
-    <div className={styles.viewInner}>
-      <div className={styles.viewHeader}>
-        <div className={styles.viewTitle}>Jobs <span className={styles.viewCount}>{jobs.length}</span></div>
-        <button className={styles.addBtn} onClick={openNew}>+ Add Job</button>
-      </div>
+  const COLS = '2fr 1fr 1fr 1fr 0.8fr 100px'
 
-      {loading ? <div className={styles.empty}>Loading…</div> : (
-        <div className={styles.table}>
-          {jobs.map(j => (
-            <div key={j.id} className={styles.jobRow} style={{ opacity: j.active ? 1 : 0.45 }}>
-              <div className={styles.jobRowMain}>
-                <div className={styles.tdNameMain}>{j.title}</div>
-                <div className={styles.tdRole}>{j.dept} · {j.type}</div>
-              </div>
-              <div className={styles.jobRowMeta}>
-                <span className={styles.tdDate}>{j.salary}</span>
-                <span className={styles.statusBadge} style={{ background: j.active ? 'rgba(99,153,34,0.14)' : 'rgba(226,75,74,0.14)', color: j.active ? '#5a8f1a' : '#E24B4A' }}>
-                  {j.active ? 'Active' : 'Hidden'}
-                </span>
-                <button className={styles.editBtn} onClick={() => openEdit(j)}>Edit</button>
-                <button className={styles.editBtn} onClick={() => toggle(j)}>{j.active ? 'Hide' : 'Show'}</button>
-              </div>
-            </div>
-          ))}
+  return (
+    <div className={styles.dashboard}>
+      <div className={styles.main}>
+        <div className={styles.mainHead}>
+          <div>
+            <div className={styles.mainTitle}>Jobs</div>
+            <div className={styles.mainSub}>{jobs.length} total</div>
+          </div>
+          <button className={styles.addBtn} onClick={openNew}>+ Add Job</button>
         </div>
-      )}
+
+        {loading ? (
+          <div className={styles.empty}>Loading…</div>
+        ) : jobs.length === 0 ? (
+          <div className={styles.empty}>No jobs yet.</div>
+        ) : (
+          <div className={styles.table}>
+            <div className={styles.thead} style={{ gridTemplateColumns: COLS }}>
+              <span>Title</span>
+              <span>Department</span>
+              <span>Type</span>
+              <span>Salary</span>
+              <span>Status</span>
+              <span></span>
+            </div>
+            {jobs.map(j => (
+              <div key={j.id} className={styles.trow}
+                style={{ gridTemplateColumns: COLS, opacity: j.active ? 1 : 0.5, cursor: 'default' }}>
+                <span>
+                  <div className={styles.tdNameMain}>{j.title}</div>
+                  {j.locations?.length > 0 && <div className={styles.tdDept}>{j.locations.join(', ')}</div>}
+                </span>
+                <span className={styles.tdRole}>{j.dept}</span>
+                <span className={styles.tdDept}>{j.type}</span>
+                <span className={styles.tdDate}>{j.salary || '—'}</span>
+                <span>
+                  <span className={styles.statusPill} style={{ background: j.active ? 'rgba(90,143,26,0.14)' : 'rgba(226,75,74,0.14)', color: j.active ? '#5a8f1a' : '#E24B4A' }}>
+                    {j.active ? 'Active' : 'Hidden'}
+                  </span>
+                </span>
+                <span style={{ display: 'flex', gap: 6 }}>
+                  <button className={styles.editBtn} onClick={() => openEdit(j)}>Edit</button>
+                  <button className={styles.editBtn} onClick={() => toggle(j)}>{j.active ? 'Hide' : 'Show'}</button>
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       <AnimatePresence>
         {editing && (

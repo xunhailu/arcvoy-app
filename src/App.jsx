@@ -160,20 +160,24 @@ export default function App() {
 
   useSEO(seo)
 
+  const isAdmin = location.pathname === '/admin'
+
   return (
     <>
-      <CursorGlow />
-      <ScrollProgress />
+      {!isAdmin && <CursorGlow />}
+      {!isAdmin && <ScrollProgress />}
 
-      <Navbar
-        theme={theme}
-        onToggleTheme={toggle}
-        onShowLogin={() => navigate('/admin')}
-        onShowCandidateAuth={() => setShowCandAuth(true)}
-        page={currentPage}
-        onNavigate={onNavigate}
-        user={candidateUser}
-      />
+      {!isAdmin && (
+        <Navbar
+          theme={theme}
+          onToggleTheme={toggle}
+          onShowLogin={() => navigate('/admin')}
+          onShowCandidateAuth={() => setShowCandAuth(true)}
+          page={currentPage}
+          onNavigate={onNavigate}
+          user={candidateUser}
+        />
+      )}
 
       <Suspense fallback={null}>
       <AnimatePresence mode="wait">

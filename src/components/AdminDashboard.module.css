@@ -1,9 +1,9 @@
 .adminPage {
   display: flex; flex-direction: column;
-  height: calc(100vh - 68px); overflow: hidden;
+  height: 100vh; overflow: hidden;
 }
 .loginPage {
-  min-height: calc(100vh - 68px);
+  min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
   padding: 40px 20px;
 }
