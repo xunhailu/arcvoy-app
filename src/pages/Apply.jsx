@@ -294,7 +294,7 @@ export default function Apply({ user }) {
                               lang2:    match(data.lang2, langs) || prev.lang2,
                             }))
                           }
-                        } catch { /* silent — user fills manually */ }
+                        } catch (err) { console.error('parse-cv error:', err) }
                         setCvLabel(f.name); setParsing(false)
                       }
                     }} />
