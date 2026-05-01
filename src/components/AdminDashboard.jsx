@@ -18,21 +18,21 @@ import styles from './AdminDashboard.module.css'
 import authStyles from './CandidateAuth.module.css'
 
 const STATUS_COLORS = {
-  applied:     { bg: '#2a2520', color: '#cc6633', label: 'Applied' },
-  reviewing:   { bg: '#1a2535', color: '#378add', label: 'Reviewing' },
-  interviewed: { bg: '#1e2a1a', color: '#639922', label: 'Interviewed' },
-  offered:     { bg: '#2a1e35', color: '#7F77DD', label: 'Offered' },
-  hired:       { bg: '#0d2a1a', color: '#1DB954', label: 'Hired' },
-  rejected:    { bg: '#2a1a1a', color: '#E24B4A', label: 'Rejected' },
+  applied:     { bg: 'rgba(204,102,51,0.14)',  color: '#cc6633', label: 'Applied' },
+  reviewing:   { bg: 'rgba(55,138,221,0.14)',  color: '#378add', label: 'Reviewing' },
+  interviewed: { bg: 'rgba(99,153,34,0.14)',   color: '#5a8f1a', label: 'Interviewed' },
+  offered:     { bg: 'rgba(127,119,221,0.14)', color: '#7F77DD', label: 'Offered' },
+  hired:       { bg: 'rgba(29,185,84,0.14)',   color: '#1a9e4a', label: 'Hired' },
+  rejected:    { bg: 'rgba(226,75,74,0.14)',   color: '#E24B4A', label: 'Rejected' },
 }
 
 const STATUS_ORDER = ['applied','reviewing','interviewed','offered','hired','rejected']
 
 const TICKET_STATUS_COLORS = {
-  open:        { bg: '#2a2520', color: '#cc6633', label: 'Open' },
-  in_progress: { bg: '#1a2535', color: '#378add', label: 'In Progress' },
-  resolved:    { bg: '#1e2a1a', color: '#1DB954', label: 'Resolved' },
-  closed:      { bg: '#1a1a1a', color: '#6b6b6b', label: 'Closed' },
+  open:        { bg: 'rgba(204,102,51,0.14)',  color: '#cc6633', label: 'Open' },
+  in_progress: { bg: 'rgba(55,138,221,0.14)',  color: '#378add', label: 'In Progress' },
+  resolved:    { bg: 'rgba(29,185,84,0.14)',   color: '#1a9e4a', label: 'Resolved' },
+  closed:      { bg: 'rgba(120,120,120,0.14)', color: '#888',    label: 'Closed' },
 }
 const TICKET_STATUS_ORDER = ['open','in_progress','resolved','closed']
 
@@ -769,7 +769,7 @@ function JobsView() {
               </div>
               <div className={styles.jobRowMeta}>
                 <span className={styles.tdDate}>{j.salary}</span>
-                <span className={styles.statusBadge} style={{ background: j.active ? '#1e2a1a' : '#2a1a1a', color: j.active ? '#639922' : '#E24B4A' }}>
+                <span className={styles.statusBadge} style={{ background: j.active ? 'rgba(99,153,34,0.14)' : 'rgba(226,75,74,0.14)', color: j.active ? '#5a8f1a' : '#E24B4A' }}>
                   {j.active ? 'Active' : 'Hidden'}
                 </span>
                 <button className={styles.editBtn} onClick={() => openEdit(j)}>Edit</button>
