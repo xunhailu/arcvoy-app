@@ -24,7 +24,7 @@
 .viewWrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
 
 /* dashboard */
-.dashboard { display: flex; flex: 1; overflow: hidden; }
+.dashboard { display: flex; flex: 1; overflow: hidden; position: relative; }
 
 /* sidebar */
 .sidebar { width: 200px; background: var(--sf); border-right: 1px solid var(--bd); display: flex; flex-direction: column; flex-shrink: 0; }
