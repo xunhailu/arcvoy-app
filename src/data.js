@@ -100,8 +100,8 @@ export const HOW_IT_WORKS = [
   },
   {
     step: '02',
-    title: 'Hear back fast',
-    text: 'We review every application personally. If there is a fit, we reach out with clear next steps. If not, we still tell you — no ghosting.',
+    title: 'Hear back quickly',
+    text: 'Every application is reviewed by our team. If you are selected to move forward, we will contact you with next steps. If not, we will also let you know.',
     icon: 'match',
   },
   {
