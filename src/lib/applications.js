@@ -233,6 +233,15 @@ export async function updateNotes(id, notes) {
   if (error) throw error
 }
 
+/* ── Save verification links (admin only) ── */
+export async function updateVerificationLinks(id, identityLink, complianceLink) {
+  const { error } = await supabase
+    .from('applications')
+    .update({ identity_link: identityLink || null, compliance_link: complianceLink || null })
+    .eq('id', id)
+  if (error) throw error
+}
+
 /* ── Get signed CV download URL ── */
 export async function getCVUrl(path) {
   const { data, error } = await supabase.storage

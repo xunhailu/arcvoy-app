@@ -7,6 +7,7 @@ import {
   updateNotes,
   getCVUrl,
   deleteApplication,
+  updateVerificationLinks,
   adminLogin,
   adminLogout,
   getAdminSession,
@@ -114,11 +115,74 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
   const [downloading, setDownloading] = useState(false)
   const [statusLoading, setStatusLoading] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [identityLink, setIdentityLink] = useState(app.identity_link || '')
+  const [complianceLink, setComplianceLink] = useState(app.compliance_link || '')
+  const [savingLinks, setSavingLinks] = useState(false)
 
   const handleDelete = async () => {
     if (!window.confirm(`Delete application from ${app.first_name} ${app.last_name}? This cannot be undone.`)) return
     setDeleting(true)
     try { await onDelete(app.id) } catch { setDeleting(false) }
+  }
+
+  const saveLinks = async () => {
+    setSavingLinks(true)
+    try { await updateVerificationLinks(app.id, identityLink, complianceLink) } catch {}
+    setSavingLinks(false)
+  }
+
+  const sendIdentityEmail = () => {
+    const subject = encodeURIComponent('Identity Verification — Arcvoy')
+    const body = encodeURIComponent(
+`Hi ${app.first_name},
+
+Your application with Arcvoy is currently in progress. The next step is to complete your identity verification. This is a quick process and ensures we can move your application forward securely.
+
+━━━━━━━━━━━━━━━━━━
+IDENTITY VERIFICATION
+━━━━━━━━━━━━━━━━━━
+
+To help your verification go through quickly, please follow these tips:
+
+· Use a valid, non-expired ID
+· Take photos in good lighting (no glare or shadows)
+· Make sure the entire ID is visible and clear (not blurry)
+· Ensure all details match what you entered
+· For selfies: look straight at the camera and avoid hats or sunglasses
+
+Click the link below to begin. Copy and paste it directly into your browser if it does not open:
+
+${identityLink}
+
+If you have any issues completing this step, reply to this email and our team will assist you as soon as possible.
+
+Warm regards,
+The Arcvoy Team
+arcvoy.com`)
+    window.open(`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(app.email)}&su=${subject}&body=${body}`, '_blank')
+  }
+
+  const sendComplianceEmail = () => {
+    const subject = encodeURIComponent('Compliance Verification — Arcvoy')
+    const body = encodeURIComponent(
+`Hi ${app.first_name},
+
+Thank you for completing your identity verification. You are now one step away. Please complete your compliance verification to finalise your application with Arcvoy.
+
+━━━━━━━━━━━━━━━━━━
+COMPLIANCE VERIFICATION
+━━━━━━━━━━━━━━━━━━
+
+Click the link below to begin. Copy and paste it directly into your browser if it does not open:
+
+${complianceLink}
+
+If you have any issues completing this step, reply to this email and our team will assist you as soon as possible.
+
+Warm regards,
+The Arcvoy Team
+arcvoy.com`)
+    window.open(`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(app.email)}&su=${subject}&body=${body}`, '_blank')
   }
 
   const saveNotes = async () => {
@@ -226,6 +290,33 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
           ) : (
             <div className={styles.noCV}>No CV uploaded</div>
           )}
+        </div>
+
+        <div className={styles.divider} />
+
+        <div className={styles.section}>
+          <div className={styles.sectionTitle}>Verification Links</div>
+          <div className={styles.verifyField}>
+            <label className={styles.verifyLabel}>Identity Verification Link</label>
+            <input className={styles.verifyInput} value={identityLink} onChange={e => setIdentityLink(e.target.value)} placeholder="Paste identity verification URL…" />
+          </div>
+          <div className={styles.verifyField}>
+            <label className={styles.verifyLabel}>Compliance Verification Link</label>
+            <input className={styles.verifyInput} value={complianceLink} onChange={e => setComplianceLink(e.target.value)} placeholder="Paste compliance verification URL…" />
+          </div>
+          <button className={styles.saveBtn} onClick={saveLinks} disabled={savingLinks} style={{ marginBottom: 14 }}>
+            {savingLinks ? 'Saving…' : 'Save Links'}
+          </button>
+          <div className={styles.verifyBtns}>
+            <button className={styles.verifyBtn} onClick={sendIdentityEmail} disabled={!identityLink}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Send Identity Email
+            </button>
+            <button className={styles.verifyBtn} onClick={sendComplianceEmail} disabled={!complianceLink}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Send Compliance Email
+            </button>
+          </div>
         </div>
 
         <div className={styles.divider} />
