@@ -173,54 +173,13 @@ export async function fetchApplications() {
 }
 
 /* ── Update application status ── */
-export async function updateStatus(id, status, applicant) {
+export async function updateStatus(id, status) {
   const { error } = await supabase
     .from('applications')
     .update({ status })
     .eq('id', id)
 
   if (error) throw error
-
-  // Send status update email to applicant
-  const messages = {
-    reviewing:   { subject: 'Your application is under review', body: 'Great news — your application is currently being reviewed by our team.' },
-    interviewed: { subject: 'Interview stage — Arcvoy', body: 'We\'d like to move forward with an interview. Our team will be in touch shortly with next steps.' },
-    offered:     { subject: 'Offer from Arcvoy', body: 'We\'re thrilled to extend an offer to you. Our team will be in contact with full details very soon.' },
-    hired:       { subject: 'Welcome to Arcvoy!', body: 'Congratulations — we\'re excited to have you join the Arcvoy team. More details coming your way shortly.' },
-    rejected:    { subject: 'Update on your Arcvoy application', body: 'Thank you for your interest in Arcvoy. After careful consideration, we\'ve decided to move forward with other candidates for this role. We appreciate your time and encourage you to apply again in the future.' },
-  }
-
-  const msg = messages[status]
-  if (msg && applicant?.email) {
-    await sendEmail({
-      to: applicant.email,
-      subject: msg.subject,
-      html: `
-        <div style="font-family:Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
-          <div style="background:#1A1410;padding:22px 32px;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between;">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#d97757" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#d97757" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#d97757"/></svg>
-              <span style="font-family:Georgia,serif;font-size:20px;color:#F5F0EB;font-weight:400;">Arcvoy</span>
-            </div>
-            <span style="font-size:10px;color:#6a5a4a;letter-spacing:0.1em;text-transform:uppercase;">Talent Platform</span>
-          </div>
-          <div style="padding:38px 32px;background:#ffffff;">
-            <p style="font-size:10px;color:#b0a090;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 12px;">Application Update</p>
-            <h2 style="font-size:14px;color:#1A1410;font-weight:700;margin:0 0 28px;letter-spacing:0.06em;text-transform:uppercase;">${msg.subject}</h2>
-            <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${applicant.first_name},</p>
-            <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 20px;">${msg.body}</p>
-            <p style="font-size:14px;color:#6b5e4e;margin:0 0 32px;">Role: <strong style="color:#1A1410;">${applicant.job_title}</strong></p>
-            <p style="font-size:14px;color:#6b5e4e;margin:0;">Warm regards,</p>
-            <p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">The Arcvoy Team</p>
-          </div>
-          <div style="background:#F5F0EB;padding:16px 32px;border-radius:0 0 10px 10px;display:flex;justify-content:space-between;align-items:center;">
-            <p style="margin:0;font-size:11px;color:#b0a090;">© 2026 Arcvoy</p>
-            <p style="margin:0;font-size:11px;color:#b0a090;"><a href="https://arcvoy.com" style="color:#b0a090;text-decoration:none;">arcvoy.com</a> &nbsp;·&nbsp; <a href="https://x.com/helloarcvoy" style="color:#b0a090;text-decoration:none;">@helloarcvoy</a></p>
-          </div>
-        </div>
-      `,
-    })
-  }
 }
 
 /* ── Update admin notes ── */

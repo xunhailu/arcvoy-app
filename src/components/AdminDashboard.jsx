@@ -201,10 +201,24 @@ arcvoy.com`)
     setDownloading(false)
   }
 
+  const STATUS_EMAILS = {
+    reviewing:   { subject: 'Your application is under review — Arcvoy', body: (name, role) => `Hi ${name},\n\nGreat news — your application for ${role} is currently being reviewed by our team. We will be in touch shortly.\n\nWarm regards,\nThe Arcvoy Team\narcvoy.com` },
+    interviewed: { subject: 'Interview stage — Arcvoy', body: (name, role) => `Hi ${name},\n\nWe would like to move forward with an interview for the ${role} role. Our team will be in touch shortly with next steps.\n\nWarm regards,\nThe Arcvoy Team\narcvoy.com` },
+    offered:     { subject: 'Offer from Arcvoy', body: (name, role) => `Hi ${name},\n\nWe are thrilled to extend an offer to you for the ${role} role. Our team will be in contact with full details very soon.\n\nWarm regards,\nThe Arcvoy Team\narcvoy.com` },
+    hired:       { subject: 'Welcome to Arcvoy!', body: (name, role) => `Hi ${name},\n\nCongratulations — we are excited to have you join the Arcvoy team as ${role}. More details are coming your way shortly.\n\nWarm regards,\nThe Arcvoy Team\narcvoy.com` },
+    rejected:    { subject: 'Update on your Arcvoy application', body: (name, role) => `Hi ${name},\n\nThank you for your interest in Arcvoy and for taking the time to apply for the ${role} role. After careful consideration, we have decided to move forward with other candidates at this time. We truly appreciate your effort and encourage you to apply again in the future.\n\nWarm regards,\nThe Arcvoy Team\narcvoy.com` },
+  }
+
   const changeStatus = async (status) => {
     setStatusLoading(true)
     await onStatusChange(app.id, status, app)
     setStatusLoading(false)
+    const msg = STATUS_EMAILS[status]
+    if (msg && app.email) {
+      const subject = encodeURIComponent(msg.subject)
+      const body = encodeURIComponent(msg.body(app.first_name, app.job_title))
+      window.open(`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(app.email)}&su=${subject}&body=${body}`, '_blank')
+    }
   }
 
   const sc = STATUS_COLORS[app.status] || STATUS_COLORS.applied
@@ -247,7 +261,7 @@ arcvoy.com`)
               )
             })}
           </div>
-          {statusLoading && <div className={styles.statusHint}>Updating and sending email…</div>}
+          {statusLoading && <div className={styles.statusHint}>Updating…</div>}
 
           <div className={styles.verifyBlock}>
             <div className={styles.statusLabel} style={{ marginBottom: 10 }}>Verification</div>
@@ -419,8 +433,8 @@ function ApplicationsView({ apps, loading }) {
 
   useEffect(() => { setApps(apps) }, [apps])
 
-  const onStatusChange = async (id, status, app) => {
-    await updateStatus(id, status, app)
+  const onStatusChange = async (id, status) => {
+    await updateStatus(id, status)
     setApps(prev => prev.map(a => a.id === id ? { ...a, status } : a))
     if (selected?.id === id) setSelected(prev => ({ ...prev, status }))
   }
