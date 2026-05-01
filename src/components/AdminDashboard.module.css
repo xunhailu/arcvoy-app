@@ -12,14 +12,22 @@
 .adminShell { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
 
 /* top nav */
-.topNav { display: flex; align-items: center; gap: 0; padding: 0 24px; border-bottom: 1px solid var(--bd); background: var(--sf); flex-shrink: 0; height: 52px; }
-.topBrand { font-size: 12px; font-weight: 700; color: var(--gd); letter-spacing: .04em; margin-right: 28px; white-space: nowrap; }
-.topTabs { display: flex; align-items: center; gap: 2px; flex: 1; }
-.topTab { background: none; border: none; color: var(--td); font-size: 12px; font-family: 'Manrope',sans-serif; font-weight: 500; padding: 6px 14px; cursor: pointer; transition: all .2s; border-radius: 4px; letter-spacing: .01em; }
-.topTab:hover { color: var(--tx); background: var(--sf2); }
-.topTabActive { color: var(--tx) !important; background: var(--sf2) !important; }
-.logoutBtn { background: none; border: 1px solid var(--bd2); color: var(--tm); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 7px 14px; cursor: pointer; font-family: 'Manrope',sans-serif; font-weight: 500; transition: all .2s; white-space: nowrap; }
-.logoutBtn:hover { color: var(--tx); border-color: var(--tm); }
+.topNav { display: flex; align-items: center; padding: 0 32px; border-bottom: 1px solid var(--bd); background: var(--sf); flex-shrink: 0; height: 64px; gap: 0; }
+.topBrand { display: flex; align-items: center; gap: 10px; margin-right: 32px; text-decoration: none; cursor: default; flex-shrink: 0; }
+.topBrandMark { color: var(--gd); display: flex; align-items: center; filter: drop-shadow(0 0 6px rgba(204,102,51,.4)); }
+.topBrandText { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; font-weight: 500; color: var(--tx); letter-spacing: -0.3px; line-height: 1; }
+.topBrandSub { font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gd); font-family: 'Manrope', sans-serif; margin-left: 2px; }
+
+.topTabs { display: flex; align-items: center; gap: 2px; flex: 1;
+  background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.09);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-radius: 100px; padding: 4px 5px; width: fit-content; flex: unset; margin: 0 auto; }
+.topTab { background: none; border: none; color: var(--tm); font-size: 10px; font-family: 'Manrope',sans-serif; font-weight: 600; padding: 7px 18px; cursor: pointer; transition: background .2s, color .2s; border-radius: 100px; letter-spacing: .08em; text-transform: uppercase; }
+.topTab:hover { color: var(--tx); background: rgba(255,255,255,0.07); }
+.topTabActive { color: var(--gd) !important; background: var(--ga) !important; border: 1px solid var(--gb); }
+
+.logoutBtn { background: var(--ga); border: 1px solid var(--gb); color: var(--gd); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 8px 16px; cursor: pointer; font-family: 'Manrope',sans-serif; font-weight: 600; transition: all .2s; white-space: nowrap; border-radius: 6px; }
+.logoutBtn:hover { background: var(--gb); }
 
 .viewWrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
 

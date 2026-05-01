@@ -1038,7 +1038,18 @@ export default function AdminDashboard() {
 
           {/* Top nav bar */}
           <div className={styles.topNav}>
-            <div className={styles.topBrand}>✳ Arcvoy Admin</div>
+            <div className={styles.topBrand}>
+              <span className={styles.topBrandMark}>
+                <svg width="20" height="20" viewBox="0 0 64 64" fill="none">
+                  <path d="M10 50 Q32 6 54 50" stroke="currentColor" strokeWidth="5" strokeLinecap="round"/>
+                  <path d="M22 37 L42 37" stroke="currentColor" strokeWidth="5" strokeLinecap="round"/>
+                  <circle cx="54" cy="50" r="3.5" fill="currentColor"/>
+                </svg>
+              </span>
+              <span className={styles.topBrandText}>Arcvoy</span>
+              <span className={styles.topBrandSub}>Admin</span>
+            </div>
+
             <div className={styles.topTabs}>
               {[
                 { key: 'applications', label: 'Applications' },
@@ -1053,6 +1064,7 @@ export default function AdminDashboard() {
                 </button>
               ))}
             </div>
+
             <button className={styles.logoutBtn} onClick={logout}>Sign Out</button>
           </div>
 
