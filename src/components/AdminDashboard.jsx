@@ -533,6 +533,7 @@ function ApplicationsView({ apps, loading }) {
               <span>Status</span>
               <span>Applied</span>
               <span>CV</span>
+              <span>Verify</span>
               <span></span>
             </div>
             {filtered.map(app => {
@@ -567,6 +568,10 @@ function ApplicationsView({ apps, loading }) {
                     {app.cv_path
                       ? <span className={styles.cvBadge}>PDF</span>
                       : <span className={styles.noCvBadge}>—</span>}
+                  </span>
+                  <span className={styles.verifyDots}>
+                    <span className={styles.verifyDot} title="Identity" style={{ background: app.identity_link ? '#5a8f1a' : 'var(--bd2)' }} />
+                    <span className={styles.verifyDot} title="Compliance" style={{ background: app.compliance_link ? '#378add' : 'var(--bd2)' }} />
                   </span>
                   <span>
                     <button className={styles.trashBtn}
