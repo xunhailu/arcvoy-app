@@ -154,57 +154,24 @@
 }
 .avatarName { font-size: 14px; color: var(--tm); font-weight: 500; font-family: 'Manrope', sans-serif; letter-spacing: 0.02em; }
 
-/* ── theme toggle pill ── */
+/* ── theme toggle ── */
 .themeToggle {
-  position: relative;
-  display: inline-flex; align-items: center;
-  padding: 3px; gap: 2px;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px;
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.11);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  border-radius: 100px;
-  cursor: pointer;
-  transition: border-color .25s, box-shadow .25s;
-  box-shadow: 0 2px 8px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,0.06);
+  border-radius: 50%;
+  cursor: pointer; color: var(--tm);
+  transition: color .2s, border-color .2s, background .2s;
 }
 [data-theme="light"] .themeToggle {
   background: rgba(255,255,255,0.55);
   border-color: rgba(0,0,0,0.1);
-  box-shadow: 0 2px 8px rgba(0,0,0,.06), inset 0 1px 0 rgba(255,255,255,0.8);
 }
 .themeToggle:hover {
-  border-color: var(--gb);
-  box-shadow: 0 0 0 3px rgba(217,119,87,.08), 0 2px 8px rgba(0,0,0,.12);
-}
-
-/* sliding glow indicator */
-.themeSlider {
-  position: absolute; left: 3px; top: 3px;
-  width: 28px; height: 28px;
-  background: linear-gradient(135deg, rgba(217,119,87,.28) 0%, rgba(217,119,87,.12) 100%);
-  border: 1px solid rgba(217,119,87,.35);
-  border-radius: 50%;
-  transition: transform .4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow .3s;
-  box-shadow: 0 0 16px rgba(217,119,87,.4), inset 0 1px 0 rgba(255,255,255,0.12);
-  pointer-events: none;
-}
-[data-theme="light"] .themeSlider {
-  background: linear-gradient(135deg, rgba(217,119,87,.35) 0%, rgba(217,119,87,.18) 100%);
-  box-shadow: 0 0 20px rgba(217,119,87,.5), inset 0 1px 0 rgba(255,255,255,0.2);
-}
-.themeSliderLight { transform: translateX(30px); }
-
-/* icon slots */
-.themeIcon {
-  width: 28px; height: 28px;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--td); position: relative; z-index: 1;
-  border-radius: 50%; flex-shrink: 0;
-  transition: color .3s ease, transform .4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.themeIconActive {
   color: var(--gd);
-  transform: scale(1.18) rotate(-12deg);
+  border-color: var(--gb);
+  background: var(--ga);
 }
 
 /* ── hamburger ── */
