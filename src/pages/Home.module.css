@@ -428,11 +428,11 @@
   color: var(--gd); font-weight: 700; margin-bottom: 10px;
 }
 .howTitle {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 23px; font-weight: 500; color: var(--tx);
-  margin-bottom: 14px; letter-spacing: -.01em;
+  font-family: 'Raleway', sans-serif;
+  font-size: 17px; font-weight: 700; color: var(--tx);
+  margin-bottom: 14px; letter-spacing: .01em;
 }
-.howText { font-size: 14px; color: var(--tm); line-height: 1.85; }
+.howText { font-size: 14px; color: var(--tm); line-height: 1.85; font-family: 'Raleway', sans-serif; }
 
 /* ════════════════════════════════════════
    TESTIMONIALS — premium glass
