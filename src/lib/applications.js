@@ -243,6 +243,12 @@ export async function getCVUrl(path) {
   return data.signedUrl
 }
 
+/* ── Delete application (admin only) ── */
+export async function deleteApplication(id) {
+  const { error } = await supabase.from('applications').delete().eq('id', id)
+  if (error) throw error
+}
+
 /* ── Fetch tickets (admin only) ── */
 export async function fetchTickets() {
   const { data, error } = await supabase

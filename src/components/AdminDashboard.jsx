@@ -6,6 +6,7 @@ import {
   updateStatus,
   updateNotes,
   getCVUrl,
+  deleteApplication,
   adminLogin,
   adminLogout,
   getAdminSession,
@@ -107,11 +108,18 @@ function LoginScreen({ onLogin, onClose }) {
 }
 
 /* ── Applicant Detail Drawer ── */
-function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
+function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete }) {
   const [notes, setNotes] = useState(app.notes || '')
   const [saving, setSaving] = useState(false)
   const [downloading, setDownloading] = useState(false)
   const [statusLoading, setStatusLoading] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+
+  const handleDelete = async () => {
+    if (!window.confirm(`Delete application from ${app.first_name} ${app.last_name}? This cannot be undone.`)) return
+    setDeleting(true)
+    try { await onDelete(app.id) } catch { setDeleting(false) }
+  }
 
   const saveNotes = async () => {
     setSaving(true)
@@ -235,6 +243,14 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
           </button>
         </div>
 
+        <div className={styles.divider} />
+
+        <div className={styles.section}>
+          <button className={styles.deleteBtn} onClick={handleDelete} disabled={deleting}>
+            {deleting ? 'Deleting…' : 'Delete Application'}
+          </button>
+        </div>
+
       </div>
     </motion.div>
   )
@@ -335,6 +351,12 @@ function ApplicationsView({ apps, loading }) {
   const onNotesChange = async (id, notes) => {
     await updateNotes(id, notes)
     setApps(prev => prev.map(a => a.id === id ? { ...a, notes } : a))
+  }
+
+  const onDelete = async (id) => {
+    await deleteApplication(id)
+    setApps(prev => prev.filter(a => a.id !== id))
+    setSelected(null)
   }
 
   const filtered = apps_.filter(a => {
@@ -477,6 +499,7 @@ function ApplicationsView({ apps, loading }) {
             onClose={() => setSelected(null)}
             onStatusChange={onStatusChange}
             onNotesChange={onNotesChange}
+            onDelete={onDelete}
           />
         )}
       </AnimatePresence>
