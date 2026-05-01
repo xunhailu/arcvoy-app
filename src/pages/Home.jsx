@@ -432,7 +432,11 @@ export default function Home({ onNavigate, onApply }) {
               </div>
               <p className={styles.testimonialQuote}>{t.quote}</p>
               <div className={styles.testimonialAuthor}>
-                <div className={styles.testimonialAvatar}>{t.initials}</div>
+                <div className={styles.testimonialAvatar}>
+                  {t.photo
+                    ? <img src={t.photo} alt={t.name} className={styles.testimonialPhoto} />
+                    : t.initials}
+                </div>
                 <div>
                   <div className={styles.testimonialName}>{t.name}</div>
                   <div className={styles.testimonialRole}>{t.role} · {t.location}</div>

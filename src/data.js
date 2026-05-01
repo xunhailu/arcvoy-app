@@ -119,6 +119,7 @@ export const TESTIMONIALS = [
     role: 'AI Search Specialist',
     location: 'San Francisco, US',
     initials: 'PM',
+    photo: '/testimonials/priya.jpg',
   },
   {
     quote: "I have worked with three different platforms. Arcvoy is the only one where I felt treated like a professional. Great pay, clear tasks, and someone always available if you need help.",
@@ -126,6 +127,7 @@ export const TESTIMONIALS = [
     role: 'Social Media Evaluator',
     location: 'Paris, France',
     initials: 'LB',
+    photo: '/testimonials/lucas.jpg',
   },
   {
     quote: "Within a week of applying I was already working on a live AI project. They actually followed up — which is more than I can say for most platforms.",
@@ -133,6 +135,7 @@ export const TESTIMONIALS = [
     role: 'Data Analyst',
     location: 'Lagos, Nigeria',
     initials: 'AO',
+    photo: '/testimonials/amara.jpg',
   },
 ]
 
