@@ -248,6 +248,27 @@ arcvoy.com`)
             })}
           </div>
           {statusLoading && <div className={styles.statusHint}>Updating and sending email…</div>}
+
+          <div className={styles.verifyBlock}>
+            <div className={styles.statusLabel} style={{ marginBottom: 10 }}>Verification</div>
+            <div className={styles.verifyRow}>
+              <span className={styles.verifyTag} style={{ color: identityLink ? '#5a8f1a' : 'var(--td)' }}>ID</span>
+              <input className={styles.verifyInline} value={identityLink} onChange={e => setIdentityLink(e.target.value)} placeholder="Paste identity link…" />
+              <button className={styles.verifyInlineBtn} onClick={sendIdentityEmail} disabled={!identityLink} title="Send identity email">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+            <div className={styles.verifyRow}>
+              <span className={styles.verifyTag} style={{ color: complianceLink ? '#378add' : 'var(--td)' }}>CO</span>
+              <input className={styles.verifyInline} value={complianceLink} onChange={e => setComplianceLink(e.target.value)} placeholder="Paste compliance link…" />
+              <button className={styles.verifyInlineBtn} onClick={sendComplianceEmail} disabled={!complianceLink} title="Send compliance email">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+            <button className={styles.saveBtn} onClick={saveLinks} disabled={savingLinks} style={{ marginTop: 8 }}>
+              {savingLinks ? 'Saving…' : 'Save Links'}
+            </button>
+          </div>
         </div>
 
         <div className={styles.divider} />
@@ -290,33 +311,6 @@ arcvoy.com`)
           ) : (
             <div className={styles.noCV}>No CV uploaded</div>
           )}
-        </div>
-
-        <div className={styles.divider} />
-
-        <div className={styles.section}>
-          <div className={styles.sectionTitle}>Verification Links</div>
-          <div className={styles.verifyField}>
-            <label className={styles.verifyLabel}>Identity Verification Link</label>
-            <input className={styles.verifyInput} value={identityLink} onChange={e => setIdentityLink(e.target.value)} placeholder="Paste identity verification URL…" />
-          </div>
-          <div className={styles.verifyField}>
-            <label className={styles.verifyLabel}>Compliance Verification Link</label>
-            <input className={styles.verifyInput} value={complianceLink} onChange={e => setComplianceLink(e.target.value)} placeholder="Paste compliance verification URL…" />
-          </div>
-          <button className={styles.saveBtn} onClick={saveLinks} disabled={savingLinks} style={{ marginBottom: 14 }}>
-            {savingLinks ? 'Saving…' : 'Save Links'}
-          </button>
-          <div className={styles.verifyBtns}>
-            <button className={styles.verifyBtn} onClick={sendIdentityEmail} disabled={!identityLink}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              Send Identity Email
-            </button>
-            <button className={styles.verifyBtn} onClick={sendComplianceEmail} disabled={!complianceLink}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              Send Compliance Email
-            </button>
-          </div>
         </div>
 
         <div className={styles.divider} />
@@ -533,7 +527,7 @@ function ApplicationsView({ apps, loading }) {
               <span>Status</span>
               <span>Applied</span>
               <span>CV</span>
-              <span>Verify</span>
+              <span>Verified</span>
               <span></span>
             </div>
             {filtered.map(app => {
