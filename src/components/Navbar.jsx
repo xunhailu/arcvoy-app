@@ -37,16 +37,17 @@ export default function Navbar({ theme, onToggleTheme, onShowLogin, onShowCandid
         <span className={styles.brandText}>Arcvoy</span>
       </button>
 
+      {/* nav links — glass pill, truly centred */}
+      <div className={styles.links}>
+        <button className={`${styles.link} ${page === 'home'     ? styles.active : ''}`} onClick={() => nav('home')}>Home</button>
+        <button className={`${styles.link} ${page === 'about'    ? styles.active : ''}`} onClick={() => nav('about')}>About</button>
+        <button className={`${styles.link} ${page === 'jobs'     ? styles.active : ''}`} onClick={() => nav('jobs')}>Careers</button>
+        <button className={`${styles.link} ${page === 'faq'      ? styles.active : ''}`} onClick={() => nav('faq')}>FAQ</button>
+        <button className={`${styles.link} ${page === 'helpdesk' ? styles.active : ''}`} onClick={() => nav('helpdesk')}>Help Desk</button>
+      </div>
+
       {/* right side */}
       <div className={styles.right}>
-        {/* nav links — glass pill */}
-        <div className={styles.links}>
-          <button className={`${styles.link} ${page === 'home'     ? styles.active : ''}`} onClick={() => nav('home')}>Home</button>
-          <button className={`${styles.link} ${page === 'about'    ? styles.active : ''}`} onClick={() => nav('about')}>About</button>
-          <button className={`${styles.link} ${page === 'jobs'     ? styles.active : ''}`} onClick={() => nav('jobs')}>Careers</button>
-          <button className={`${styles.link} ${page === 'faq'      ? styles.active : ''}`} onClick={() => nav('faq')}>FAQ</button>
-          <button className={`${styles.link} ${page === 'helpdesk' ? styles.active : ''}`} onClick={() => nav('helpdesk')}>Help Desk</button>
-        </div>
         {/* theme toggle */}
         <button className={styles.themeToggle} onClick={onToggleTheme} aria-label="Toggle theme">
           {theme === 'dark' ? (
