@@ -239,7 +239,7 @@
   border-top: 1px solid var(--bd); border-bottom: 1px solid var(--bd);
 }
 .aboutBody {
-  color: var(--tm); line-height: 1.75; font-size: 15.5px; margin-top: 8px;
+  color: var(--tm); line-height: 1.75; font-size: 15.5px; margin-top: 8px; font-family: 'Raleway', sans-serif;
 }
 .aboutBody p + p { margin-top: 20px; }
 
@@ -662,7 +662,7 @@
   display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 56px;
 }
 .footerBrand { display: flex; align-items: center; margin-bottom: 14px; }
-.footerDesc { font-size: 13px; color: var(--tx); opacity: 0.6; line-height: 1.85; max-width: 240px; }
+.footerDesc { font-size: 13px; color: var(--tx); opacity: 0.6; line-height: 1.85; max-width: 240px; font-family: 'Raleway', sans-serif; }
 .footerSocials { display: flex; gap: 0; margin-top: 18px; }
 .footerCol h4 {
   font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase;

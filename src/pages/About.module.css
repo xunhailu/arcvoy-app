@@ -108,7 +108,7 @@
   padding: 110px 48px; display: grid; grid-template-columns: 1fr 1.3fr;
   gap: 80px; align-items: start; border-bottom: 1px solid var(--bd);
 }
-.bodyText { font-size: 15px; color: var(--tm); line-height: 1.85; }
+.bodyText { font-size: 15px; color: var(--tm); line-height: 1.85; font-family: 'Raleway', sans-serif; }
 .bodyText + .bodyText { margin-top: 18px; }
 
 /* ════════════════════════════════════════

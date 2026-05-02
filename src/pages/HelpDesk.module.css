@@ -107,7 +107,7 @@ button.chip:hover {
   font-size: 28px; font-weight: 700; color: var(--tx);
   letter-spacing: -.015em; margin-bottom: 5px;
 }
-.formSub { font-size: 13px; color: var(--tm); line-height: 1.6; }
+.formSub { font-size: 13px; color: var(--tm); line-height: 1.6; font-family: 'Raleway', sans-serif; }
 
 .progressLabel {
   font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
@@ -188,7 +188,7 @@ button.chip:hover {
   font-family: 'Manrope', sans-serif;
   font-size: 30px; font-weight: 700; color: var(--tx);
 }
-.successText { font-size: 14px; color: var(--tm); line-height: 1.7; max-width: 340px; }
+.successText { font-size: 14px; color: var(--tm); line-height: 1.7; max-width: 340px; font-family: 'Raleway', sans-serif; }
 
 /* ── confetti ── */
 @keyframes confetti-fall {
