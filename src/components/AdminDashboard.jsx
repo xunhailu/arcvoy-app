@@ -132,58 +132,87 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
     setSavingLinks(false)
   }
 
-  const sendIdentityEmail = () => {
-    const subject = encodeURIComponent('Identity Verification — Arcvoy')
-    const body = encodeURIComponent(
-`Hi ${app.first_name},
-
-Your application with Arcvoy is currently in progress. The next step is to complete your identity verification. This is a quick process and ensures we can move your application forward securely.
-
-━━━━━━━━━━━━━━━━━━
-IDENTITY VERIFICATION
-━━━━━━━━━━━━━━━━━━
-
-To help your verification go through quickly, please follow these tips:
-
-· Use a valid, non-expired ID
-· Take photos in good lighting (no glare or shadows)
-· Make sure the entire ID is visible and clear (not blurry)
-· Ensure all details match what you entered
-· For selfies: look straight at the camera and avoid hats or sunglasses
-
-Click the link below to begin. Copy and paste it directly into your browser if it does not open:
-
-${identityLink}
-
-If you have any issues completing this step, reply to this email and our team will assist you as soon as possible.
-
-Warm regards,
-The Arcvoy Team
-arcvoy.com`)
-    window.open(`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(app.email)}&su=${subject}&body=${body}`, '_blank')
+  const sendIdentityEmail = async () => {
+    const html = `
+      <div style="font-family:Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
+        <div style="background:#1A1410;padding:22px 32px;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#cc6633"/></svg>
+            <span style="font-family:Georgia,serif;font-size:20px;color:#F5F0EB;font-weight:400;letter-spacing:0.01em;">Arcvoy</span>
+          </div>
+          <span style="font-size:10px;color:#6a5a4a;letter-spacing:0.1em;text-transform:uppercase;">Talent Platform</span>
+        </div>
+        <div style="background:#cc6633;padding:30px 32px;">
+          <p style="margin:0 0 6px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.12em;text-transform:uppercase;">Action Required</p>
+          <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:400;line-height:1.25;letter-spacing:-0.2px;">Identity Verification</h1>
+        </div>
+        <div style="padding:38px 32px;background:#ffffff;">
+          <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${app.first_name},</p>
+          <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 28px;">Your application with Arcvoy is in progress. The next step is to complete your identity verification. This is a quick process and ensures we can move your application forward securely.</p>
+          <div style="border-top:1px solid #EDE8E2;margin-bottom:24px;"></div>
+          <p style="font-size:10px;color:#b0a090;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 12px;">Tips for a smooth verification</p>
+          <table style="width:100%;border-collapse:collapse;margin-bottom:28px;">
+            <tr><td style="padding:8px 0;font-size:13px;color:#6b5e4e;border-bottom:1px solid #F5F0EB;">✓ &nbsp;Use a valid, non-expired ID</td></tr>
+            <tr><td style="padding:8px 0;font-size:13px;color:#6b5e4e;border-bottom:1px solid #F5F0EB;">✓ &nbsp;Take photos in good lighting — no glare or shadows</td></tr>
+            <tr><td style="padding:8px 0;font-size:13px;color:#6b5e4e;border-bottom:1px solid #F5F0EB;">✓ &nbsp;Ensure all details match what you submitted</td></tr>
+            <tr><td style="padding:8px 0;font-size:13px;color:#6b5e4e;">✓ &nbsp;For selfies: look straight at the camera, no hats or sunglasses</td></tr>
+          </table>
+          <a href="${identityLink}" style="display:inline-block;background:#cc6633;color:#ffffff;font-family:Calibri,Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:14px 28px;border-radius:4px;text-decoration:none;margin-bottom:16px;">Begin Verification →</a>
+          <p style="font-size:12px;color:#b0a090;margin:12px 0 28px;line-height:1.6;">If the button does not open, copy and paste this link into your browser:<br/><span style="color:#cc6633;">${identityLink}</span></p>
+          <div style="border-top:1px solid #EDE8E2;margin-bottom:24px;"></div>
+          <p style="font-size:13px;color:#9a8f85;line-height:1.7;margin:0;">Questions? Simply reply to this email and our team will assist you promptly.</p>
+          <p style="font-size:14px;color:#6b5e4e;margin:24px 0 0;">Warm regards,</p>
+          <p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">The Arcvoy Team</p>
+        </div>
+        <div style="background:#F5F0EB;padding:16px 32px;border-radius:0 0 10px 10px;display:flex;justify-content:space-between;align-items:center;">
+          <p style="margin:0;font-size:11px;color:#b0a090;">© 2026 Arcvoy</p>
+          <p style="margin:0;font-size:11px;color:#b0a090;"><a href="https://arcvoy.com" style="color:#b0a090;text-decoration:none;">arcvoy.com</a> &nbsp;·&nbsp; <a href="https://x.com/helloarcvoy" style="color:#b0a090;text-decoration:none;">@helloarcvoy</a></p>
+        </div>
+      </div>`
+    try {
+      const { supabase } = await import('../lib/supabase')
+      await supabase.functions.invoke('send-email', {
+        body: { to: app.email, from: 'Arcvoy Careers <careers@arcvoy.com>', replyTo: 'support@arcvoy.com', subject: 'Identity Verification — Arcvoy', html }
+      })
+    } catch (e) { console.warn('Identity email failed:', e) }
   }
 
-  const sendComplianceEmail = () => {
-    const subject = encodeURIComponent('Compliance Verification — Arcvoy')
-    const body = encodeURIComponent(
-`Hi ${app.first_name},
-
-Thank you for completing your identity verification. You are now one step away. Please complete your compliance verification to finalise your application with Arcvoy.
-
-━━━━━━━━━━━━━━━━━━
-COMPLIANCE VERIFICATION
-━━━━━━━━━━━━━━━━━━
-
-Click the link below to begin. Copy and paste it directly into your browser if it does not open:
-
-${complianceLink}
-
-If you have any issues completing this step, reply to this email and our team will assist you as soon as possible.
-
-Warm regards,
-The Arcvoy Team
-arcvoy.com`)
-    window.open(`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(app.email)}&su=${subject}&body=${body}`, '_blank')
+  const sendComplianceEmail = async () => {
+    const html = `
+      <div style="font-family:Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
+        <div style="background:#1A1410;padding:22px 32px;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#cc6633"/></svg>
+            <span style="font-family:Georgia,serif;font-size:20px;color:#F5F0EB;font-weight:400;letter-spacing:0.01em;">Arcvoy</span>
+          </div>
+          <span style="font-size:10px;color:#6a5a4a;letter-spacing:0.1em;text-transform:uppercase;">Talent Platform</span>
+        </div>
+        <div style="background:#378add;padding:30px 32px;">
+          <p style="margin:0 0 6px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.12em;text-transform:uppercase;">Final Step</p>
+          <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:400;line-height:1.25;letter-spacing:-0.2px;">Compliance Verification</h1>
+        </div>
+        <div style="padding:38px 32px;background:#ffffff;">
+          <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${app.first_name},</p>
+          <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 28px;">Thank you for completing your identity verification. You are now one step away. Please complete your compliance verification to finalise your application with Arcvoy.</p>
+          <div style="border-top:1px solid #EDE8E2;margin-bottom:28px;"></div>
+          <a href="${complianceLink}" style="display:inline-block;background:#378add;color:#ffffff;font-family:Calibri,Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:14px 28px;border-radius:4px;text-decoration:none;margin-bottom:16px;">Begin Compliance Check →</a>
+          <p style="font-size:12px;color:#b0a090;margin:12px 0 28px;line-height:1.6;">If the button does not open, copy and paste this link into your browser:<br/><span style="color:#378add;">${complianceLink}</span></p>
+          <div style="border-top:1px solid #EDE8E2;margin-bottom:24px;"></div>
+          <p style="font-size:13px;color:#9a8f85;line-height:1.7;margin:0;">Questions? Simply reply to this email and our team will assist you promptly.</p>
+          <p style="font-size:14px;color:#6b5e4e;margin:24px 0 0;">Warm regards,</p>
+          <p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">The Arcvoy Team</p>
+        </div>
+        <div style="background:#F5F0EB;padding:16px 32px;border-radius:0 0 10px 10px;display:flex;justify-content:space-between;align-items:center;">
+          <p style="margin:0;font-size:11px;color:#b0a090;">© 2026 Arcvoy</p>
+          <p style="margin:0;font-size:11px;color:#b0a090;"><a href="https://arcvoy.com" style="color:#b0a090;text-decoration:none;">arcvoy.com</a> &nbsp;·&nbsp; <a href="https://x.com/helloarcvoy" style="color:#b0a090;text-decoration:none;">@helloarcvoy</a></p>
+        </div>
+      </div>`
+    try {
+      const { supabase } = await import('../lib/supabase')
+      await supabase.functions.invoke('send-email', {
+        body: { to: app.email, from: 'Arcvoy Careers <careers@arcvoy.com>', replyTo: 'support@arcvoy.com', subject: 'Compliance Verification — Arcvoy', html }
+      })
+    } catch (e) { console.warn('Compliance email failed:', e) }
   }
 
   const saveNotes = async () => {
