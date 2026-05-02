@@ -164,8 +164,8 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
               <a href="${identityLink}" style="display:inline-block;background:#cc6633;color:#ffffff;font-family:Calibri,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:5px;text-decoration:none;margin-bottom:14px;">Verify Identity</a><br/>
               <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #D8D2CC;border-radius:5px;table-layout:fixed;margin-top:4px;">
                 <tr>
-                  <td style="background:#f0ece8;padding:11px 14px;font-size:12px;color:#9a8f85;overflow:hidden;white-space:nowrap;max-width:1px;width:100%;">${identityLink}</td>
-                  <td width="96" style="padding:0;"><a href="${identityLink}" style="display:block;background:#1A1410;color:#ffffff;font-family:Calibri,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:11px 14px;text-decoration:none;text-align:center;white-space:nowrap;">Copy Link</a></td>
+                  <td style="background:#f0ece8;padding:11px 14px;font-size:12px;color:#9a8f85;word-break:break-all;width:100%;">${identityLink}</td>
+                  <td width="96" style="padding:0;vertical-align:middle;"><a href="${identityLink}" style="display:block;background:#1A1410;color:#ffffff;font-family:Calibri,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:11px 14px;text-decoration:none;text-align:center;white-space:nowrap;">Copy Link</a></td>
                 </tr>
               </table>
             </td></tr>
@@ -218,8 +218,8 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
               <a href="${complianceLink}" style="display:inline-block;background:#378add;color:#ffffff;font-family:Calibri,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:5px;text-decoration:none;margin-bottom:14px;">Begin Compliance Check</a><br/>
               <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #D8D2CC;border-radius:5px;table-layout:fixed;margin-top:4px;">
                 <tr>
-                  <td style="background:#f0ece8;padding:11px 14px;font-size:12px;color:#9a8f85;overflow:hidden;white-space:nowrap;max-width:1px;width:100%;">${complianceLink}</td>
-                  <td width="96" style="padding:0;"><a href="${complianceLink}" style="display:block;background:#1A1410;color:#ffffff;font-family:Calibri,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:11px 14px;text-decoration:none;text-align:center;white-space:nowrap;">Copy Link</a></td>
+                  <td style="background:#f0ece8;padding:11px 14px;font-size:12px;color:#9a8f85;word-break:break-all;width:100%;">${complianceLink}</td>
+                  <td width="96" style="padding:0;vertical-align:middle;"><a href="${complianceLink}" style="display:block;background:#1A1410;color:#ffffff;font-family:Calibri,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:11px 14px;text-decoration:none;text-align:center;white-space:nowrap;">Copy Link</a></td>
                 </tr>
               </table>
             </td></tr>
