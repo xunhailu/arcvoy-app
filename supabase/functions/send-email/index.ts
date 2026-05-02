@@ -22,7 +22,7 @@ serve(async (req) => {
     }
 
     const payload: Record<string, unknown> = {
-      from: fromAddr || 'Arcvoy <noreply@arcvoy.com>',
+      from: fromAddr || 'Arcvoy <careers@arcvoy.com>',
       to,
       subject,
       html,

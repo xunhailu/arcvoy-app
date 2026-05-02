@@ -1,6 +1,6 @@
 import { supabase } from './supabase'
 
-const ADMIN_EMAIL = 'support@arcvoy.com'
+const ADMIN_EMAIL = 'admin@arcvoy.com'
 
 /* ── Upload CV to Supabase Storage ── */
 async function uploadCV(file, applicationId) {
@@ -85,6 +85,8 @@ export async function submitApplication({ fields, cvFile, job }) {
   // 3. Send confirmation email to applicant
   await sendEmail({
     to: fields.email,
+    from: 'Arcvoy Careers <careers@arcvoy.com>',
+    replyTo: 'support@arcvoy.com',
     subject: `Application received — ${job.title}`,
     html: `
       <div style="font-family:Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
@@ -125,6 +127,7 @@ export async function submitApplication({ fields, cvFile, job }) {
   // 4. Notify admin
   await sendEmail({
     to: ADMIN_EMAIL,
+    from: 'Arcvoy Platform <careers@arcvoy.com>',
     subject: `New application — ${job.title} (${fields.first} ${fields.last})`,
     html: `
       <div style="font-family:Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
@@ -249,7 +252,7 @@ export async function sendStatusEmail(status, app) {
     to: app.email,
     subject: c.subject,
     html,
-    from: 'Arcvoy Careers <support@arcvoy.com>',
+    from: 'Arcvoy Careers <careers@arcvoy.com>',
     replyTo: 'support@arcvoy.com',
   })
 }

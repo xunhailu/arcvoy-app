@@ -14,7 +14,7 @@ async function submitTicket({ name, email, category, subject, message }) {
 
   await supabase.functions.invoke('send-email', {
     body: {
-      from: 'Arcvoy Help Desk <noreply@arcvoy.com>',
+      from: 'Arcvoy Help Desk <careers@arcvoy.com>',
       to: 'support@arcvoy.com',
       subject: `[${category}] ${subject}`,
       html: `
