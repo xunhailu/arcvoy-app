@@ -90,6 +90,7 @@
 .form { display: flex; flex-direction: column; gap: 0; }
 .section { display: flex; flex-direction: column; gap: 16px; padding: 8px 0; }
 .sectionTitle { font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--gd); font-weight: 700; margin-bottom: 4px; }
+.sectionRequired { color: var(--gd); font-style: normal; }
 .sectionDivider { height: 1px; background: var(--bd); margin: 24px 0; }
 
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -131,6 +132,8 @@
 }
 .fi:focus { border-color: rgba(204,102,51,.5); box-shadow: 0 0 0 3px rgba(204,102,51,.07); }
 .fiError { border-color: #a03030 !important; }
+.fiAddress { font-size: 14px; padding: 14px 16px; }
+input[type="date"].fi { color-scheme: dark; }
 
 .cvUpload {
   position: relative; border: 1px dashed var(--bd2);

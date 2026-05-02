@@ -28,8 +28,9 @@ export default function Apply({ user }) {
     const nameParts = (meta.full_name || '').trim().split(/\s+/)
     return {
       first: nameParts[0] || '', last: nameParts.slice(1).join(' ') || '',
-      email: user?.email || '', country: '', state: '', city: '',
-      zip: '', address: '', linkedin: meta.linkedin || '',
+      email: user?.email || '', dob: '',
+      country: '', state: '', city: '', zip: '', address: '',
+      linkedin: meta.linkedin || '',
       lang1: '', lang2: ''
     }
   })
@@ -175,6 +176,67 @@ export default function Apply({ user }) {
 
             <div className={styles.form}>
 
+              {/* ── CV first — auto-fills the form below ── */}
+              <div className={styles.section}>
+                <div className={styles.sectionTitle}>CV / Resume <span className={styles.sectionRequired}>*</span></div>
+                <div className={styles.cvUpload} style={{ borderColor: errors.cv ? '#a03030' : undefined }}>
+                  <input type="file" accept=".pdf,.doc,.docx" onChange={async e => {
+                    const f = e.target.files[0]
+                    if (!f) return
+                    if (f.size > 10 * 1024 * 1024) { setCvFile(null); setCvLabel('File too large — max 10MB'); setErrors(er => ({ ...er, cv: true })); return }
+                    setCvFile(f); setCvLabel(f.name); setErrors(er => ({ ...er, cv: false }))
+                    if (f.type === 'application/pdf') {
+                      setParsing(true); setCvLabel('Reading your CV…')
+                      try {
+                        const base64 = await new Promise((res, rej) => {
+                          const r = new FileReader()
+                          r.onload = () => res(r.result.split(',')[1])
+                          r.onerror = rej
+                          r.readAsDataURL(f)
+                        })
+                        const { data, error: fnError } = await supabase.functions.invoke('parse-cv', {
+                          body: { fileBase64: base64, fileType: f.type }
+                        })
+                        console.log('parse-cv result:', data, fnError)
+                        if (data && !data.error) {
+                          const match = (val, list) => list.find(o => o.toLowerCase() === (val || '').toLowerCase()) || null
+                          setFields(prev => ({
+                            ...prev,
+                            first:    data.first    || prev.first,
+                            last:     data.last     || prev.last,
+                            email:    data.email    || prev.email,
+                            dob:      data.dob      || prev.dob,
+                            address:  data.address  || prev.address,
+                            city:     data.city     || prev.city,
+                            zip:      data.zip      || prev.zip,
+                            linkedin: data.linkedin || prev.linkedin,
+                            country:  match(data.country, countries) || prev.country,
+                            state:    data.state    || prev.state,
+                            lang1:    match(data.lang1, langs) || prev.lang1,
+                            lang2:    match(data.lang2, langs) || prev.lang2,
+                          }))
+                        }
+                      } catch (err) { console.error('parse-cv error:', err) }
+                      setCvLabel(f.name); setParsing(false)
+                    }
+                  }} />
+                  <div className={styles.cvInner}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <div>
+                      <div className={styles.cvMain}>{cvLabel}</div>
+                      <div className={styles.cvSub}>{parsing ? 'Filling in your details below…' : 'Upload your CV to auto-fill the form · PDF or DOCX · Max 10MB'}</div>
+                    </div>
+                    <span className={styles.cvBrowse}>Browse</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.sectionDivider} />
+
+              {/* ── Personal Information ── */}
               <div className={styles.section}>
                 <div className={styles.sectionTitle}>Personal Information</div>
                 <div className={styles.grid2}>
@@ -187,9 +249,15 @@ export default function Apply({ user }) {
                     <input className={`${styles.fi} ${errors.last ? styles.fiError : ''}`} value={fields.last} onChange={set('last')} />
                   </div>
                 </div>
-                <div className={styles.fg}>
-                  <label className={styles.fl}>Email <span>*</span></label>
-                  <input type="email" className={`${styles.fi} ${errors.email ? styles.fiError : ''}`} value={fields.email} onChange={set('email')} />
+                <div className={styles.grid2}>
+                  <div className={styles.fg}>
+                    <label className={styles.fl}>Email <span>*</span></label>
+                    <input type="email" className={`${styles.fi} ${errors.email ? styles.fiError : ''}`} value={fields.email} onChange={set('email')} />
+                  </div>
+                  <div className={styles.fg}>
+                    <label className={styles.fl}>Date of Birth</label>
+                    <input type="date" className={styles.fi} value={fields.dob} onChange={set('dob')} max={new Date(Date.now() - 18 * 365.25 * 24 * 3600 * 1000).toISOString().split('T')[0]} />
+                  </div>
                 </div>
                 <label className={`${styles.ageCheck} ${errors.age ? styles.ageCheckError : ''}`}>
                   <input type="checkbox" checked={ageConfirmed}
@@ -207,39 +275,46 @@ export default function Apply({ user }) {
 
               <div className={styles.sectionDivider} />
 
+              {/* ── Location ── */}
               <div className={styles.section}>
                 <div className={styles.sectionTitle}>Location</div>
-                <div className={styles.fg}>
-                  <label className={styles.fl}>Country</label>
-                  <CustomSelect value={fields.country} onChange={setCountry} options={countries} placeholder="Select country" />
-                </div>
                 <div className={styles.grid2}>
                   <div className={styles.fg}>
-                    <label className={styles.fl}>{stateOptions.length > 0 ? 'State / Province' : 'State'}</label>
+                    <label className={styles.fl}>Country</label>
+                    <CustomSelect value={fields.country} onChange={setCountry} options={countries} placeholder="Select country" />
+                  </div>
+                  <div className={styles.fg}>
+                    <label className={styles.fl}>{stateOptions.length > 0 ? 'State / Province' : 'State / Region'}</label>
                     {stateOptions.length > 0
                       ? <CustomSelect value={fields.state} onChange={v => setFields(f => ({ ...f, state: v }))} options={stateOptions} placeholder="Select state" />
-                      : <input className={styles.fi} value={fields.state} onChange={set('state')} placeholder={fields.country ? 'Enter state / region' : ''} />
+                      : <input className={styles.fi} value={fields.state} onChange={set('state')} placeholder={fields.country ? 'Enter state or region' : ''} />
                     }
                   </div>
+                </div>
+                <div className={styles.grid2}>
                   <div className={styles.fg}>
                     <label className={styles.fl}>City / Town</label>
                     <input className={styles.fi} value={fields.city} onChange={set('city')} />
                   </div>
-                </div>
-                <div className={styles.grid2}>
                   <div className={styles.fg}>
-                    <label className={styles.fl}>Zip Code</label>
+                    <label className={styles.fl}>Postcode / Zip</label>
                     <input className={styles.fi} value={fields.zip} onChange={set('zip')} />
                   </div>
-                  <div className={styles.fg}>
-                    <label className={styles.fl}>House Address <span>*</span></label>
-                    <input className={`${styles.fi} ${errors.address ? styles.fiError : ''}`} value={fields.address} onChange={set('address')} />
-                  </div>
+                </div>
+                <div className={styles.fg}>
+                  <label className={styles.fl}>Street Address <span>*</span></label>
+                  <input
+                    className={`${styles.fi} ${styles.fiAddress} ${errors.address ? styles.fiError : ''}`}
+                    value={fields.address}
+                    onChange={set('address')}
+                    placeholder="House number, street name, apartment / suite"
+                  />
                 </div>
               </div>
 
               <div className={styles.sectionDivider} />
 
+              {/* ── Professional ── */}
               <div className={styles.section}>
                 <div className={styles.sectionTitle}>Professional</div>
                 <div className={styles.fg}>
@@ -248,67 +323,12 @@ export default function Apply({ user }) {
                 </div>
                 <div className={styles.grid2}>
                   <div className={styles.fg}>
-                    <label className={styles.fl}>Language 1</label>
-                    <CustomSelect value={fields.lang1} onChange={v => setFields(f => ({ ...f, lang1: v }))} options={langs} placeholder="Select language" />
+                    <label className={styles.fl}>Primary Language</label>
+                    <CustomSelect value={fields.lang1} onChange={v => setFields(f => ({ ...f, lang1: v }))} options={langs} placeholder="Native language" />
                   </div>
                   <div className={styles.fg}>
-                    <label className={styles.fl}>Language 2</label>
-                    <CustomSelect value={fields.lang2} onChange={v => setFields(f => ({ ...f, lang2: v }))} options={langs} placeholder="Select language" />
-                  </div>
-                </div>
-                <div className={styles.fg}>
-                  <label className={styles.fl}>CV / Resume (PDF or DOCX) <span>*</span></label>
-                  <div className={styles.cvUpload} style={{ borderColor: errors.cv ? '#a03030' : undefined }}>
-                    <input type="file" accept=".pdf,.doc,.docx" onChange={async e => {
-                      const f = e.target.files[0]
-                      if (!f) return
-                      if (f.size > 10 * 1024 * 1024) { setCvFile(null); setCvLabel('File too large — max 10MB'); setErrors(er => ({ ...er, cv: true })); return }
-                      setCvFile(f); setCvLabel(f.name); setErrors(er => ({ ...er, cv: false }))
-                      if (f.type === 'application/pdf') {
-                        setParsing(true); setCvLabel('Reading your CV…')
-                        try {
-                          const base64 = await new Promise((res, rej) => {
-                            const r = new FileReader()
-                            r.onload = () => res(r.result.split(',')[1])
-                            r.onerror = rej
-                            r.readAsDataURL(f)
-                          })
-                          const { data, error: fnError } = await supabase.functions.invoke('parse-cv', {
-                            body: { fileBase64: base64, fileType: f.type }
-                          })
-                          console.log('parse-cv result:', data, fnError)
-                          if (data && !data.error) {
-                            const match = (val, list) => list.find(o => o.toLowerCase() === (val || '').toLowerCase()) || null
-                            setFields(prev => ({
-                              ...prev,
-                              first:    data.first    || prev.first,
-                              last:     data.last     || prev.last,
-                              email:    data.email    || prev.email,
-                              address:  data.address  || prev.address,
-                              city:     data.city     || prev.city,
-                              zip:      data.zip      || prev.zip,
-                              linkedin: data.linkedin || prev.linkedin,
-                              country:  match(data.country, countries) || prev.country,
-                              state:    data.state    || prev.state,
-                              lang1:    match(data.lang1, langs) || prev.lang1,
-                              lang2:    match(data.lang2, langs) || prev.lang2,
-                            }))
-                          }
-                        } catch (err) { console.error('parse-cv error:', err) }
-                        setCvLabel(f.name); setParsing(false)
-                      }
-                    }} />
-                    <div className={styles.cvInner}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-                      </svg>
-                      <div>
-                        <div className={styles.cvMain}>{cvLabel}</div>
-                        <div className={styles.cvSub}>{parsing ? 'Filling in your details…' : 'PDF or DOCX · Max 10MB'}</div>
-                      </div>
-                      <span className={styles.cvBrowse}>Browse</span>
-                    </div>
+                    <label className={styles.fl}>Additional Language</label>
+                    <CustomSelect value={fields.lang2} onChange={v => setFields(f => ({ ...f, lang2: v }))} options={langs} placeholder="Other language (optional)" />
                   </div>
                 </div>
               </div>
