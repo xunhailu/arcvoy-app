@@ -144,7 +144,7 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
         </div>
         <div style="background:#cc6633;padding:28px 32px;">
           <p style="margin:0 0 8px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.14em;text-transform:uppercase;">Action Required</p>
-          <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:700;line-height:1.2;text-transform:uppercase;letter-spacing:0.01em;">Identity Verification</h1>
+          <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:700;line-height:1.2;letter-spacing:0.01em;">IDENTITY VERIFICATION</h1>
         </div>
         <div style="padding:38px 32px;background:#ffffff;">
           <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${app.first_name},</p>
@@ -183,7 +183,7 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
       await supabase.functions.invoke('send-email', {
         body: { to: app.email, from: 'Arcvoy Careers <careers@arcvoy.com>', replyTo: 'support@arcvoy.com', subject: 'Identity Verification — Arcvoy', html }
       })
-    } catch (e) { console.warn('Identity email failed:', e) }
+    } catch (e) { alert('Identity verification email failed to send. Please try again.') }
   }
 
   const sendComplianceEmail = async () => {
@@ -198,7 +198,7 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
         </div>
         <div style="background:#378add;padding:28px 32px;">
           <p style="margin:0 0 8px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.14em;text-transform:uppercase;">Final Step</p>
-          <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:700;line-height:1.2;text-transform:uppercase;letter-spacing:0.01em;">Compliance Verification</h1>
+          <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:700;line-height:1.2;letter-spacing:0.01em;">COMPLIANCE VERIFICATION</h1>
         </div>
         <div style="padding:38px 32px;background:#ffffff;">
           <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${app.first_name},</p>
@@ -230,7 +230,7 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
       await supabase.functions.invoke('send-email', {
         body: { to: app.email, from: 'Arcvoy Careers <careers@arcvoy.com>', replyTo: 'support@arcvoy.com', subject: 'Compliance Verification — Arcvoy', html }
       })
-    } catch (e) { console.warn('Compliance email failed:', e) }
+    } catch (e) { alert('Compliance verification email failed to send. Please try again.') }
   }
 
   const saveNotes = async () => {
@@ -252,7 +252,7 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
   const changeStatus = async (status) => {
     setStatusLoading(true)
     await onStatusChange(app.id, status, app)
-    try { await sendStatusEmail(status, app) } catch (e) { console.warn('Status email failed:', e) }
+    try { await sendStatusEmail(status, app) } catch (e) { alert('Status update email failed to send. The status was saved but the applicant was not notified.') }
     setStatusLoading(false)
   }
 
@@ -906,7 +906,7 @@ function JobsView() {
       else await updateJob(editing, payload)
       await load()
       close()
-    } catch (e) { console.error(e) }
+    } catch (e) { alert('Failed to save job. Please try again.') }
     setSaving(false)
   }
 

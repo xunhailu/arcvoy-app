@@ -81,6 +81,9 @@ export default function Apply({ user }) {
         ? `${fields.dobYear}-${DOB_MONTH_NUM[fields.dobMonth]}-${String(fields.dobDay).padStart(2, '0')}`
         : null
       await submitApplication({ fields: { ...fields, dob }, cvFile, job })
+      setFields({ first: '', last: '', email: '', dobDay: '', dobMonth: '', dobYear: '', country: '', state: '', city: '', zip: '', address: '', linkedin: '', lang1: '', lang2: '' })
+      setCvFile(null)
+      setCvLabel('Drop your CV here or browse')
       setDone(true)
     } catch (err) {
       console.error('Application error:', err)

@@ -87,7 +87,8 @@ export default function Dashboard({ user, onNavigate }) {
   const withdraw = async (id) => {
     if (!window.confirm('Withdraw this application? This cannot be undone.')) return
     const { error } = await supabase.from('applications').delete().eq('id', id)
-    if (!error) setApps(prev => prev.filter(a => a.id !== id))
+    if (error) { alert('Could not withdraw application. Please try again.'); return }
+    setApps(prev => prev.filter(a => a.id !== id))
   }
 
   const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Candidate'
