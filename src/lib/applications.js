@@ -78,7 +78,10 @@ export async function submitApplication({ fields, cvFile, job }) {
       status: 'applied',
     }])
 
-  if (error) throw error
+  if (error) {
+    if (error.code === '23505') throw new Error('You have already applied for this role.')
+    throw error
+  }
 
   const data = { id: applicationId }
 
