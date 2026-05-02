@@ -9,7 +9,8 @@ const MAX_CHARS   = 1000
 
 /* ── email submit ── */
 async function submitTicket({ name, email, category, subject, message }) {
-  await supabase.from('tickets').insert([{ name, email, category, subject, message, status: 'open' }])
+  const { error } = await supabase.from('tickets').insert([{ name, email, category, subject, message, status: 'open' }])
+  if (error) throw error
 
   await supabase.functions.invoke('send-email', {
     body: {
@@ -313,7 +314,7 @@ export default function HelpDesk() {
 
                   {/* category */}
                   <div className={styles.field}>
-                    <label className="fl">Category</label>
+                    <label className="fl">Category <span style={{ color: 'var(--gd)' }}>*</span></label>
                     <CustomSelect
                       value={form.category}
                       onChange={v => set('category', v)}

@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react'
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Navbar from './components/Navbar'
@@ -134,7 +134,7 @@ export default function App() {
     return () => document.removeEventListener('keydown', handler)
   }, [])
 
-  const onNavigate = page => {
+  const onNavigate = useCallback(page => {
     if (page === 'home')           navigate('/')
     else if (page === 'jobs')      navigate('/jobs')
     else if (page === 'about')     navigate('/about')
@@ -143,7 +143,7 @@ export default function App() {
     else if (page === 'helpdesk')  navigate('/helpdesk')
     else if (page === 'privacy')   navigate('/privacy')
     else if (page === 'terms')     navigate('/terms')
-  }
+  }, [navigate])
 
   const currentPage = location.pathname === '/jobs'           ? 'jobs'
     : location.pathname === '/about'          ? 'about'

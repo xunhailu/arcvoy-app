@@ -214,12 +214,22 @@ export default function Apply({ user }) {
                         console.log('parse-cv result:', data, fnError)
                         if (data && !data.error) {
                           const match = (val, list) => list.find(o => o.toLowerCase() === (val || '').toLowerCase()) || null
+                          const parseDOB = raw => {
+                            if (!raw) return {}
+                            const d = new Date(raw)
+                            if (isNaN(d.getTime())) return {}
+                            return {
+                              dobDay:   String(d.getUTCDate()),
+                              dobMonth: DOB_MONTHS[d.getUTCMonth()],
+                              dobYear:  String(d.getUTCFullYear()),
+                            }
+                          }
                           setFields(prev => ({
                             ...prev,
                             first:    data.first    || prev.first,
                             last:     data.last     || prev.last,
                             email:    data.email    || prev.email,
-                            dob:      data.dob      || prev.dob,
+                            ...parseDOB(data.dob),
                             address:  data.address  || prev.address,
                             city:     data.city     || prev.city,
                             zip:      data.zip      || prev.zip,
