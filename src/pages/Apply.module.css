@@ -176,7 +176,8 @@
   font-family: 'Manrope', sans-serif;
   font-size: 36px; font-weight: 700; color: var(--tx); margin-bottom: 14px;
 }
-.successDesc { font-size: 14px; color: var(--tm); line-height: 1.8; margin-bottom: 32px; }
+.successDesc { font-size: 14px; color: var(--tm); line-height: 1.8; margin-bottom: 12px; }
+.successSpam { font-size: 12px; color: var(--td); line-height: 1.7; margin-bottom: 32px; padding: 10px 14px; border: 1px solid var(--bd); border-radius: 6px; background: var(--sf2); }
 .successBtns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
 @media (max-width: 900px) {

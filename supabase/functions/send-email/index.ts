@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { to, subject, html, from: fromAddr } = await req.json()
+    const { to, subject, html, from: fromAddr, replyTo } = await req.json()
 
     if (!to || !subject || !html) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), {
@@ -21,18 +21,21 @@ serve(async (req) => {
       })
     }
 
+    const payload: Record<string, unknown> = {
+      from: fromAddr || 'Arcvoy <noreply@arcvoy.com>',
+      to,
+      subject,
+      html,
+    }
+    if (replyTo) payload.reply_to = replyTo
+
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${RESEND_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        from: fromAddr || 'Arcvoy <noreply@arcvoy.com>',
-        to,
-        subject,
-        html,
-      }),
+      body: JSON.stringify(payload),
     })
 
     const data = await res.json()

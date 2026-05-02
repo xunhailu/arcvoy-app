@@ -104,7 +104,8 @@ export default function Apply({ user }) {
           </svg>
         </div>
         <h2 className={styles.successTitle}>Application submitted</h2>
-        <p className={styles.successDesc}>Your application for <strong>{job.title}</strong> is under review. You will receive a confirmation at {fields.email}.</p>
+        <p className={styles.successDesc}>Your application for <strong>{job.title}</strong> is under review. A confirmation has been sent to <strong>{fields.email}</strong>.</p>
+        <p className={styles.successSpam}>Did not see it? Check your <strong>spam or junk folder</strong> and mark it as not spam to receive future updates.</p>
         <div className={styles.successBtns}>
           {user && <button className="btn-primary" onClick={() => navigate('/dashboard')}>View Dashboard →</button>}
           <button className="btn-ghost" onClick={() => navigate('/jobs')}>Browse More Roles</button>
