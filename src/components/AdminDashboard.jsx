@@ -134,7 +134,7 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
 
   const sendIdentityEmail = async () => {
     const html = `
-      <table width="580" cellpadding="0" cellspacing="0" border="0" style="font-family:Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;">
+      <table width="580" cellpadding="0" cellspacing="0" border="0" style="font-family:'Raleway',Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;">
         <tr><td>
           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#1A1410;border-radius:10px 10px 0 0;">
             <tr>
@@ -161,11 +161,11 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
                 <li style="font-size:13px;color:#6b5e4e;padding:3px 0;line-height:1.6;">For selfies: look straight at the camera and avoid hats or sunglasses</li>
               </ul>
               <p style="font-size:13px;color:#6b5e4e;line-height:1.7;margin:0 0 18px;">Click the button below to begin. If it doesn't open, use the copy button to copy the link and paste it directly into your browser.</p>
-              <a href="${identityLink}" style="display:inline-block;background:#cc6633;color:#ffffff;font-family:Calibri,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:5px;text-decoration:none;margin-bottom:14px;">Verify Identity</a><br/>
+              <a href="${identityLink}" style="display:inline-block;background:#cc6633;color:#ffffff;font-family:'Raleway',Calibri,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:5px;text-decoration:none;margin-bottom:14px;">Verify Identity</a><br/>
               <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #D8D2CC;border-radius:5px;table-layout:fixed;margin-top:4px;">
                 <tr>
                   <td style="background:#f0ece8;padding:11px 14px;font-size:12px;color:#9a8f85;word-break:break-all;width:100%;">${identityLink}</td>
-                  <td width="96" style="padding:0;vertical-align:middle;"><a href="${identityLink}" style="display:block;background:#1A1410;color:#ffffff;font-family:Calibri,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:11px 14px;text-decoration:none;text-align:center;white-space:nowrap;">Copy Link</a></td>
+                  <td width="96" style="padding:0;vertical-align:middle;"><a href="${identityLink}" style="display:block;background:#1A1410;color:#ffffff;font-family:'Raleway',Calibri,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:11px 14px;text-decoration:none;text-align:center;white-space:nowrap;">Copy Link</a></td>
                 </tr>
               </table>
             </td></tr>
@@ -173,8 +173,8 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-left:3px solid #cc6633;margin-bottom:28px;">
             <tr><td style="padding:10px 16px;"><p style="font-size:13px;color:#6b5e4e;line-height:1.7;margin:0;">If you have any issues completing this step, reply to this email and our team will assist you as soon as possible.</p></td></tr>
           </table>
-          <p style="font-size:14px;color:#6b5e4e;margin:0 0 2px;">Warm regards,</p>
-          <p style="font-size:14px;color:#1A1410;margin:0;font-weight:700;">The Arcvoy Team</p>
+          <p style="font-size:14px;color:#6b5e4e;margin:0 0 2px;">Regards,</p>
+          <p style="font-size:14px;color:#1A1410;margin:0;font-weight:700;">Arcvoy Team</p>
         </td></tr>
         <tr><td>
           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F0EB;border-radius:0 0 10px 10px;">
@@ -195,7 +195,7 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
 
   const sendComplianceEmail = async () => {
     const html = `
-      <table width="580" cellpadding="0" cellspacing="0" border="0" style="font-family:Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;">
+      <table width="580" cellpadding="0" cellspacing="0" border="0" style="font-family:'Raleway',Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;">
         <tr><td>
           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#1A1410;border-radius:10px 10px 0 0;">
             <tr>
@@ -215,11 +215,11 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
             <tr><td style="padding:24px;">
               <p style="font-size:13px;color:#1A1410;font-weight:700;margin:0 0 12px;line-height:1.5;">Click the button below to complete your compliance check:</p>
               <p style="font-size:13px;color:#6b5e4e;line-height:1.7;margin:0 0 18px;">If the button doesn't open, use the copy button to copy the link and paste it directly into your browser.</p>
-              <a href="${complianceLink}" style="display:inline-block;background:#378add;color:#ffffff;font-family:Calibri,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:5px;text-decoration:none;margin-bottom:14px;">Begin Compliance Check</a><br/>
+              <a href="${complianceLink}" style="display:inline-block;background:#378add;color:#ffffff;font-family:'Raleway',Calibri,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:5px;text-decoration:none;margin-bottom:14px;">Begin Compliance Check</a><br/>
               <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #D8D2CC;border-radius:5px;table-layout:fixed;margin-top:4px;">
                 <tr>
                   <td style="background:#f0ece8;padding:11px 14px;font-size:12px;color:#9a8f85;word-break:break-all;width:100%;">${complianceLink}</td>
-                  <td width="96" style="padding:0;vertical-align:middle;"><a href="${complianceLink}" style="display:block;background:#1A1410;color:#ffffff;font-family:Calibri,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:11px 14px;text-decoration:none;text-align:center;white-space:nowrap;">Copy Link</a></td>
+                  <td width="96" style="padding:0;vertical-align:middle;"><a href="${complianceLink}" style="display:block;background:#1A1410;color:#ffffff;font-family:'Raleway',Calibri,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:11px 14px;text-decoration:none;text-align:center;white-space:nowrap;">Copy Link</a></td>
                 </tr>
               </table>
             </td></tr>
@@ -227,8 +227,8 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-left:3px solid #378add;margin-bottom:28px;">
             <tr><td style="padding:10px 16px;"><p style="font-size:13px;color:#6b5e4e;line-height:1.7;margin:0;">If you have any issues completing this step, reply to this email and our team will assist you as soon as possible.</p></td></tr>
           </table>
-          <p style="font-size:14px;color:#6b5e4e;margin:0 0 2px;">Warm regards,</p>
-          <p style="font-size:14px;color:#1A1410;margin:0;font-weight:700;">The Arcvoy Team</p>
+          <p style="font-size:14px;color:#6b5e4e;margin:0 0 2px;">Regards,</p>
+          <p style="font-size:14px;color:#1A1410;margin:0;font-weight:700;">Arcvoy Team</p>
         </td></tr>
         <tr><td>
           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F0EB;border-radius:0 0 10px 10px;">

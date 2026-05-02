@@ -92,7 +92,7 @@ export async function submitApplication({ fields, cvFile, job }) {
     replyTo: 'support@arcvoy.com',
     subject: `Application received — ${job.title}`,
     html: `
-      <div style="font-family:Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
+      <div style="font-family:'Raleway',Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
         <div style="background:#1A1410;padding:22px 32px;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between;">
           <div style="display:flex;align-items:center;gap:10px;">
             <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#d97757" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#d97757" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#d97757"/></svg>
@@ -101,7 +101,7 @@ export async function submitApplication({ fields, cvFile, job }) {
           <span style="font-size:10px;color:#6a5a4a;letter-spacing:0.1em;text-transform:uppercase;">Talent Platform</span>
         </div>
         <div style="background:#d97757;padding:30px 32px;">
-          <p style="margin:0 0 6px;font-size:10px;color:rgba(255,255,255,0.65);letter-spacing:0.12em;text-transform:uppercase;font-family:Calibri,Arial,sans-serif;">Application Received</p>
+          <p style="margin:0 0 6px;font-size:10px;color:rgba(255,255,255,0.65);letter-spacing:0.12em;text-transform:uppercase;font-family:'Raleway',Calibri,Arial,sans-serif;">Application Received</p>
           <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:400;line-height:1.25;letter-spacing:-0.2px;">${job.title}</h1>
         </div>
         <div style="padding:38px 32px;background:#ffffff;">
@@ -116,8 +116,8 @@ export async function submitApplication({ fields, cvFile, job }) {
           </table>
           <div style="border-top:1px solid #EDE8E2;margin:28px 0;"></div>
           <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 32px;">Expect to hear from us within <strong style="color:#1A1410;">48 hours</strong>. If you have any questions before then, simply reply to this email.</p>
-          <p style="font-size:14px;color:#6b5e4e;margin:0;">Warm regards,</p>
-          <p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">The Arcvoy Team</p>
+          <p style="font-size:14px;color:#6b5e4e;margin:0;">Regards,</p>
+          <p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">Arcvoy Team</p>
         </div>
         <div style="background:#F5F0EB;padding:16px 32px;border-radius:0 0 10px 10px;display:flex;justify-content:space-between;align-items:center;">
           <p style="margin:0;font-size:11px;color:#b0a090;">© 2026 Arcvoy</p>
@@ -133,7 +133,7 @@ export async function submitApplication({ fields, cvFile, job }) {
     from: 'Arcvoy Platform <careers@arcvoy.com>',
     subject: `New application — ${job.title} (${fields.first} ${fields.last})`,
     html: `
-      <div style="font-family:Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
+      <div style="font-family:'Raleway',Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
         <div style="background:#1A1410;padding:22px 32px;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between;">
           <div style="display:flex;align-items:center;gap:10px;">
             <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#d97757" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#d97757" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#d97757"/></svg>
@@ -225,7 +225,7 @@ export async function sendStatusEmail(status, app) {
   if (!c || !app.email) return
 
   const html = `
-    <div style="font-family:Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
+    <div style="font-family:'Raleway',Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
       <div style="background:#1A1410;padding:22px 32px;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between;">
         <div style="display:flex;align-items:center;gap:10px;">
           <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#cc6633"/></svg>
@@ -234,7 +234,7 @@ export async function sendStatusEmail(status, app) {
         <span style="font-size:10px;color:#6a5a4a;letter-spacing:0.1em;text-transform:uppercase;">Talent Platform</span>
       </div>
       <div style="background:${c.banner};padding:30px 32px;">
-        <p style="margin:0 0 6px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.12em;text-transform:uppercase;font-family:Calibri,Arial,sans-serif;">${c.bannerLabel}</p>
+        <p style="margin:0 0 6px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.12em;text-transform:uppercase;font-family:'Raleway',Calibri,Arial,sans-serif;">${c.bannerLabel}</p>
         <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:400;line-height:1.25;letter-spacing:-0.2px;">${c.headline}</h1>
       </div>
       <div style="padding:38px 32px;background:#ffffff;">
