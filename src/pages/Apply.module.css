@@ -94,6 +94,7 @@
 .sectionDivider { height: 1px; background: var(--bd); margin: 24px 0; }
 
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1.6fr 1fr; gap: 10px; }
 
 .fg { display: flex; flex-direction: column; gap: 7px; }
 .fl { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--td); font-weight: 600; }
@@ -133,7 +134,6 @@
 .fi:focus { border-color: rgba(204,102,51,.5); box-shadow: 0 0 0 3px rgba(204,102,51,.07); }
 .fiError { border-color: #a03030 !important; }
 .fiAddress { font-size: 14px; padding: 14px 16px; }
-input[type="date"].fi { color-scheme: dark; }
 
 .cvUpload {
   position: relative; border: 1px dashed var(--bd2);

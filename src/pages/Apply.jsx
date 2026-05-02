@@ -28,7 +28,8 @@ export default function Apply({ user }) {
     const nameParts = (meta.full_name || '').trim().split(/\s+/)
     return {
       first: nameParts[0] || '', last: nameParts.slice(1).join(' ') || '',
-      email: user?.email || '', dob: '',
+      email: user?.email || '',
+      dobDay: '', dobMonth: '', dobYear: '',
       country: '', state: '', city: '', zip: '', address: '',
       linkedin: meta.linkedin || '',
       lang1: '', lang2: ''
@@ -46,14 +47,24 @@ export default function Apply({ user }) {
   const langs     = ['English','Spanish','French','German','Chinese','Arabic','Hindi','Portuguese']
   const stateOptions = STATES_BY_COUNTRY[fields.country] || []
 
+  const DOB_DAYS   = Array.from({ length: 31 }, (_, i) => String(i + 1))
+  const DOB_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
+  const DOB_MONTH_NUM = { January:'01',February:'02',March:'03',April:'04',May:'05',June:'06',July:'07',August:'08',September:'09',October:'10',November:'11',December:'12' }
+  const maxYear = new Date().getFullYear() - 18
+  const DOB_YEARS  = Array.from({ length: maxYear - 1929 }, (_, i) => String(maxYear - i))
+
   const set = k => e => setFields(f => ({ ...f, [k]: e.target.value }))
   const setCountry = v => setFields(f => ({ ...f, country: v, state: '' }))
 
   const validate = () => {
     const e = {}
-    if (!fields.first.trim())  e.first = true
-    if (!fields.last.trim())   e.last  = true
+    if (!fields.first.trim())   e.first   = true
+    if (!fields.last.trim())    e.last    = true
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) e.email = true
+    if (!fields.country)        e.country = true
+    if (!fields.state.trim())   e.state   = true
+    if (!fields.city.trim())    e.city    = true
+    if (!fields.zip.trim())     e.zip     = true
     if (!fields.address.trim()) e.address = true
     if (!ageConfirmed) e.age = true
     if (!cvFile) e.cv = true
@@ -66,7 +77,10 @@ export default function Apply({ user }) {
     setSubmitting(true)
     setSubmitError('')
     try {
-      await submitApplication({ fields, cvFile, job })
+      const dob = fields.dobYear && fields.dobMonth && fields.dobDay
+        ? `${fields.dobYear}-${DOB_MONTH_NUM[fields.dobMonth]}-${String(fields.dobDay).padStart(2, '0')}`
+        : null
+      await submitApplication({ fields: { ...fields, dob }, cvFile, job })
       setDone(true)
     } catch (err) {
       console.error('Application error:', err)
@@ -249,14 +263,16 @@ export default function Apply({ user }) {
                     <input className={`${styles.fi} ${errors.last ? styles.fiError : ''}`} value={fields.last} onChange={set('last')} />
                   </div>
                 </div>
-                <div className={styles.grid2}>
-                  <div className={styles.fg}>
-                    <label className={styles.fl}>Email <span>*</span></label>
-                    <input type="email" className={`${styles.fi} ${errors.email ? styles.fiError : ''}`} value={fields.email} onChange={set('email')} />
-                  </div>
-                  <div className={styles.fg}>
-                    <label className={styles.fl}>Date of Birth</label>
-                    <input type="date" className={styles.fi} value={fields.dob} onChange={set('dob')} max={new Date(Date.now() - 18 * 365.25 * 24 * 3600 * 1000).toISOString().split('T')[0]} />
+                <div className={styles.fg}>
+                  <label className={styles.fl}>Email <span>*</span></label>
+                  <input type="email" className={`${styles.fi} ${errors.email ? styles.fiError : ''}`} value={fields.email} onChange={set('email')} />
+                </div>
+                <div className={styles.fg}>
+                  <label className={styles.fl}>Date of Birth</label>
+                  <div className={styles.grid3}>
+                    <CustomSelect value={fields.dobDay}   onChange={v => setFields(f => ({ ...f, dobDay: v }))}   options={DOB_DAYS}   placeholder="Day" />
+                    <CustomSelect value={fields.dobMonth} onChange={v => setFields(f => ({ ...f, dobMonth: v }))} options={DOB_MONTHS} placeholder="Month" />
+                    <CustomSelect value={fields.dobYear}  onChange={v => setFields(f => ({ ...f, dobYear: v }))}  options={DOB_YEARS}  placeholder="Year" />
                   </div>
                 </div>
                 <label className={`${styles.ageCheck} ${errors.age ? styles.ageCheckError : ''}`}>
@@ -280,25 +296,25 @@ export default function Apply({ user }) {
                 <div className={styles.sectionTitle}>Location</div>
                 <div className={styles.grid2}>
                   <div className={styles.fg}>
-                    <label className={styles.fl}>Country</label>
-                    <CustomSelect value={fields.country} onChange={setCountry} options={countries} placeholder="Select country" />
+                    <label className={styles.fl}>Country <span>*</span></label>
+                    <CustomSelect value={fields.country} onChange={setCountry} options={countries} placeholder="Select country" error={errors.country} />
                   </div>
                   <div className={styles.fg}>
-                    <label className={styles.fl}>{stateOptions.length > 0 ? 'State / Province' : 'State / Region'}</label>
+                    <label className={styles.fl}>{stateOptions.length > 0 ? 'State / Province' : 'State / Region'} <span>*</span></label>
                     {stateOptions.length > 0
-                      ? <CustomSelect value={fields.state} onChange={v => setFields(f => ({ ...f, state: v }))} options={stateOptions} placeholder="Select state" />
-                      : <input className={styles.fi} value={fields.state} onChange={set('state')} placeholder={fields.country ? 'Enter state or region' : ''} />
+                      ? <CustomSelect value={fields.state} onChange={v => setFields(f => ({ ...f, state: v }))} options={stateOptions} placeholder="Select state" error={errors.state} />
+                      : <input className={`${styles.fi} ${errors.state ? styles.fiError : ''}`} value={fields.state} onChange={set('state')} placeholder={fields.country ? 'Enter state or region' : ''} />
                     }
                   </div>
                 </div>
                 <div className={styles.grid2}>
                   <div className={styles.fg}>
-                    <label className={styles.fl}>City / Town</label>
-                    <input className={styles.fi} value={fields.city} onChange={set('city')} />
+                    <label className={styles.fl}>City / Town <span>*</span></label>
+                    <input className={`${styles.fi} ${errors.city ? styles.fiError : ''}`} value={fields.city} onChange={set('city')} />
                   </div>
                   <div className={styles.fg}>
-                    <label className={styles.fl}>Postcode / Zip</label>
-                    <input className={styles.fi} value={fields.zip} onChange={set('zip')} />
+                    <label className={styles.fl}>Postcode / Zip <span>*</span></label>
+                    <input className={`${styles.fi} ${errors.zip ? styles.fiError : ''}`} value={fields.zip} onChange={set('zip')} />
                   </div>
                 </div>
                 <div className={styles.fg}>
