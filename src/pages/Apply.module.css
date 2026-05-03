@@ -156,10 +156,94 @@
   background: var(--ga);
 }
 
-.submitError { font-size: 12px; color: #E24B4A; padding: 12px 0; }
+/* ── Step bar ── */
+.stepBar { display: flex; align-items: center; margin-bottom: 36px; }
+.stepBarItem { display: flex; align-items: center; gap: 10px; }
+.stepCircle {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; font-family: 'Raleway', sans-serif;
+  transition: all .25s;
+}
+.stepCircleActive   { background: var(--gd); color: #fff; box-shadow: 0 0 0 4px rgba(204,102,51,.15); }
+.stepCircleDone     { background: var(--gd); color: #fff; }
+.stepCircleUpcoming { background: var(--sf2); color: var(--td); border: 1.5px solid var(--bd2); }
+.stepBarLabel { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; font-family: 'Raleway', sans-serif; white-space: nowrap; }
+.stepBarLabelActive   { color: var(--tx); }
+.stepBarLabelDone     { color: var(--gd); }
+.stepBarLabelUpcoming { color: var(--td); }
+.stepConnector { flex: 1; height: 1px; background: var(--bd2); margin: 0 14px; min-width: 24px; transition: background .25s; }
+.stepConnectorDone { background: var(--gd); }
 
-.formFooter { padding-top: 32px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
-.footerNote { font-size: 11px; color: var(--td); }
+/* ── Step content ── */
+.stepHeading { margin-bottom: 28px; }
+.stepSubtitle { font-size: 13px; color: var(--td); line-height: 1.6; }
+
+/* ── Field error message ── */
+.fieldError { font-size: 11px; color: #E24B4A; font-family: 'Raleway', sans-serif; letter-spacing: .01em; }
+
+/* ── Optional tag ── */
+.optionalTag { font-size: 9px; color: var(--td); letter-spacing: .06em; text-transform: uppercase; font-weight: 500; margin-left: 6px; }
+
+/* ── CV upload states ── */
+.cvFileIcon { color: var(--gd); display: flex; align-items: center; }
+.cvBrowseDone { background: rgba(90,143,26,.12); border-color: rgba(90,143,26,.3); color: #5a8f1a; font-size: 14px; }
+
+/* ── Step navigation ── */
+.stepNav { display: flex; justify-content: space-between; align-items: flex-start; padding-top: 32px; gap: 16px; }
+.continueBtn {
+  background: var(--gd); border: none; color: #fff;
+  font-family: 'Raleway', sans-serif; font-size: 13px; font-weight: 700;
+  letter-spacing: .04em; padding: 14px 36px; cursor: pointer;
+  border-radius: 6px; transition: opacity .2s;
+}
+.continueBtn:hover { opacity: .88; }
+.backBtn2 {
+  background: none; border: 1px solid var(--bd2); color: var(--tm);
+  font-family: 'Raleway', sans-serif; font-size: 13px; font-weight: 600;
+  padding: 13px 24px; cursor: pointer; border-radius: 6px;
+  transition: border-color .2s, color .2s;
+}
+.backBtn2:hover { border-color: var(--tm); color: var(--tx); }
+
+/* ── Review box ── */
+.reviewBox {
+  border: 1px solid var(--bd); border-radius: 8px;
+  padding: 20px 24px; background: var(--sf);
+  position: relative;
+}
+.reviewTitle { font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--gd); font-weight: 700; margin-bottom: 16px; }
+.reviewGrid { display: flex; flex-direction: column; gap: 0; }
+.reviewItem {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 9px 0; border-bottom: 1px solid var(--bd);
+  font-family: 'Raleway', sans-serif;
+}
+.reviewItem:last-child { border-bottom: none; }
+.reviewItem span { font-size: 11px; color: var(--td); }
+.reviewItem strong { font-size: 12px; color: var(--tx); font-weight: 600; max-width: 60%; text-align: right; word-break: break-all; }
+.reviewEdit {
+  position: absolute; top: 18px; right: 20px;
+  background: none; border: none; color: var(--gd);
+  font-family: 'Raleway', sans-serif; font-size: 10px;
+  font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  cursor: pointer; padding: 0; transition: opacity .2s;
+}
+.reviewEdit:hover { opacity: .7; }
+
+/* ── Submit ── */
+.submitGroup { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+.submitBtn {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--gd); border: none; color: #fff;
+  font-family: 'Raleway', sans-serif; font-size: 13px; font-weight: 700;
+  letter-spacing: .04em; padding: 14px 36px; cursor: pointer;
+  border-radius: 6px; transition: opacity .2s;
+}
+.submitBtn:hover:not(:disabled) { opacity: .88; }
+.submitBtn:disabled { opacity: .6; cursor: not-allowed; }
+.submitError { font-size: 12px; color: #E24B4A; padding: 10px 0; }
+.footerNote { font-size: 11px; color: var(--td); text-align: right; }
 .inlineLink { background: none; border: none; color: var(--gd); cursor: pointer; font-size: 11px; padding: 0; font-family: 'Raleway', sans-serif; }
 
 /* ── success ── */
