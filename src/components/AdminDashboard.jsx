@@ -27,7 +27,6 @@ import { createJob, updateJob } from '../lib/jobs'
 import { supabase } from '../lib/supabase'
 import { toast } from '../lib/toast'
 import styles from './AdminDashboard.module.css'
-import authStyles from './CandidateAuth.module.css'
 
 const STATUS_COLORS = {
   applied:     { bg: 'rgba(204,102,51,0.14)',  color: '#cc6633', label: 'Applied' },
