@@ -21,6 +21,7 @@ const ERROR_MESSAGES = {
   zip:     'Postcode is required',
   address: 'Street address is required',
   age:     'You must confirm you are 18 or older to apply',
+  dob:     'Date of birth is required',
   cv:      'Please upload your CV to continue',
 }
 
@@ -137,6 +138,7 @@ export default function Apply({ user }) {
     if (!fields.zip.trim())     e.zip     = true
     if (!fields.address.trim()) e.address = true
     if (!ageConfirmed)          e.age     = true
+    if (!fields.dobDay || !fields.dobMonth || !fields.dobYear) e.dob = true
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -401,12 +403,13 @@ export default function Apply({ user }) {
                         {errors.email && <span className={styles.fieldError}>{ERROR_MESSAGES.email}</span>}
                       </div>
                       <div className={styles.fg}>
-                        <label className={styles.fl}>Date of Birth</label>
+                        <label className={styles.fl}>Date of Birth <span>*</span></label>
                         <div className={styles.grid3}>
-                          <CustomSelect value={fields.dobDay}   onChange={v => setFields(f => ({ ...f, dobDay: v }))}   options={DOB_DAYS}   placeholder="Day" />
-                          <CustomSelect value={fields.dobMonth} onChange={v => setFields(f => ({ ...f, dobMonth: v }))} options={DOB_MONTHS} placeholder="Month" />
-                          <CustomSelect value={fields.dobYear}  onChange={v => setFields(f => ({ ...f, dobYear: v }))}  options={DOB_YEARS}  placeholder="Year" />
+                          <CustomSelect value={fields.dobDay}   onChange={v => { setFields(f => ({ ...f, dobDay: v }));   setErrors(p => ({ ...p, dob: false })) }} options={DOB_DAYS}   placeholder="Day"   error={errors.dob} />
+                          <CustomSelect value={fields.dobMonth} onChange={v => { setFields(f => ({ ...f, dobMonth: v })); setErrors(p => ({ ...p, dob: false })) }} options={DOB_MONTHS} placeholder="Month" error={errors.dob} />
+                          <CustomSelect value={fields.dobYear}  onChange={v => { setFields(f => ({ ...f, dobYear: v }));  setErrors(p => ({ ...p, dob: false })) }} options={DOB_YEARS}  placeholder="Year"  error={errors.dob} />
                         </div>
+                        {errors.dob && <span className={styles.fieldError}>{ERROR_MESSAGES.dob}</span>}
                       </div>
                       <div>
                         <label className={`${styles.ageCheck} ${errors.age ? styles.ageCheckError : ''}`}>
@@ -513,6 +516,7 @@ export default function Apply({ user }) {
                       <div className={styles.reviewGrid}>
                         <div className={styles.reviewItem}><span>Name</span><strong>{fields.first} {fields.last}</strong></div>
                         <div className={styles.reviewItem}><span>Email</span><strong>{fields.email}</strong></div>
+                        <div className={styles.reviewItem}><span>Date of Birth</span><strong>{fields.dobDay && fields.dobMonth && fields.dobYear ? `${fields.dobDay} ${fields.dobMonth} ${fields.dobYear}` : '—'}</strong></div>
                         <div className={styles.reviewItem}><span>Location</span><strong>{[fields.city, fields.country].filter(Boolean).join(', ')}</strong></div>
                         <div className={styles.reviewItem}><span>CV</span><strong>{cvFile?.name || '—'}</strong></div>
                         <div className={styles.reviewItem}><span>Role</span><strong>{job.title}</strong></div>
