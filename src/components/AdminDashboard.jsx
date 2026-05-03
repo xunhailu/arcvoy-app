@@ -89,10 +89,11 @@ function formatRelativeDate(dateStr) {
 
 /* ── Login Screen ── */
 function LoginScreen({ onLogin, onClose }) {
-  const [email, setEmail] = useState('')
+  const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [showPass, setShowPass] = useState(false)
+  const [error, setError]       = useState('')
+  const [loading, setLoading]   = useState(false)
 
   const submit = async () => {
     if (!email || !password) return
@@ -106,37 +107,70 @@ function LoginScreen({ onLogin, onClose }) {
   }
 
   return (
-    <>
-      <div className={authStyles.head}>
-        <div>
-          <div className={authStyles.brand}>Arcvoy Admin</div>
-          <div className={authStyles.title}>Employee Login</div>
-        </div>
-        <button className="close-btn" onClick={onClose}>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-            <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
+    <div className={styles.loginCard}>
+      <div className={styles.loginCardLine} />
+
+      <div className={styles.loginLogo}>
+        <div className={styles.loginMark}>
+          <svg width="26" height="26" viewBox="0 0 64 64" fill="none">
+            <path d="M10 50 Q32 6 54 50" stroke="currentColor" strokeWidth="5" strokeLinecap="round"/>
+            <path d="M22 37 L42 37" stroke="currentColor" strokeWidth="5" strokeLinecap="round"/>
+            <circle cx="54" cy="50" r="3.5" fill="currentColor"/>
           </svg>
+        </div>
+        <div className={styles.loginWordmark}>Arcvoy</div>
+        <div className={styles.loginPortalBadge}>Admin Portal</div>
+      </div>
+
+      <div className={styles.loginHeading}>
+        <h1 className={styles.loginTitle}>Welcome back</h1>
+        <p className={styles.loginSub}>Sign in to access the admin dashboard</p>
+      </div>
+
+      <div className={styles.loginForm}>
+        <div className={styles.loginFg}>
+          <label className={styles.loginLabel}>Email address</label>
+          <input className={`${styles.loginInput} ${error ? styles.loginInputErr : ''}`}
+            type="email" value={email}
+            onChange={e => { setEmail(e.target.value); setError('') }}
+            onKeyDown={e => e.key === 'Enter' && submit()}
+            autoFocus placeholder="you@arcvoy.com" />
+        </div>
+
+        <div className={styles.loginFg}>
+          <label className={styles.loginLabel}>Password</label>
+          <div className={styles.loginPassWrap}>
+            <input className={`${styles.loginInput} ${error ? styles.loginInputErr : ''}`}
+              type={showPass ? 'text' : 'password'} value={password}
+              onChange={e => { setPassword(e.target.value); setError('') }}
+              onKeyDown={e => e.key === 'Enter' && submit()}
+              placeholder="••••••••" />
+            <button type="button" className={styles.loginEye} onClick={() => setShowPass(v => !v)} tabIndex={-1}>
+              {showPass
+                ? <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                : <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>}
+            </button>
+          </div>
+        </div>
+
+        {error && (
+          <div className={styles.loginErr}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            {error}
+          </div>
+        )}
+
+        <button className={styles.loginBtn} onClick={submit} disabled={loading}>
+          {loading
+            ? <><div className="spinner" style={{ borderTopColor: '#fff' }} /> Signing in…</>
+            : 'Sign In →'}
         </button>
       </div>
-      <div className={authStyles.body}>
-        <div className="fg" style={{ marginBottom: 0 }}>
-          <label className="fl">Email</label>
-          <input className="fi" type="email" value={email}
-            onChange={e => setEmail(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && submit()} autoFocus />
-        </div>
-        <div className="fg" style={{ marginBottom: 0 }}>
-          <label className="fl">Password</label>
-          <input className="fi" type="password" value={password}
-            onChange={e => setPassword(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && submit()} />
-        </div>
-        {error && <div className={authStyles.err}>{error}</div>}
-        <button className="sub-btn" onClick={submit} disabled={loading}>
-          {loading ? <><div className="spinner" /> Signing in…</> : 'Sign In →'}
-        </button>
-      </div>
-    </>
+
+      <button className={styles.loginBack} onClick={onClose}>← Back to site</button>
+    </div>
   )
 }
 
@@ -1429,10 +1463,10 @@ export default function AdminDashboard() {
   if (!session) {
     return (
       <div className={styles.loginPage}>
-        <motion.div className={authStyles.box}
-          initial={{ opacity: 0, scale: 0.96, y: 12 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: [0.25, 0, 0, 1] }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.25, 0, 0, 1] }}>
           <LoginScreen onLogin={login} onClose={() => navigate('/')} />
         </motion.div>
       </div>
