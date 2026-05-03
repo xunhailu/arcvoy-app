@@ -198,8 +198,9 @@
 .jobFormFooter { padding: 16px 24px; border-top: 1px solid var(--bd); display: flex; gap: 10px; justify-content: flex-end; flex-shrink: 0; }
 .field { display: flex; flex-direction: column; gap: 6px; }
 
-/* notify hint */
+/* notify / verify hints */
 .notifyHint { font-size: 10px; color: var(--td); font-family: 'Raleway', sans-serif; margin-top: 6px; padding-left: 2px; letter-spacing: .02em; }
+.verifyHint { font-size: 10px; font-family: 'Raleway', sans-serif; margin-top: 4px; padding-left: 2px; letter-spacing: .02em; font-weight: 600; }
 
 /* email history */
 .emailLogList { display: flex; flex-direction: column; }

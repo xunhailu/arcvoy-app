@@ -140,7 +140,7 @@ function LoginScreen({ onLogin, onClose }) {
 }
 
 /* ── Applicant Detail Drawer ── */
-function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
+function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onLinksChange }) {
   const [notes, setNotes] = useState(app.notes || '')
   const [saving, setSaving] = useState(false)
   const [downloading, setDownloading] = useState(false)
@@ -172,13 +172,19 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
 
   const saveLinks = async () => {
     setSavingLinks(true)
-    try { await updateVerificationLinks(app.id, identityLink, complianceLink); toast.success('Links saved') } catch { toast.error('Failed to save verification links. Please try again.') }
+    try {
+      await updateVerificationLinks(app.id, identityLink, complianceLink)
+      onLinksChange?.(app.id, identityLink, complianceLink)
+      toast.success('Links saved')
+    } catch { toast.error('Failed to save verification links. Please try again.') }
     setSavingLinks(false)
   }
 
   const sendIdentityEmail = async () => {
     setSendingIdentity(true)
     try {
+      await updateVerificationLinks(app.id, identityLink, complianceLink)
+      onLinksChange?.(app.id, identityLink, complianceLink)
       await sendIdentityVerificationEmail(app, identityLink)
       toast.success(`Identity verification email sent to ${app.email}`)
       refreshLogs()
@@ -189,6 +195,8 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
   const sendComplianceEmail = async () => {
     setSendingCompliance(true)
     try {
+      await updateVerificationLinks(app.id, identityLink, complianceLink)
+      onLinksChange?.(app.id, identityLink, complianceLink)
       await sendComplianceVerificationEmail(app, complianceLink)
       toast.success(`Compliance verification email sent to ${app.email}`)
       refreshLogs()
@@ -235,7 +243,9 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
   }
 
   const sc = STATUS_COLORS[app.status] || STATUS_COLORS.applied
-  const lastNotify = emailLogs.find(l => l.email_type === `status_${app.status}`)
+  const lastNotify    = emailLogs.find(l => l.email_type === `status_${app.status}`)
+  const identitySent  = emailLogs.find(l => l.email_type === 'identity_verification'  && l.status === 'sent')
+  const complianceSent = emailLogs.find(l => l.email_type === 'compliance_verification' && l.status === 'sent')
 
   return (
     <motion.div className={styles.drawer}
@@ -303,24 +313,34 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
           <div className={styles.verifyBlock}>
             <div className={styles.statusLabel} style={{ marginBottom: 10 }}>Verification</div>
             <div className={styles.verifyRow}>
-              <span className={styles.verifyTag} style={{ color: identityLink ? '#5a8f1a' : 'var(--td)' }}>ID</span>
+              <span className={styles.verifyTag} style={{ color: identitySent ? '#5a8f1a' : identityLink ? 'var(--tm)' : 'var(--td)' }}>ID</span>
               <input className={styles.verifyInline} value={identityLink} onChange={e => setIdentityLink(e.target.value)} placeholder="Paste identity link…" />
-              <button className={styles.verifyInlineBtn} onClick={sendIdentityEmail} disabled={!identityLink || sendingIdentity} title="Send identity email">
+              <button className={styles.verifyInlineBtn} onClick={sendIdentityEmail} disabled={!identityLink || sendingIdentity} title="Send identity verification email">
                 {sendingIdentity
                   ? <div className="spinner" style={{ width: 10, height: 10, borderWidth: 1.5 }} />
                   : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>}
               </button>
             </div>
-            <div className={styles.verifyRow}>
-              <span className={styles.verifyTag} style={{ color: complianceLink ? '#378add' : 'var(--td)' }}>CO</span>
+            {identitySent && (
+              <div className={styles.verifyHint} style={{ color: '#5a8f1a' }}>
+                ✓ Sent {formatRelativeDate(identitySent.sent_at)}
+              </div>
+            )}
+            <div className={styles.verifyRow} style={{ marginTop: identitySent ? 10 : 6 }}>
+              <span className={styles.verifyTag} style={{ color: complianceSent ? '#378add' : complianceLink ? 'var(--tm)' : 'var(--td)' }}>CO</span>
               <input className={styles.verifyInline} value={complianceLink} onChange={e => setComplianceLink(e.target.value)} placeholder="Paste compliance link…" />
-              <button className={styles.verifyInlineBtn} onClick={sendComplianceEmail} disabled={!complianceLink || sendingCompliance} title="Send compliance email">
+              <button className={styles.verifyInlineBtn} onClick={sendComplianceEmail} disabled={!complianceLink || sendingCompliance} title="Send compliance verification email">
                 {sendingCompliance
                   ? <div className="spinner" style={{ width: 10, height: 10, borderWidth: 1.5 }} />
                   : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>}
               </button>
             </div>
-            <button className={styles.saveBtn} onClick={saveLinks} disabled={savingLinks} style={{ marginTop: 8 }}>
+            {complianceSent && (
+              <div className={styles.verifyHint} style={{ color: '#378add' }}>
+                ✓ Sent {formatRelativeDate(complianceSent.sent_at)}
+              </div>
+            )}
+            <button className={styles.saveBtn} onClick={saveLinks} disabled={savingLinks} style={{ marginTop: 10 }}>
               {savingLinks ? 'Saving…' : 'Save Links'}
             </button>
           </div>
@@ -687,6 +707,11 @@ function ApplicationsView({ apps, loading }) {
     setApps(prev => prev.map(a => a.id === id ? { ...a, notes } : a))
   }
 
+  const onLinksChange = (id, identityLink, complianceLink) => {
+    setApps(prev => prev.map(a => a.id === id ? { ...a, identity_link: identityLink, compliance_link: complianceLink } : a))
+    if (selected?.id === id) setSelected(prev => ({ ...prev, identity_link: identityLink, compliance_link: complianceLink }))
+  }
+
   const onDelete = async (id) => {
     await deleteApplication(id)
     setApps(prev => prev.filter(a => a.id !== id))
@@ -870,6 +895,7 @@ function ApplicationsView({ apps, loading }) {
             onClose={() => setSelected(null)}
             onStatusChange={onStatusChange}
             onNotesChange={onNotesChange}
+            onLinksChange={onLinksChange}
           />
         )}
       </AnimatePresence>
