@@ -108,68 +108,77 @@ function LoginScreen({ onLogin, onClose }) {
 
   return (
     <div className={styles.loginCard}>
-      <div className={styles.loginCardLine} />
 
-      <div className={styles.loginLogo}>
-        <div className={styles.loginMark}>
-          <svg width="26" height="26" viewBox="0 0 64 64" fill="none">
-            <path d="M10 50 Q32 6 54 50" stroke="currentColor" strokeWidth="5" strokeLinecap="round"/>
-            <path d="M22 37 L42 37" stroke="currentColor" strokeWidth="5" strokeLinecap="round"/>
-            <circle cx="54" cy="50" r="3.5" fill="currentColor"/>
-          </svg>
+      {/* ── Left brand panel ── */}
+      <div className={styles.loginLeft}>
+        <div className={styles.loginLeftGlow} />
+        <div className={styles.loginLeftContent}>
+          <div className={styles.loginMarkWrap}>
+            <svg width="42" height="42" viewBox="0 0 64 64" fill="none">
+              <path d="M10 50 Q32 6 54 50" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round"/>
+              <path d="M22 37 L42 37" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round"/>
+              <circle cx="54" cy="50" r="3.5" fill="currentColor"/>
+            </svg>
+          </div>
+          <div className={styles.loginLeftWordmark}>Arcvoy</div>
+          <div className={styles.loginLeftDivider} />
+          <p className={styles.loginTagline}>The command centre for your talent pipeline</p>
         </div>
-        <div className={styles.loginWordmark}>Arcvoy</div>
         <div className={styles.loginPortalBadge}>Admin Portal</div>
       </div>
 
-      <div className={styles.loginHeading}>
+      {/* ── Right form panel ── */}
+      <div className={styles.loginRight}>
+        <div className={styles.loginRightTop} />
+
         <h1 className={styles.loginTitle}>Welcome back</h1>
-        <p className={styles.loginSub}>Sign in to access the admin dashboard</p>
-      </div>
+        <p className={styles.loginSub}>Sign in to continue to the dashboard</p>
 
-      <div className={styles.loginForm}>
-        <div className={styles.loginFg}>
-          <label className={styles.loginLabel}>Email address</label>
-          <input className={`${styles.loginInput} ${error ? styles.loginInputErr : ''}`}
-            type="email" value={email}
-            onChange={e => { setEmail(e.target.value); setError('') }}
-            onKeyDown={e => e.key === 'Enter' && submit()}
-            autoFocus placeholder="you@arcvoy.com" />
-        </div>
-
-        <div className={styles.loginFg}>
-          <label className={styles.loginLabel}>Password</label>
-          <div className={styles.loginPassWrap}>
+        <div className={styles.loginForm}>
+          <div className={styles.loginFg}>
+            <label className={styles.loginLabel}>Email address</label>
             <input className={`${styles.loginInput} ${error ? styles.loginInputErr : ''}`}
-              type={showPass ? 'text' : 'password'} value={password}
-              onChange={e => { setPassword(e.target.value); setError('') }}
+              type="email" value={email}
+              onChange={e => { setEmail(e.target.value); setError('') }}
               onKeyDown={e => e.key === 'Enter' && submit()}
-              placeholder="••••••••" />
-            <button type="button" className={styles.loginEye} onClick={() => setShowPass(v => !v)} tabIndex={-1}>
-              {showPass
-                ? <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                : <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>}
-            </button>
+              autoFocus placeholder="you@arcvoy.com" />
           </div>
+
+          <div className={styles.loginFg}>
+            <label className={styles.loginLabel}>Password</label>
+            <div className={styles.loginPassWrap}>
+              <input className={`${styles.loginInput} ${error ? styles.loginInputErr : ''}`}
+                type={showPass ? 'text' : 'password'} value={password}
+                onChange={e => { setPassword(e.target.value); setError('') }}
+                onKeyDown={e => e.key === 'Enter' && submit()}
+                placeholder="••••••••" />
+              <button type="button" className={styles.loginEye} onClick={() => setShowPass(v => !v)} tabIndex={-1}>
+                {showPass
+                  ? <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  : <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>}
+              </button>
+            </div>
+          </div>
+
+          {error && (
+            <div className={styles.loginErr}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              {error}
+            </div>
+          )}
+
+          <button className={styles.loginBtn} onClick={submit} disabled={loading}>
+            {loading
+              ? <><div className="spinner" style={{ borderTopColor: '#fff' }} /> Signing in…</>
+              : 'Sign In →'}
+          </button>
         </div>
 
-        {error && (
-          <div className={styles.loginErr}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            {error}
-          </div>
-        )}
-
-        <button className={styles.loginBtn} onClick={submit} disabled={loading}>
-          {loading
-            ? <><div className="spinner" style={{ borderTopColor: '#fff' }} /> Signing in…</>
-            : 'Sign In →'}
-        </button>
+        <button className={styles.loginBack} onClick={onClose}>← Back to site</button>
       </div>
 
-      <button className={styles.loginBack} onClick={onClose}>← Back to site</button>
     </div>
   )
 }
