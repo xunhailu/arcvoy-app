@@ -95,16 +95,17 @@
   color: var(--td); font-weight: 600;
 }
 .loginInput {
-  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.09);
   color: var(--tx); font-family: 'Raleway', sans-serif; font-size: 13px;
   padding: 12px 16px; outline: none; border-radius: 8px; width: 100%;
   transition: border-color .2s, box-shadow .2s;
 }
 .loginInput:focus { border-color: rgba(204,102,51,.5); box-shadow: 0 0 0 3px rgba(204,102,51,.08); }
-.loginInput::placeholder { color: var(--td); }
+.loginInput::placeholder { color: rgba(255,255,255,0.2); }
 :global([data-theme="light"]) .loginInput {
-  background: var(--input-bg); border-color: var(--bd2);
+  background: rgba(0,0,0,0.06); border-color: var(--bd2);
 }
+:global([data-theme="light"]) .loginInput::placeholder { color: var(--td); }
 .loginInputErr { border-color: #a03030 !important; }
 
 .loginPassWrap { position: relative; }
