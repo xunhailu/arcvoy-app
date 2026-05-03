@@ -174,8 +174,16 @@ export default function Apply({ user }) {
     setSubmitting(false)
   }
 
+  const ALLOWED_CV_TYPES = ['application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+
   const handleCVUpload = async (f) => {
     if (!f) return
+    if (!ALLOWED_CV_TYPES.includes(f.type)) {
+      setCvFile(null)
+      setCvLabel('Invalid file type — PDF or Word only')
+      setErrors(prev => ({ ...prev, cv: true }))
+      return
+    }
     if (f.size > 10 * 1024 * 1024) {
       setCvFile(null)
       setCvLabel('File too large — max 10MB')
