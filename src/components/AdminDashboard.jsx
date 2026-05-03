@@ -242,10 +242,11 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onLinksC
     setSendingNotify(false)
   }
 
-  const sc = STATUS_COLORS[app.status] || STATUS_COLORS.applied
-  const lastNotify    = emailLogs.find(l => l.email_type === `status_${app.status}`)
-  const identitySent  = emailLogs.find(l => l.email_type === 'identity_verification'  && l.status === 'sent')
+  const sc             = STATUS_COLORS[app.status] || STATUS_COLORS.applied
+  const lastNotify     = emailLogs.find(l => l.email_type === `status_${app.status}`)
+  const identitySent   = emailLogs.find(l => l.email_type === 'identity_verification'   && l.status === 'sent')
   const complianceSent = emailLogs.find(l => l.email_type === 'compliance_verification' && l.status === 'sent')
+  const welcomeSent    = emailLogs.find(l => l.email_type === 'welcome'                 && l.status === 'sent')
 
   return (
     <motion.div className={styles.drawer}
@@ -301,10 +302,12 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onLinksC
                     </>}
               </button>
               {lastNotify && (
-                <div className={styles.notifyHint}>
+                <div className={styles.verifyHint} style={{
+                  color: lastNotify.status === 'sent' ? STATUS_COLORS[app.status]?.color : '#E24B4A'
+                }}>
                   {lastNotify.status === 'sent'
-                    ? `Last notified ${formatRelativeDate(lastNotify.sent_at)}`
-                    : `Last send failed ${formatRelativeDate(lastNotify.sent_at)}`}
+                    ? `✓ Sent ${formatRelativeDate(lastNotify.sent_at)}`
+                    : `✗ Failed ${formatRelativeDate(lastNotify.sent_at)}`}
                 </div>
               )}
             </>
@@ -399,6 +402,11 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onLinksC
               <button className={styles.welcomeBtn} onClick={sendWelcome} disabled={sendingWelcome}>
                 {sendingWelcome ? 'Sending…' : 'Send Welcome Email'}
               </button>
+              {welcomeSent && (
+                <div className={styles.verifyHint} style={{ color: '#cc6633', marginTop: 8 }}>
+                  ✓ Sent {formatRelativeDate(welcomeSent.sent_at)}
+                </div>
+              )}
             </div>
           </>
         )}
