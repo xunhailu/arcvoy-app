@@ -153,7 +153,7 @@
 }
 .chipText {
   font-size: 12px; color: var(--tx); font-weight: 500;
-  font-family: 'Manrope', sans-serif; white-space: nowrap;
+  font-family: 'Raleway', sans-serif; white-space: nowrap;
 }
 .chipMuted { color: var(--td); }
 .chipSep { color: var(--td); font-size: 11px; }
@@ -166,7 +166,7 @@
 .heroTextLink {
   background: none; border: none; cursor: pointer;
   font-size: 12.5px; color: var(--td);
-  font-family: 'Manrope', sans-serif; padding: 0;
+  font-family: 'Raleway', sans-serif; padding: 0;
   transition: color .2s;
   letter-spacing: .01em;
 }
@@ -277,7 +277,7 @@
   box-shadow: 0 4px 16px rgba(193,68,14,.08);
 }
 .pillarNum {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 20px; color: var(--gd); min-width: 28px;
   margin-top: 1px; font-weight: 700;
   background: linear-gradient(135deg, var(--gd), var(--gl));
@@ -497,7 +497,7 @@
   border: 2px solid var(--gb);
   display: flex; align-items: center; justify-content: center;
   font-size: 12px; font-weight: 700; color: var(--gd);
-  flex-shrink: 0; font-family: 'Manrope', sans-serif;
+  flex-shrink: 0; font-family: 'Raleway', sans-serif;
   box-shadow: 0 0 0 3px rgba(204,102,51,.1), 0 4px 14px rgba(0,0,0,.25);
   overflow: hidden;
 }
@@ -619,7 +619,7 @@
 .nlRow { display: flex; }
 .nlInput {
   flex: 1; background: var(--input-bg); border: 1px solid var(--bd2);
-  border-right: none; color: var(--tx); font-family: 'Manrope', sans-serif;
+  border-right: none; color: var(--tx); font-family: 'Raleway', sans-serif;
   font-size: 13px; padding: 13px 16px; outline: none;
   transition: border-color .2s, box-shadow .2s;
   border-radius: 8px 0 0 8px;
@@ -629,7 +629,7 @@
   background: linear-gradient(135deg, var(--gd), var(--gl));
   color: #fff; border: none; padding: 13px 24px;
   font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
-  cursor: pointer; transition: all .2s; font-family: 'Manrope', sans-serif;
+  cursor: pointer; transition: all .2s; font-family: 'Raleway', sans-serif;
   font-weight: 700; white-space: nowrap; flex-shrink: 0; border-radius: 0 8px 8px 0;
   box-shadow: 0 4px 12px rgba(204,102,51,.25);
 }
@@ -670,7 +670,7 @@
 }
 .footerCol a, .footerCol button {
   display: block; font-size: 13px; color: var(--tm); margin-bottom: 10px;
-  cursor: pointer; background: none; border: none; font-family: 'Manrope', sans-serif;
+  cursor: pointer; background: none; border: none; font-family: 'Raleway', sans-serif;
   text-decoration: none; transition: color .2s, transform .2s;
   padding: 0; text-align: left;
 }
@@ -685,7 +685,7 @@
 .footerLegal button {
   font-size: 12px; color: var(--tm); text-decoration: none;
   background: none; border: none; cursor: pointer; padding: 0;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   transition: color .2s;
 }
 .footerLegal a:hover,

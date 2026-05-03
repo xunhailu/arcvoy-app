@@ -6,10 +6,14 @@ export default function JobCard({ job, onClick, onApply, delay = 0, isBookmarked
 
   return (
     <motion.div
+      layout
       className="job-card"
       onClick={e => { if (window.getSelection()?.toString()) return; onClick(e) }}
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 14, scale: 0.98 }}
+      whileHover={{ y: -5 }}
+      whileTap={{ scale: 0.995 }}
       transition={{ duration: 0.5, delay, ease: [0.25, 0, 0, 1] }}
       style={{ ...tilt.style, cursor: 'pointer' }}
       onMouseMove={tilt.onMouseMove}
@@ -52,21 +56,17 @@ export default function JobCard({ job, onClick, onApply, delay = 0, isBookmarked
 
       <div className="job-cta-row">
         <button
-          className="btn-primary"
+          className="btn-primary job-apply-btn"
           style={{ fontSize: '10px', padding: '8px 18px' }}
           onClick={e => { e.stopPropagation(); onApply ? onApply(job) : onClick(e) }}
         >
-          Apply Now →
+          <span>Apply Now</span>
+          <span className="arrow">→</span>
         </button>
         {onBookmark && (
-          <button
-            style={{
-              marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer',
-              color: isBookmarked ? 'var(--gd)' : 'var(--td)',
-              padding: '2px 4px', borderRadius: 6,
-              transition: 'color .2s, transform .2s',
-              transform: isBookmarked ? 'scale(1.15)' : 'scale(1)',
-            }}
+          <motion.button
+            className={`job-bookmark ${isBookmarked ? 'saved' : ''}`}
+            whileTap={{ scale: 0.82 }}
             onClick={e => { e.stopPropagation(); onBookmark(job.id) }}
             title={isBookmarked ? 'Remove bookmark' : 'Save for later'}
           >
@@ -75,7 +75,7 @@ export default function JobCard({ job, onClick, onApply, delay = 0, isBookmarked
               stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
             </svg>
-          </button>
+          </motion.button>
         )}
       </div>
     </motion.div>

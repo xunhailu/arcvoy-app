@@ -40,7 +40,7 @@
   border: 1px solid var(--gb); color: var(--gd);
   font-size: 15px; font-weight: 700;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   box-shadow: 0 0 16px rgba(204,102,51,.2), inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
@@ -106,7 +106,7 @@
   transform: rotate(6deg) scale(1.05);
 }
 .statNum {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 52px; font-weight: 700; line-height: 1;
   letter-spacing: -.03em;
   background: linear-gradient(135deg, var(--tx) 20%, var(--gd) 100%);
@@ -167,7 +167,7 @@
   flex-shrink: 0; margin-left: 12px;
   background: none; border: 1px solid rgba(220,60,60,0.35);
   color: #c04040; font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase;
-  font-family: 'Manrope', sans-serif; font-weight: 600;
+  font-family: 'Raleway', sans-serif; font-weight: 600;
   padding: 5px 12px; border-radius: 5px; cursor: pointer;
   transition: background .2s, border-color .2s;
 }

@@ -55,7 +55,7 @@
   color: var(--gd); font-weight: 700; margin-bottom: 6px;
 }
 .title {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 26px; font-weight: 700; color: var(--tx);
   letter-spacing: -.01em;
 }
@@ -76,7 +76,7 @@
   flex: 1; background: none; border: none; cursor: pointer;
   font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
   color: var(--td); padding: 9px 0; border-radius: 8px;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   transition: background .2s, color .2s, box-shadow .2s;
 }
 .tabActive {
@@ -108,7 +108,7 @@
 .switchLink {
   background: none; border: none; cursor: pointer;
   color: var(--gd); font-size: 12px; font-weight: 600;
-  font-family: 'Manrope', sans-serif; padding: 0;
+  font-family: 'Raleway', sans-serif; padding: 0;
   text-decoration: underline; text-decoration-color: transparent;
   transition: text-decoration-color .2s;
 }
@@ -138,7 +138,7 @@
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 10px; padding: 11px 0;
   color: var(--tx); font-size: 12.5px; font-weight: 500;
-  font-family: 'Manrope', sans-serif; cursor: pointer;
+  font-family: 'Raleway', sans-serif; cursor: pointer;
   transition: background .2s, border-color .2s, transform .15s;
   width: 100%;
 }
@@ -171,7 +171,7 @@
 .forgotLink {
   background: none; border: none; cursor: pointer;
   color: var(--td); font-size: 11.5px; font-weight: 500;
-  font-family: 'Manrope', sans-serif; padding: 0;
+  font-family: 'Raleway', sans-serif; padding: 0;
   transition: color .2s;
 }
 .forgotLink:hover { color: var(--gd); }

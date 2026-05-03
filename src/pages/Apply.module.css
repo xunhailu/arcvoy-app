@@ -7,7 +7,7 @@
 }
 .bcLink {
   background: none; border: none; color: var(--td); cursor: pointer;
-  font-family: 'Manrope', sans-serif; font-size: 11px;
+  font-family: 'Raleway', sans-serif; font-size: 11px;
   letter-spacing: .04em; padding: 0; transition: color .2s;
 }
 .bcLink:hover { color: var(--gd); }
@@ -36,7 +36,7 @@
 }
 .jobDept { font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--gd); font-weight: 700; margin-bottom: 10px; }
 .jobTitle {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 26px; font-weight: 700; color: var(--tx);
   line-height: 1.15; margin-bottom: 6px;
 }
@@ -70,7 +70,7 @@
 
 .backBtn {
   background: none; border: none; color: var(--td); cursor: pointer;
-  font-family: 'Manrope', sans-serif; font-size: 11px;
+  font-family: 'Raleway', sans-serif; font-size: 11px;
   padding: 16px 0 0; transition: color .2s; letter-spacing: .02em;
 }
 .backBtn:hover { color: var(--gd); }
@@ -81,7 +81,7 @@
 .formHead { margin-bottom: 40px; }
 .formLabel { font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--gd); font-weight: 700; margin-bottom: 10px; }
 .formTitle {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 36px; font-weight: 700; color: var(--tx);
   line-height: 1.1; margin-bottom: 10px;
 }
@@ -127,7 +127,7 @@
 .ageCheckError { border-color: #a03030 !important; }
 .fi {
   background: var(--input-bg); border: 1px solid var(--bd2);
-  color: var(--tx); font-family: 'Manrope', sans-serif; font-size: 13px;
+  color: var(--tx); font-family: 'Raleway', sans-serif; font-size: 13px;
   padding: 12px 16px; outline: none; border-radius: 6px;
   transition: border-color .2s, box-shadow .2s;
 }
@@ -160,7 +160,7 @@
 
 .formFooter { padding-top: 32px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
 .footerNote { font-size: 11px; color: var(--td); }
-.inlineLink { background: none; border: none; color: var(--gd); cursor: pointer; font-size: 11px; padding: 0; font-family: 'Manrope', sans-serif; }
+.inlineLink { background: none; border: none; color: var(--gd); cursor: pointer; font-size: 11px; padding: 0; font-family: 'Raleway', sans-serif; }
 
 /* ── success ── */
 .successPage { min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 48px; }
@@ -173,7 +173,7 @@
   box-shadow: 0 0 32px rgba(204,102,51,.2);
 }
 .successTitle {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 36px; font-weight: 700; color: var(--tx); margin-bottom: 14px;
 }
 .successDesc { font-size: 14px; color: var(--tm); line-height: 1.8; margin-bottom: 12px; }

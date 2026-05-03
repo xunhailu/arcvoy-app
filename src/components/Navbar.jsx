@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import styles from './Navbar.module.css'
+
+const NAV_ITEMS = [
+  ['home', 'Home'],
+  ['about', 'About'],
+  ['jobs', 'Careers'],
+  ['faq', 'FAQ'],
+  ['helpdesk', 'Help Desk'],
+]
 
 export default function Navbar({ theme, onToggleTheme, onShowLogin, onShowCandidateAuth, page, onNavigate, user }) {
   const [scrolled, setScrolled] = useState(false)
@@ -29,9 +37,9 @@ export default function Navbar({ theme, onToggleTheme, onShowLogin, onShowCandid
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease: [0.25, 0, 0, 1] }}>
           <svg width="26" height="26" viewBox="0 0 64 64" fill="none">
-            <path d="M10 50 Q32 6 54 50" stroke="#cc6633" strokeWidth="5" strokeLinecap="round"/>
-            <path d="M22 37 L42 37" stroke="#cc6633" strokeWidth="5" strokeLinecap="round"/>
-            <circle cx="54" cy="50" r="3.5" fill="#cc6633"/>
+            <path className={styles.brandArc} d="M10 50 Q32 6 54 50" stroke="#cc6633" strokeWidth="5" strokeLinecap="round"/>
+            <path className={styles.brandBridge} d="M22 37 L42 37" stroke="#cc6633" strokeWidth="5" strokeLinecap="round"/>
+            <circle className={styles.brandDot} cx="54" cy="50" r="3.5" fill="#cc6633"/>
           </svg>
         </motion.span>
         <span className={styles.brandText}>Arcvoy</span>
@@ -39,11 +47,18 @@ export default function Navbar({ theme, onToggleTheme, onShowLogin, onShowCandid
 
       {/* nav links — glass pill, truly centred */}
       <div className={styles.links}>
-        <button className={`${styles.link} ${page === 'home'     ? styles.active : ''}`} onClick={() => nav('home')}>Home</button>
-        <button className={`${styles.link} ${page === 'about'    ? styles.active : ''}`} onClick={() => nav('about')}>About</button>
-        <button className={`${styles.link} ${page === 'jobs'     ? styles.active : ''}`} onClick={() => nav('jobs')}>Careers</button>
-        <button className={`${styles.link} ${page === 'faq'      ? styles.active : ''}`} onClick={() => nav('faq')}>FAQ</button>
-        <button className={`${styles.link} ${page === 'helpdesk' ? styles.active : ''}`} onClick={() => nav('helpdesk')}>Help Desk</button>
+        {NAV_ITEMS.map(([key, label]) => (
+          <button key={key} className={`${styles.link} ${page === key ? styles.active : ''}`} onClick={() => nav(key)}>
+            {page === key && (
+              <motion.span
+                className={styles.activePill}
+                layoutId="nav-active-pill"
+                transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+              />
+            )}
+            <span className={styles.linkLabel}>{label}</span>
+          </button>
+        ))}
       </div>
 
       {/* right side */}
@@ -89,15 +104,15 @@ export default function Navbar({ theme, onToggleTheme, onShowLogin, onShowCandid
     </nav>
 
     {/* mobile menu */}
-    {menuOpen && (
-      <div className={styles.mobileMenu}>
-        {[
-          ['home',      'Home'],
-          ['about',     'About'],
-          ['jobs',      'Careers'],
-          ['faq',       'FAQ'],
-          ['helpdesk',  'Help Desk'],
-        ].map(([p, label]) => (
+    <AnimatePresence>
+      {menuOpen && (
+      <motion.div
+        className={styles.mobileMenu}
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.22, ease: [0.25, 0, 0, 1] }}>
+        {NAV_ITEMS.map(([p, label]) => (
           <button key={p}
             className={`${styles.mobileLink} ${page === p ? styles.mobileLinkActive : ''}`}
             onClick={() => { nav(p); setMenuOpen(false) }}>
@@ -111,8 +126,9 @@ export default function Navbar({ theme, onToggleTheme, onShowLogin, onShowCandid
           <button className={styles.mobileLink} onClick={() => { onShowCandidateAuth(); setMenuOpen(false) }}>Sign In</button>
         )}
         <button className={styles.mobileLink} onClick={() => { onShowLogin(); setMenuOpen(false) }}>Employee Login</button>
-      </div>
-    )}
+      </motion.div>
+      )}
+    </AnimatePresence>
     </>
   )
 }

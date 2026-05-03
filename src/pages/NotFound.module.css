@@ -29,13 +29,13 @@
   margin-bottom: 48px;
 }
 .brand {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 20px;
   font-weight: 700;
   color: var(--tx);
 }
 .code {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: clamp(100px, 16vw, 160px);
   font-weight: 700;
   line-height: 1;
@@ -45,7 +45,7 @@
   margin-bottom: -20px;
 }
 .title {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: clamp(32px, 5vw, 52px);
   font-weight: 700;
   letter-spacing: -.02em;

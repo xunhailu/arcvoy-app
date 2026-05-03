@@ -26,7 +26,7 @@
 .topTab:hover { color: var(--tx); background: rgba(255,255,255,0.07); }
 .topTabActive { color: var(--gd) !important; background: var(--ga) !important; border: 1px solid var(--gb); }
 
-.logoutBtn { background: var(--ga); border: 1px solid var(--gb); color: var(--gd); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 8px 16px; cursor: pointer; font-family: 'Manrope',sans-serif; font-weight: 600; transition: all .2s; white-space: nowrap; border-radius: 6px; }
+.logoutBtn { background: var(--ga); border: 1px solid var(--gb); color: var(--gd); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 8px 16px; cursor: pointer; font-family: 'Raleway',sans-serif; font-weight: 600; transition: all .2s; white-space: nowrap; border-radius: 6px; }
 .logoutBtn:hover { background: var(--gb); }
 
 .viewWrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
@@ -86,7 +86,7 @@
 .statusLabel { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--td); font-weight: 600; margin-bottom: 8px; }
 .statusBadge { display: inline-block; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; padding: 5px 14px; border-radius: 2px; }
 .statusBtns { display: flex; flex-wrap: wrap; gap: 6px; }
-.statusBtn { background: var(--sf2); border: 1px solid var(--bd2); color: var(--tm); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; padding: 6px 12px; cursor: pointer; font-family: 'Manrope',sans-serif; font-weight: 600; transition: all .2s; }
+.statusBtn { background: var(--sf2); border: 1px solid var(--bd2); color: var(--tm); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; padding: 6px 12px; cursor: pointer; font-family: 'Raleway',sans-serif; font-weight: 600; transition: all .2s; }
 .statusBtn:hover:not(:disabled) { color: var(--tx); border-color: var(--tm); }
 .statusBtn:disabled { opacity: .5; cursor: not-allowed; }
 .statusBtnActive { opacity: 1 !important; cursor: default !important; }
@@ -100,11 +100,11 @@
 .detailItem span { color: var(--td); flex-shrink: 0; }
 .detailItem strong { color: var(--tx); font-weight: 500; text-align: right; word-break: break-all; }
 
-.cvBtn { display: flex; align-items: center; gap: 10px; background: var(--ga); border: 1px solid var(--gb); color: var(--gd); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; padding: 12px 18px; cursor: pointer; font-family: 'Manrope',sans-serif; font-weight: 600; transition: all .2s; width: 100%; }
+.cvBtn { display: flex; align-items: center; gap: 10px; background: var(--ga); border: 1px solid var(--gb); color: var(--gd); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; padding: 12px 18px; cursor: pointer; font-family: 'Raleway',sans-serif; font-weight: 600; transition: all .2s; width: 100%; }
 .cvBtn:hover:not(:disabled) { background: var(--gb); }
 .cvBtn:disabled { opacity: .6; cursor: not-allowed; }
 .noCV { font-size: 12px; color: var(--td); font-style: italic; font-family: 'Raleway',sans-serif; }
-.saveBtn { background: var(--sf2); border: 1px solid var(--bd2); color: var(--tm); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 9px 18px; cursor: pointer; font-family: 'Manrope',sans-serif; font-weight: 600; transition: all .2s; margin-top: 10px; }
+.saveBtn { background: var(--sf2); border: 1px solid var(--bd2); color: var(--tm); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 9px 18px; cursor: pointer; font-family: 'Raleway',sans-serif; font-weight: 600; transition: all .2s; margin-top: 10px; }
 .saveBtn:hover:not(:disabled) { color: var(--tx); border-color: var(--tm); }
 
 .verifyDots { display: flex; align-items: center; gap: 5px; }
@@ -115,7 +115,7 @@
 
 .verifyBlock { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--bd); }
 .verifyRow { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
-.verifyTag { font-size: 9px; font-weight: 700; letter-spacing: .1em; font-family: 'Manrope',sans-serif; width: 20px; flex-shrink: 0; transition: color .2s; }
+.verifyTag { font-size: 9px; font-weight: 700; letter-spacing: .1em; font-family: 'Raleway',sans-serif; width: 20px; flex-shrink: 0; transition: color .2s; }
 .verifyInline { flex: 1; background: var(--input-bg); border: 1px solid var(--bd2); color: var(--tx); font-family: 'Raleway',sans-serif; font-size: 11px; padding: 7px 10px; outline: none; border-radius: 4px; transition: border-color .2s; min-width: 0; }
 .verifyInline:focus { border-color: rgba(204,102,51,.5); }
 .verifyInline::placeholder { color: var(--td); }
@@ -123,7 +123,7 @@
 .verifyInlineBtn:hover:not(:disabled) { background: rgba(204,102,51,0.22); }
 .verifyInlineBtn:disabled { opacity: .35; cursor: not-allowed; }
 
-.exportBtn { display: flex; align-items: center; gap: 7px; background: var(--ga); border: 1px solid var(--gb); color: var(--gd); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 7px 14px; cursor: pointer; font-family: 'Manrope',sans-serif; font-weight: 700; transition: all .2s; flex-shrink: 0; }
+.exportBtn { display: flex; align-items: center; gap: 7px; background: var(--ga); border: 1px solid var(--gb); color: var(--gd); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 7px 14px; cursor: pointer; font-family: 'Raleway',sans-serif; font-weight: 700; transition: all .2s; flex-shrink: 0; }
 .exportBtn:hover { background: var(--gb); }
 
 .sourcedBadge { display: inline-block; font-size: 8px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; padding: 2px 7px; border-radius: 2px; background: rgba(204,102,51,0.13); color: var(--gd); border: 1px solid rgba(204,102,51,0.28); font-family: 'Raleway', sans-serif; vertical-align: middle; }
@@ -163,12 +163,12 @@
 .ticketMessage { font-size: 13px; color: var(--tm); line-height: 1.7; white-space: pre-wrap; background: var(--sf2); border: 1px solid var(--bd); padding: 16px 18px; font-family: 'Raleway',sans-serif; }
 
 /* jobs view */
-.addBtn { background: var(--gd); border: none; color: #fff; font-size: 11px; font-family: 'Manrope',sans-serif; font-weight: 700; letter-spacing: .05em; padding: 8px 16px; cursor: pointer; border-radius: 4px; transition: opacity .2s; }
+.addBtn { background: var(--gd); border: none; color: #fff; font-size: 11px; font-family: 'Raleway',sans-serif; font-weight: 700; letter-spacing: .05em; padding: 8px 16px; cursor: pointer; border-radius: 4px; transition: opacity .2s; }
 .addBtn:hover { opacity: .85; }
 .jobRow { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--bd); }
 .jobRowMain { flex: 1; min-width: 0; }
 .jobRowMeta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.editBtn { background: var(--sf2); border: 1px solid var(--bd); color: var(--tm); font-size: 10px; font-family: 'Manrope',sans-serif; font-weight: 600; letter-spacing: .06em; padding: 5px 12px; cursor: pointer; border-radius: 3px; transition: all .15s; text-transform: uppercase; }
+.editBtn { background: var(--sf2); border: 1px solid var(--bd); color: var(--tm); font-size: 10px; font-family: 'Raleway',sans-serif; font-weight: 600; letter-spacing: .06em; padding: 5px 12px; cursor: pointer; border-radius: 3px; transition: all .15s; text-transform: uppercase; }
 .editBtn:hover { color: var(--tx); border-color: var(--tm); }
 .jobFormOverlay { position: absolute; inset: 0; background: rgba(0,0,0,.6); z-index: 10; display: flex; align-items: center; justify-content: center; padding: 24px; }
 .jobForm { background: var(--bg); border: 1px solid var(--bd); width: 100%; max-width: 560px; max-height: 90vh; display: flex; flex-direction: column; border-radius: 6px; overflow: hidden; }

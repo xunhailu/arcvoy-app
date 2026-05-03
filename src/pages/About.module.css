@@ -156,7 +156,7 @@
   box-shadow: 0 14px 36px rgba(193,68,14,.1), 0 0 0 1px rgba(193,68,14,.13);
 }
 .valNum {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 13px; color: var(--gd); opacity: .65;
   display: block; margin-bottom: 16px; font-weight: 700;
 }
@@ -203,7 +203,7 @@
   padding-left: 12px;
 }
 .mYear {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 22px; font-weight: 700; padding-top: 2px;
   background: linear-gradient(135deg, var(--gd), var(--gl));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;

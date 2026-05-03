@@ -103,7 +103,7 @@ export default function CandidateAuth({ onClose, onSuccess }) {
                 <CloseBtn />
               </div>
               <div className={styles.sentIcon}>✉</div>
-              <h3 style={{ fontFamily: "'Manrope',sans-serif", fontSize: 22, fontWeight: 700, color: 'var(--tx)', marginBottom: 8 }}>
+              <h3 style={{ fontFamily: "'Raleway',sans-serif", fontSize: 22, fontWeight: 700, color: 'var(--tx)', marginBottom: 8 }}>
                 Check your inbox
               </h3>
               <p className={styles.sentText}>
@@ -159,7 +159,7 @@ export default function CandidateAuth({ onClose, onSuccess }) {
                 <CloseBtn />
               </div>
               <div className={styles.sentIcon}>✓</div>
-              <h3 style={{ fontFamily: "'Manrope',sans-serif", fontSize: 22, fontWeight: 700, color: 'var(--tx)', marginBottom: 8 }}>
+              <h3 style={{ fontFamily: "'Raleway',sans-serif", fontSize: 22, fontWeight: 700, color: 'var(--tx)', marginBottom: 8 }}>
                 Check your inbox
               </h3>
               <p className={styles.sentText}>

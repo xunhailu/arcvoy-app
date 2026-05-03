@@ -16,7 +16,7 @@
 }
 .heroInner { max-width: 600px; }
 .heroTitle {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: clamp(36px, 5vw, 64px);
   font-weight: 700; line-height: 1.06;
   letter-spacing: -.025em; color: var(--tx);
@@ -41,7 +41,7 @@
   background: var(--ga); border: 1px solid var(--gb);
   color: var(--gd); font-size: 11px; font-weight: 600;
   padding: 7px 16px; border-radius: 100px;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   cursor: default; transition: background .2s, border-color .2s;
 }
 button.chip {
@@ -103,7 +103,7 @@ button.chip:hover {
 [data-theme="light"] .formHead { border-bottom-color: var(--bd); }
 .formHeadLeft { flex: 1; }
 .formTitle {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 28px; font-weight: 700; color: var(--tx);
   letter-spacing: -.015em; margin-bottom: 5px;
 }
@@ -111,7 +111,7 @@ button.chip:hover {
 
 .progressLabel {
   font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
-  font-weight: 700; color: var(--gd); font-family: 'Manrope', sans-serif;
+  font-weight: 700; color: var(--gd); font-family: 'Raleway', sans-serif;
   background: var(--ga); border: 1px solid var(--gb);
   padding: 5px 12px; border-radius: 100px;
   white-space: nowrap; flex-shrink: 0;
@@ -151,7 +151,7 @@ button.chip:hover {
 /* character counter */
 .charCount {
   font-size: 10.5px;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   color: var(--tm);
   letter-spacing: .04em;
   transition: color .2s;
@@ -185,7 +185,7 @@ button.chip:hover {
   display: flex; align-items: center; justify-content: center;
 }
 .successTitle {
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 30px; font-weight: 700; color: var(--tx);
 }
 .successText { font-size: 14px; color: var(--tm); line-height: 1.7; max-width: 340px; font-family: 'Raleway', sans-serif; }

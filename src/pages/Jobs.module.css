@@ -87,7 +87,7 @@
   background: linear-gradient(135deg, var(--gd), var(--gl));
   color: #fff; border: none; padding: 14px 28px;
   font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
-  font-family: 'Manrope', sans-serif; font-weight: 700; cursor: pointer;
+  font-family: 'Raleway', sans-serif; font-weight: 700; cursor: pointer;
   border-radius: 100px;
   box-shadow: 0 8px 32px rgba(204,102,51,.5), 0 2px 8px rgba(0,0,0,.3);
   transition: transform .2s, box-shadow .2s, filter .2s;
