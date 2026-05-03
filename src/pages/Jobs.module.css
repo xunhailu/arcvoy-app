@@ -63,20 +63,26 @@
   display: inline-flex; align-items: center; gap: 8px;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.09);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px) saturate(1.2); -webkit-backdrop-filter: blur(20px) saturate(1.2);
   color: var(--tm); font-size: 11px; font-family: 'Raleway', sans-serif;
   font-weight: 500; padding: 8px 18px; border-radius: 100px;
-  cursor: pointer; transition: all .2s;
-  box-shadow: 0 1px 8px rgba(0,0,0,.12);
+  cursor: pointer;
+  transition: color .25s, border-color .25s, background .25s, transform .3s var(--ease-spring), box-shadow .3s;
+  box-shadow: 0 1px 8px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,0.06);
 }
 [data-theme="light"] .deptPill {
-  background: rgba(255,255,255,0.6);
-  border-color: rgba(0,0,0,0.1);
+  background: rgba(255,255,255,0.65);
+  border-color: rgba(0,0,0,0.08);
+  box-shadow: 0 1px 8px rgba(0,0,0,.04), inset 0 1px 0 rgba(255,255,255,0.9);
 }
-.deptPill:hover { color: var(--tx); border-color: var(--gb); background: var(--ga); }
+.deptPill:hover {
+  color: var(--tx); border-color: var(--gb); background: var(--ga);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(204,102,51,.1), inset 0 1px 0 rgba(255,255,255,0.08);
+}
 .deptPillActive {
   color: var(--gd); border-color: var(--gb); background: var(--ga);
-  box-shadow: 0 0 0 3px rgba(204,102,51,.08), 0 4px 14px rgba(204,102,51,.15);
+  box-shadow: 0 0 0 3px rgba(204,102,51,.1), 0 6px 20px rgba(204,102,51,.22), inset 0 1px 0 rgba(255,255,255,0.08);
 }
 .deptPillIcon { width: 14px; height: 14px; display: flex; align-items: center; }
 .deptPillIcon svg { width: 14px; height: 14px; }
@@ -89,14 +95,21 @@
   font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
   font-family: 'Raleway', sans-serif; font-weight: 700; cursor: pointer;
   border-radius: 100px;
-  box-shadow: 0 8px 32px rgba(204,102,51,.5), 0 2px 8px rgba(0,0,0,.3);
-  transition: transform .2s, box-shadow .2s, filter .2s;
+  box-shadow:
+    0 10px 36px rgba(204,102,51,.5),
+    0 2px 8px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+  transition: transform .25s var(--ease-spring), box-shadow .3s, filter .2s;
 }
 .stickyApply:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 44px rgba(204,102,51,.6), 0 2px 8px rgba(0,0,0,.3);
-  filter: brightness(1.05);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow:
+    0 16px 48px rgba(204,102,51,.6),
+    0 2px 8px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,0.25);
+  filter: brightness(1.06) saturate(1.05);
 }
+.stickyApply:active { transform: translateY(0) scale(.98); }
 
 /* ── layout ── */
 .layout { display: grid; grid-template-columns: 280px 1fr; }
@@ -128,17 +141,19 @@
   width: 100%;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.09);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   color: var(--tx); font-family: 'Raleway', sans-serif; font-size: 12px;
-  padding: 10px 14px; border-radius: 10px; outline: none;
-  transition: border-color .2s, box-shadow .2s; margin-bottom: 24px;
+  padding: 11px 14px; border-radius: 10px; outline: none;
+  transition: border-color .25s, box-shadow .25s, background .25s;
+  margin-bottom: 24px;
 }
 [data-theme="light"] .searchInput {
-  background: rgba(255,255,255,0.65); border-color: rgba(0,0,0,0.1);
+  background: rgba(255,255,255,0.65); border-color: rgba(0,0,0,0.08);
 }
 .searchInput:focus {
   border-color: rgba(204,102,51,.5);
-  box-shadow: 0 0 0 3px rgba(204,102,51,.08);
+  box-shadow: 0 0 0 4px rgba(204,102,51,.1), 0 1px 2px rgba(0,0,0,.2) inset;
+  background: rgba(255,255,255,0.06);
 }
 
 .filterGroup { margin-bottom: 24px; }
