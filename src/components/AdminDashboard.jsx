@@ -11,6 +11,7 @@ import {
   updateVerificationLinks,
   createSourcedApplication,
   sendWelcomeEmail,
+  sendBlastEmail,
   adminLogin,
   adminLogout,
   getAdminSession,
@@ -19,6 +20,8 @@ import {
   fetchSubscribers,
 } from '../lib/applications'
 import { createJob, updateJob } from '../lib/jobs'
+import { supabase } from '../lib/supabase'
+import { toast } from '../lib/toast'
 import styles from './AdminDashboard.module.css'
 import authStyles from './CandidateAuth.module.css'
 
@@ -126,14 +129,14 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
     setSendingWelcome(true)
     try {
       await sendWelcomeEmail(app)
-      alert(`Welcome email sent to ${app.email}`)
-    } catch { alert('Welcome email failed to send. Please try again.') }
+      toast.success(`Welcome email sent to ${app.email}`)
+    } catch { toast.error('Welcome email failed to send. Please try again.') }
     setSendingWelcome(false)
   }
 
   const saveLinks = async () => {
     setSavingLinks(true)
-    try { await updateVerificationLinks(app.id, identityLink, complianceLink) } catch { alert('Failed to save verification links. Please try again.') }
+    try { await updateVerificationLinks(app.id, identityLink, complianceLink); toast.success('Links saved') } catch { toast.error('Failed to save verification links. Please try again.') }
     setSavingLinks(false)
   }
 
@@ -195,7 +198,7 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
       await supabase.functions.invoke('send-email', {
         body: { to: app.email, from: 'Arcvoy Careers <careers@arcvoy.com>', replyTo: 'support@arcvoy.com', subject: 'Identity Verification — Arcvoy', html }
       })
-    } catch { alert('Identity verification email failed to send. Please try again.') }
+    } catch { toast.error('Identity verification email failed to send. Please try again.') }
   }
 
   const sendComplianceEmail = async () => {
@@ -249,7 +252,7 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
       await supabase.functions.invoke('send-email', {
         body: { to: app.email, from: 'Arcvoy Careers <careers@arcvoy.com>', replyTo: 'support@arcvoy.com', subject: 'Compliance Verification — Arcvoy', html }
       })
-    } catch { alert('Compliance verification email failed to send. Please try again.') }
+    } catch { toast.error('Compliance verification email failed to send. Please try again.') }
   }
 
   const saveNotes = async () => {
@@ -264,14 +267,14 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
     try {
       const url = await getCVUrl(app.cv_path)
       window.open(url, '_blank')
-    } catch { alert('Could not download CV. Please try again.') }
+    } catch { toast.error('Could not download CV. Please try again.') }
     setDownloading(false)
   }
 
   const changeStatus = async (status) => {
     setStatusLoading(true)
     await onStatusChange(app.id, status, app)
-    try { await sendStatusEmail(status, app) } catch { alert('Status update email failed to send. The status was saved but the applicant was not notified.') }
+    try { await sendStatusEmail(status, app) } catch { toast.error('Status email failed. Status was saved but applicant was not notified.') }
     setStatusLoading(false)
   }
 
@@ -670,7 +673,7 @@ function ApplicationsView({ apps, loading }) {
         created_at: new Date().toISOString(),
       }, ...prev])
       setShowAddModal(false)
-    } catch (e) { alert(e.message || 'Failed to add candidate. Please try again.') }
+    } catch (e) { toast.error(e.message || 'Failed to add candidate. Please try again.') }
     setAddSaving(false)
   }
 
@@ -772,7 +775,26 @@ function ApplicationsView({ apps, loading }) {
         </div>
 
         {loading ? (
-          <div className={styles.empty}>Loading applications…</div>
+          <div className={styles.table}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className={styles.trow} style={{ cursor: 'default', opacity: 1 - i * 0.13, pointerEvents: 'none' }}>
+                <span className={styles.tdName}>
+                  <div className={styles.skeleton} style={{ width: 36, height: 36, borderRadius: '50%', flexShrink: 0 }} />
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    <div className={styles.skeleton} style={{ height: 13, width: '55%' }} />
+                    <div className={styles.skeleton} style={{ height: 11, width: '75%' }} />
+                  </div>
+                </span>
+                <span style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <div className={styles.skeleton} style={{ height: 13, width: '65%' }} />
+                  <div className={styles.skeleton} style={{ height: 10, width: '40%' }} />
+                </span>
+                <span><div className={styles.skeleton} style={{ height: 22, width: 64, borderRadius: 2 }} /></span>
+                <span><div className={styles.skeleton} style={{ height: 13, width: 38 }} /></span>
+                <span /><span /><span />
+              </div>
+            ))}
+          </div>
         ) : filtered.length === 0 ? (
           <div className={styles.empty}>No applications found.</div>
         ) : (
@@ -1057,6 +1079,9 @@ function SubscribersView() {
   const [subscribers, setSubscribers] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [blastSubject, setBlastSubject] = useState('')
+  const [blastBody, setBlastBody] = useState('')
+  const [blastSending, setBlastSending] = useState(false)
 
   useEffect(() => {
     fetchSubscribers().then(data => { setSubscribers(data); setLoading(false) }).catch(() => setLoading(false))
@@ -1072,6 +1097,22 @@ function SubscribersView() {
       signed_up: new Date(s.created_at).toISOString().slice(0, 10),
     }))
     exportCSV(rows, 'arcvoy-subscribers.csv')
+  }
+
+  const sendBlast = async () => {
+    if (!blastSubject.trim() || !blastBody.trim() || subscribers.length === 0) return
+    setBlastSending(true)
+    try {
+      const { sent, failed } = await sendBlastEmail(blastSubject, blastBody, subscribers)
+      if (failed === 0) {
+        toast.success(`Sent to ${sent} subscriber${sent !== 1 ? 's' : ''}`)
+      } else {
+        toast.info(`Sent to ${sent}, failed for ${failed}`)
+      }
+      setBlastSubject('')
+      setBlastBody('')
+    } catch { toast.error('Email blast failed. Please try again.') }
+    setBlastSending(false)
   }
 
   return (
@@ -1092,6 +1133,23 @@ function SubscribersView() {
               </svg>
               CSV
             </button>
+          </div>
+        </div>
+
+        <div style={{ padding: '20px 28px 0' }}>
+          <div className={styles.blastBox}>
+            <div className={styles.blastTitle}>Send to All Subscribers</div>
+            <input className="fi" placeholder="Subject line…" value={blastSubject}
+              onChange={e => setBlastSubject(e.target.value)} />
+            <textarea className={styles.blastTextarea} placeholder="Write your message…"
+              value={blastBody} onChange={e => setBlastBody(e.target.value)} rows={4} />
+            <div className={styles.blastFooter}>
+              <span className={styles.blastCount}>{subscribers.length} recipient{subscribers.length !== 1 ? 's' : ''}</span>
+              <button className={styles.blastBtn} onClick={sendBlast}
+                disabled={blastSending || !blastSubject.trim() || !blastBody.trim() || subscribers.length === 0}>
+                {blastSending ? 'Sending…' : 'Send Email'}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1169,7 +1227,7 @@ function JobsView() {
       else await updateJob(editing, payload)
       await load()
       close()
-    } catch { alert('Failed to save job. Please try again.') }
+    } catch { toast.error('Failed to save job. Please try again.') }
     setSaving(false)
   }
 
@@ -1287,6 +1345,7 @@ export default function AdminDashboard() {
   const [apps, setApps] = useState([])
   const [appsLoading, setAppsLoading] = useState(true)
   const [activeView, setActiveView] = useState('overview')
+  const [newApps, setNewApps] = useState(0)
 
   const loadApps = useCallback(async () => {
     setAppsLoading(true)
@@ -1303,6 +1362,21 @@ export default function AdminDashboard() {
       })
       .catch(() => setAppsLoading(false))
   }, [loadApps])
+
+  useEffect(() => {
+    if (!session) return
+    const channel = supabase
+      .channel('admin-new-apps')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'applications' }, () => {
+        if (activeView === 'applications') {
+          loadApps()
+        } else {
+          setNewApps(prev => prev + 1)
+        }
+      })
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [session, activeView, loadApps])
 
   const login = async (email, password) => {
     await adminLogin(email, password)
@@ -1358,8 +1432,14 @@ export default function AdminDashboard() {
               ].map(tab => (
                 <button key={tab.key}
                   className={`${styles.topTab} ${activeView === tab.key ? styles.topTabActive : ''}`}
-                  onClick={() => setActiveView(tab.key)}>
+                  onClick={() => {
+                    setActiveView(tab.key)
+                    if (tab.key === 'applications') { setNewApps(0); loadApps() }
+                  }}>
                   {tab.label}
+                  {tab.key === 'applications' && newApps > 0 && (
+                    <span className={styles.tabBadge}>{newApps}</span>
+                  )}
                 </button>
               ))}
             </div>

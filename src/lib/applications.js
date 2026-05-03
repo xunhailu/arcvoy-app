@@ -404,6 +404,51 @@ export async function fetchSubscribers() {
   return data
 }
 
+/* ── Send email blast to all subscribers ── */
+export async function sendBlastEmail(subject, body, subscribers) {
+  const html = `
+    <table width="580" cellpadding="0" cellspacing="0" border="0" style="font-family:'Raleway',Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;">
+      <tr><td>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#1A1410;border-radius:10px 10px 0 0;">
+          <tr>
+            <td style="padding:22px 32px;"><span style="font-family:Georgia,serif;font-size:20px;color:#F5F0EB;font-weight:400;letter-spacing:0.01em;">Arcvoy</span></td>
+            <td style="padding:22px 32px;text-align:right;"><span style="font-size:10px;color:#6a5a4a;letter-spacing:0.12em;text-transform:uppercase;">Talent Platform</span></td>
+          </tr>
+        </table>
+      </td></tr>
+      <tr><td style="background:#cc6633;padding:28px 32px;">
+        <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:700;line-height:1.25;">${subject}</h1>
+      </td></tr>
+      <tr><td style="padding:38px 32px;background:#ffffff;">
+        <div style="font-size:14px;color:#6b5e4e;line-height:1.85;">${body.replace(/\n/g, '<br>')}</div>
+        <div style="height:1px;background:#EDE8E2;margin:28px 0;"></div>
+        <p style="font-size:14px;color:#6b5e4e;margin:0 0 2px;">Regards,</p>
+        <p style="font-size:14px;color:#1A1410;margin:0;font-weight:600;">Arcvoy Team</p>
+        <p style="font-size:11px;color:#b0a090;margin:20px 0 0;line-height:1.6;">You are receiving this because you subscribed at arcvoy.com. Reply to this email to unsubscribe.</p>
+      </td></tr>
+      <tr><td>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F0EB;border-radius:0 0 10px 10px;">
+          <tr>
+            <td style="padding:16px 32px;"><span style="font-size:11px;color:#b0a090;">© 2026 Arcvoy</span></td>
+            <td style="padding:16px 32px;text-align:right;"><span style="font-size:11px;color:#b0a090;"><a href="https://arcvoy.com" style="color:#b0a090;text-decoration:none;">arcvoy.com</a></span></td>
+          </tr>
+        </table>
+      </td></tr>
+    </table>`
+
+  const results = await Promise.allSettled(
+    subscribers.map(s => sendEmail({
+      to: s.email,
+      from: 'Arcvoy <careers@arcvoy.com>',
+      replyTo: 'support@arcvoy.com',
+      subject,
+      html,
+    }))
+  )
+  const failed = results.filter(r => r.status === 'rejected').length
+  return { sent: subscribers.length - failed, failed }
+}
+
 /* ── Admin auth ── */
 export async function adminLogin(email, password) {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
