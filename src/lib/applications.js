@@ -573,5 +573,8 @@ export async function adminLogout() {
 
 export async function getAdminSession() {
   const { data } = await supabase.auth.getSession()
-  return data.session
+  const session = data.session
+  if (!session) return null
+  if (session.user?.app_metadata?.role !== 'admin') return null
+  return session
 }
