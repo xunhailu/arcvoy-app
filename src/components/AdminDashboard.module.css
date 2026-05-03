@@ -11,20 +11,66 @@
 /* shell */
 .adminShell { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
 
-/* top nav */
-.topNav { display: flex; align-items: center; padding: 0 32px; border-bottom: 1px solid var(--bd); background: var(--sf); flex-shrink: 0; height: 64px; gap: 0; }
+/* top nav — glossy frosted glass */
+.topNav {
+  display: flex; align-items: center; padding: 0 32px;
+  flex-shrink: 0; height: 64px; gap: 0; position: relative; z-index: 100;
+  background: rgba(18,15,12,0.78);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.07),
+    0 4px 32px rgba(0,0,0,0.35);
+}
+.topNav::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(204,102,51,0.5) 30%, rgba(224,122,74,0.7) 50%, rgba(204,102,51,0.5) 70%, transparent 100%);
+  pointer-events: none;
+}
+:global([data-theme="light"]) .topNav {
+  background: rgba(250,247,242,0.82);
+  border-bottom-color: rgba(0,0,0,0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.95),
+    0 4px 24px rgba(0,0,0,0.07);
+}
+
 .topBrand { display: flex; align-items: center; gap: 10px; margin-right: 32px; text-decoration: none; cursor: default; flex-shrink: 0; }
-.topBrandMark { color: var(--gd); display: flex; align-items: center; filter: drop-shadow(0 0 6px rgba(204,102,51,.4)); }
+.topBrandMark { color: var(--gd); display: flex; align-items: center; filter: drop-shadow(0 0 8px rgba(204,102,51,.5)); }
 .topBrandText { font-family: 'Raleway', sans-serif; font-size: 26px; font-weight: 500; color: var(--tx); letter-spacing: -0.3px; line-height: 1; }
 .topBrandSub { font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gd); font-family: 'Raleway', sans-serif; margin-left: 2px; }
 
-.topTabs { display: flex; align-items: center; gap: 2px; flex: 1;
-  background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.09);
+.topTabs {
+  display: flex; align-items: center; gap: 2px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border-radius: 100px; padding: 4px 5px; width: fit-content; flex: unset; margin: 0 auto; }
+  border-radius: 100px; padding: 4px 5px; flex: unset; margin: 0 auto;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 2px 12px rgba(0,0,0,0.2);
+}
+:global([data-theme="light"]) .topTabs {
+  background: rgba(255,255,255,0.55);
+  border-color: rgba(0,0,0,0.09);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 2px 10px rgba(0,0,0,0.06);
+}
 .topTab { background: none; border: none; color: var(--tm); font-size: 10px; font-family: 'Raleway',sans-serif; font-weight: 600; padding: 7px 18px; cursor: pointer; transition: background .2s, color .2s; border-radius: 100px; letter-spacing: .08em; text-transform: uppercase; }
-.topTab:hover { color: var(--tx); background: rgba(255,255,255,0.07); }
+.topTab:hover { color: var(--tx); background: rgba(255,255,255,0.08); }
 .topTabActive { color: var(--gd) !important; background: var(--ga) !important; border: 1px solid var(--gb); }
+
+.navRight { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+.themeToggle {
+  width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  color: var(--tm); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s, border-color .2s, color .2s;
+}
+.themeToggle:hover { background: var(--ga); border-color: var(--gb); color: var(--gd); }
+:global([data-theme="light"]) .themeToggle {
+  background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1);
+}
 
 .logoutBtn { background: var(--ga); border: 1px solid var(--gb); color: var(--gd); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 8px 16px; cursor: pointer; font-family: 'Raleway',sans-serif; font-weight: 600; transition: all .2s; white-space: nowrap; border-radius: 6px; }
 .logoutBtn:hover { background: var(--gb); }
