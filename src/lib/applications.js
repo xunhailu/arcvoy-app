@@ -299,6 +299,77 @@ export async function getCVUrl(path) {
   return data.signedUrl
 }
 
+/* ── Create sourced application (admin only) ── */
+export async function createSourcedApplication({ firstName, lastName, email, job }) {
+  const applicationId = crypto.randomUUID()
+
+  const { error } = await supabase
+    .from('applications')
+    .insert([{
+      id: applicationId,
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      job_id: job.id,
+      job_title: job.title,
+      job_dept: job.dept,
+      job_type: job.type,
+      status: 'applied',
+      source: 'sourced',
+    }])
+
+  if (error) {
+    if (error.code === '23505') throw new Error('This person has already been added for this role.')
+    throw error
+  }
+
+  return { id: applicationId }
+}
+
+/* ── Send welcome email to sourced candidate ── */
+export async function sendWelcomeEmail(app) {
+  const html = `
+    <table width="580" cellpadding="0" cellspacing="0" border="0" style="font-family:'Raleway',Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;">
+      <tr><td>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#1A1410;border-radius:10px 10px 0 0;">
+          <tr>
+            <td style="padding:22px 32px;"><span style="font-family:Georgia,serif;font-size:20px;color:#F5F0EB;font-weight:400;letter-spacing:0.01em;">Arcvoy</span></td>
+            <td style="padding:22px 32px;text-align:right;"><span style="font-size:10px;color:#6a5a4a;letter-spacing:0.12em;text-transform:uppercase;">Talent Platform</span></td>
+          </tr>
+        </table>
+      </td></tr>
+      <tr><td style="background:#cc6633;padding:28px 32px;">
+        <p style="margin:0 0 8px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.14em;text-transform:uppercase;font-family:'Raleway',Calibri,Arial,sans-serif;">Talent Opportunity</p>
+        <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:700;line-height:1.2;">You Have Been Selected</h1>
+      </td></tr>
+      <tr><td style="padding:38px 32px;background:#ffffff;">
+        <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${app.first_name},</p>
+        <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 24px;">We are reaching out from Arcvoy, a specialist AI talent platform connecting exceptional professionals with leading AI-first companies. Our team has identified your profile and we are pleased to let you know that you have been selected for consideration for the <strong style="color:#1A1410;">${app.job_title}</strong> role.</p>
+        <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 28px;">This is the beginning of what we hope will be an exciting journey. A member of our team will be in touch shortly with more details about the opportunity and next steps.</p>
+        <div style="height:1px;background:#EDE8E2;margin-bottom:24px;"></div>
+        <p style="font-size:13px;color:#9a8f85;line-height:1.7;margin:0;">If you have any questions or would like to learn more, simply reply to this email and our team will get back to you promptly.</p>
+        <p style="font-size:14px;color:#6b5e4e;margin:24px 0 0;">Regards,</p>
+        <p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">Arcvoy Team</p>
+      </td></tr>
+      <tr><td>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F0EB;border-radius:0 0 10px 10px;">
+          <tr>
+            <td style="padding:16px 32px;"><span style="font-size:11px;color:#b0a090;">© 2026 Arcvoy</span></td>
+            <td style="padding:16px 32px;text-align:right;"><span style="font-size:11px;color:#b0a090;"><a href="https://arcvoy.com" style="color:#b0a090;text-decoration:none;">arcvoy.com</a> &nbsp;·&nbsp; <a href="https://x.com/helloarcvoy" style="color:#b0a090;text-decoration:none;">@helloarcvoy</a></span></td>
+          </tr>
+        </table>
+      </td></tr>
+    </table>`
+
+  await sendEmail({
+    to: app.email,
+    from: 'Arcvoy Careers <careers@arcvoy.com>',
+    replyTo: 'support@arcvoy.com',
+    subject: 'You have been selected for consideration — Arcvoy',
+    html,
+  })
+}
+
 /* ── Delete application (admin only) ── */
 export async function deleteApplication(id) {
   const { error } = await supabase.from('applications').delete().eq('id', id)

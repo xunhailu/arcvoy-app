@@ -9,6 +9,8 @@ import {
   getCVUrl,
   deleteApplication,
   updateVerificationLinks,
+  createSourcedApplication,
+  sendWelcomeEmail,
   adminLogin,
   adminLogout,
   getAdminSession,
@@ -119,6 +121,16 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
   const [identityLink, setIdentityLink] = useState(app.identity_link || '')
   const [complianceLink, setComplianceLink] = useState(app.compliance_link || '')
   const [savingLinks, setSavingLinks] = useState(false)
+  const [sendingWelcome, setSendingWelcome] = useState(false)
+
+  const sendWelcome = async () => {
+    setSendingWelcome(true)
+    try {
+      await sendWelcomeEmail(app)
+      alert(`Welcome email sent to ${app.email}`)
+    } catch (e) { alert('Welcome email failed to send. Please try again.') }
+    setSendingWelcome(false)
+  }
 
   const handleDelete = async () => {
     if (!window.confirm(`Delete application from ${app.first_name} ${app.last_name}? This cannot be undone.`)) return
@@ -279,7 +291,10 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
 
       <div className={styles.drawerHead}>
         <div>
-          <div className={styles.drawerRole}>{app.job_title} · {app.job_dept}</div>
+          <div className={styles.drawerRole}>
+            {app.job_title} · {app.job_dept}
+            {app.source === 'sourced' && <span className={styles.sourcedBadge} style={{ marginLeft: 8 }}>Sourced</span>}
+          </div>
           <div className={styles.drawerName}>{app.first_name} {app.last_name}</div>
         </div>
         <button className="close-btn" onClick={onClose}>
@@ -375,6 +390,21 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
             <div className={styles.noCV}>No CV uploaded</div>
           )}
         </div>
+
+        {app.source === 'sourced' && (
+          <>
+            <div className={styles.divider} />
+            <div className={styles.section}>
+              <div className={styles.sectionTitle}>Welcome Email</div>
+              <p style={{ fontSize: 12, color: 'var(--td)', margin: '0 0 12px', fontFamily: "'Raleway', sans-serif", lineHeight: 1.6 }}>
+                Send this candidate a personalised welcome email introducing Arcvoy and their selection.
+              </p>
+              <button className={styles.welcomeBtn} onClick={sendWelcome} disabled={sendingWelcome}>
+                {sendingWelcome ? 'Sending…' : 'Send Welcome Email'}
+              </button>
+            </div>
+          </>
+        )}
 
         <div className={styles.divider} />
 
@@ -479,8 +509,51 @@ function ApplicationsView({ apps, loading }) {
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [apps_, setApps] = useState(apps)
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [addForm, setAddForm] = useState({ firstName: '', lastName: '', email: '', jobId: '' })
+  const [addJobs, setAddJobs] = useState([])
+  const [addSaving, setAddSaving] = useState(false)
 
   useEffect(() => { setApps(apps) }, [apps])
+
+  const openAddModal = async () => {
+    setAddForm({ firstName: '', lastName: '', email: '', jobId: '' })
+    setShowAddModal(true)
+    try {
+      const { supabase } = await import('../lib/supabase')
+      const { data } = await supabase.from('jobs').select('id,title,dept,type').eq('active', true).order('created_at', { ascending: true })
+      setAddJobs(data || [])
+    } catch { setAddJobs([]) }
+  }
+
+  const submitAddCandidate = async () => {
+    if (!addForm.firstName || !addForm.lastName || !addForm.email || !addForm.jobId) return
+    setAddSaving(true)
+    try {
+      const job = addJobs.find(j => j.id === addForm.jobId)
+      const result = await createSourcedApplication({
+        firstName: addForm.firstName,
+        lastName: addForm.lastName,
+        email: addForm.email,
+        job,
+      })
+      setApps(prev => [{
+        id: result.id,
+        first_name: addForm.firstName,
+        last_name: addForm.lastName,
+        email: addForm.email,
+        job_id: job.id,
+        job_title: job.title,
+        job_dept: job.dept,
+        job_type: job.type,
+        status: 'applied',
+        source: 'sourced',
+        created_at: new Date().toISOString(),
+      }, ...prev])
+      setShowAddModal(false)
+    } catch (e) { alert(e.message || 'Failed to add candidate. Please try again.') }
+    setAddSaving(false)
+  }
 
   const onStatusChange = async (id, status) => {
     await updateStatus(id, status)
@@ -568,6 +641,7 @@ function ApplicationsView({ apps, loading }) {
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
             <input className={styles.searchInput} placeholder="Search name, email, role…"
               value={search} onChange={e => setSearch(e.target.value)} />
+            <button className={styles.addBtn} onClick={openAddModal}>+ Add Candidate</button>
             <button className={styles.exportBtn} onClick={handleExport} title="Export to CSV">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -605,7 +679,10 @@ function ApplicationsView({ apps, loading }) {
                   <span className={styles.tdName}>
                     <div className={styles.avatar}>{app.first_name?.[0] || '?'}{app.last_name?.[0] || '?'}</div>
                     <div>
-                      <div className={styles.tdNameMain}>{app.first_name} {app.last_name}</div>
+                      <div className={styles.tdNameMain}>
+                        {app.first_name} {app.last_name}
+                        {app.source === 'sourced' && <span className={styles.sourcedBadge} style={{ marginLeft: 7 }}>Sourced</span>}
+                      </div>
                       <div className={styles.tdNameSub}>{app.email}</div>
                     </div>
                   </span>
@@ -655,6 +732,60 @@ function ApplicationsView({ apps, loading }) {
             onNotesChange={onNotesChange}
             onDelete={onDelete}
           />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showAddModal && (
+          <motion.div className={styles.jobFormOverlay}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={e => { if (e.target === e.currentTarget) setShowAddModal(false) }}>
+            <motion.div className={styles.jobForm}
+              initial={{ y: 24, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 12, opacity: 0 }}>
+              <div className={styles.jobFormHead}>
+                <div className={styles.sectionTitle}>Add Candidate</div>
+                <button className="close-btn" onClick={() => setShowAddModal(false)}>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                    <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
+                  </svg>
+                </button>
+              </div>
+              <div className={styles.jobFormBody}>
+                <div className={styles.field}>
+                  <label className="fl">First Name *</label>
+                  <input className="fi" value={addForm.firstName} placeholder="e.g. Sarah"
+                    onChange={e => setAddForm(p => ({ ...p, firstName: e.target.value }))} />
+                </div>
+                <div className={styles.field}>
+                  <label className="fl">Last Name *</label>
+                  <input className="fi" value={addForm.lastName} placeholder="e.g. Johnson"
+                    onChange={e => setAddForm(p => ({ ...p, lastName: e.target.value }))} />
+                </div>
+                <div className={styles.field}>
+                  <label className="fl">Email *</label>
+                  <input className="fi" type="email" value={addForm.email} placeholder="e.g. sarah@example.com"
+                    onChange={e => setAddForm(p => ({ ...p, email: e.target.value }))} />
+                </div>
+                <div className={styles.field}>
+                  <label className="fl">Role *</label>
+                  <select className="fi" value={addForm.jobId}
+                    onChange={e => setAddForm(p => ({ ...p, jobId: e.target.value }))}>
+                    <option value="">Select a role…</option>
+                    {addJobs.map(j => (
+                      <option key={j.id} value={j.id}>{j.title} — {j.dept}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className={styles.jobFormFooter}>
+                <button className="btn-ghost" onClick={() => setShowAddModal(false)}>Cancel</button>
+                <button className="sub-btn" onClick={submitAddCandidate}
+                  disabled={addSaving || !addForm.firstName || !addForm.lastName || !addForm.email || !addForm.jobId}>
+                  {addSaving ? 'Adding…' : 'Add Candidate'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
