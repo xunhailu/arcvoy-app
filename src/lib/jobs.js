@@ -1,10 +1,12 @@
-import { supabase } from './supabase'
+import { supabase, isSupabaseConfigured } from './supabase'
+import { JOBS as SAMPLE_JOBS } from '../data'
 
 function mapJob(row) {
-  return { ...row, desc: row.description }
+  return { ...row, desc: row.description ?? row.desc }
 }
 
 export async function fetchJobs() {
+  if (!isSupabaseConfigured) return SAMPLE_JOBS.map(mapJob)
   const { data, error } = await supabase
     .from('jobs')
     .select('*')
@@ -15,6 +17,11 @@ export async function fetchJobs() {
 }
 
 export async function fetchJob(id) {
+  if (!isSupabaseConfigured) {
+    const job = SAMPLE_JOBS.find(j => String(j.id) === String(id))
+    if (!job) throw new Error('Job not found')
+    return mapJob(job)
+  }
   const { data, error } = await supabase
     .from('jobs')
     .select('*')

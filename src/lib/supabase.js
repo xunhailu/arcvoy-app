@@ -3,11 +3,12 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
 
-if (!supabaseUrl || !supabaseKey) {
-  console.error(
-    '[Arcvoy] Supabase env vars missing.\n' +
-    'Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY in Vercel → Settings → Environment Variables.\n' +
-    'The app will render but all data features will be unavailable.'
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseKey)
+
+if (!isSupabaseConfigured) {
+  console.warn(
+    '[Arcvoy] Supabase env vars missing — running in PREVIEW MODE with sample data.\n' +
+    'Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to enable live data features.'
   )
 }
 
