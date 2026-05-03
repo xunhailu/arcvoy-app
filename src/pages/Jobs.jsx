@@ -32,7 +32,7 @@ const DeptIcon = ({ dept }) => {
   )
 }
 
-export default function Jobs({ initialJob, onClearInitial, user }) {
+export default function Jobs() {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [deptFilter, setDeptFilter] = useState(new Set())
@@ -47,10 +47,6 @@ export default function Jobs({ initialJob, onClearInitial, user }) {
   useEffect(() => {
     fetchJobs().then(setJobs).finally(() => setJobsLoading(false))
   }, [])
-
-  useEffect(() => {
-    onClearInitial?.()
-  }, [onClearInitial])
 
   useEffect(() => {
     const fn = () => setShowSticky(window.scrollY > 320)
@@ -191,7 +187,12 @@ export default function Jobs({ initialJob, onClearInitial, user }) {
           </div>
 
           <AnimatePresence mode="wait">
-            {filtered.length === 0
+            {jobsLoading
+              ? <motion.div key="loading" className={styles.empty}
+                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                  <div className="spinner" />
+                </motion.div>
+              : filtered.length === 0
               ? <motion.div key="empty" className={styles.empty}
                   initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color:'var(--td)', marginBottom:12 }}>

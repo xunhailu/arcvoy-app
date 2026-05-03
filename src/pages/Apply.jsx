@@ -13,7 +13,7 @@ export default function Apply({ user }) {
   const { id } = useParams()
   const navigate = useNavigate()
   const [job, setJob] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(() => Boolean(id))
   const [submitting, setSubmitting] = useState(false)
   const [done, setDone] = useState(false)
   const [submitError, setSubmitError] = useState('')
@@ -37,8 +37,13 @@ export default function Apply({ user }) {
   })
 
   useEffect(() => {
-    if (!id) { setLoading(false); return }
-    fetchJob(id).then(setJob).catch(() => setJob(null)).finally(() => setLoading(false))
+    if (!id) return
+    let cancelled = false
+    fetchJob(id)
+      .then(data => { if (!cancelled) setJob(data) })
+      .catch(() => { if (!cancelled) setJob(null) })
+      .finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
   }, [id])
 
   useSEO({ title: job ? `Apply — ${job.title}` : 'Apply', description: null })

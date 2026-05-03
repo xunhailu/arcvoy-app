@@ -134,7 +134,7 @@ function useTypewriter(lines) {
 
     timeout = setTimeout(tick, 500)
     return () => clearTimeout(timeout)
-  }, [])
+  }, [lines])
 
   return { display, curLine }
 }
@@ -189,14 +189,13 @@ function TiltCard({ children, className, style, ...rest }) {
   )
 }
 
-export default function Home({ onNavigate, onApply }) {
+const TW_LINES = ['Build the']
+
+export default function Home({ onNavigate }) {
   const [email, setEmail] = useState('')
   const [toastVisible, setToastVisible] = useState(false)
-  const heroRef = useRef(null)
-  const heroInView = useInView(heroRef, { once: true })
 
   /* typewriter — line 1 only */
-  const TW_LINES = ['Build the']
   const { display, curLine } = useTypewriter(TW_LINES)
 
   /* cycling italic phrase */
@@ -238,7 +237,7 @@ export default function Home({ onNavigate, onApply }) {
     <div className={styles.page}>
 
       {/* ── HERO ── */}
-      <section className={styles.hero} ref={heroRef}>
+      <section className={styles.hero}>
         <Particles count={typeof window !== 'undefined' && window.innerWidth <= 768 ? 16 : 48} />
         <div className={styles.heroMesh} />
         <div className={styles.orb} />

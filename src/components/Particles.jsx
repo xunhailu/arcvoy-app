@@ -12,11 +12,10 @@ export default function Particles({ count = 52, color = '217, 119, 87' }) {
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     let raf
-    let w = 0, h = 0
 
     const resize = () => {
-      w = canvas.width  = canvas.offsetWidth  * window.devicePixelRatio
-      h = canvas.height = canvas.offsetHeight * window.devicePixelRatio
+      canvas.width  = canvas.offsetWidth  * window.devicePixelRatio
+      canvas.height = canvas.offsetHeight * window.devicePixelRatio
       ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
     }
 

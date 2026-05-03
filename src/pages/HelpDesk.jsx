@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import CustomSelect from '../components/CustomSelect'
@@ -370,7 +370,7 @@ export default function HelpDesk() {
                     </AnimatePresence>
                   </div>
 
-                  {/* global error */}
+                  {/* form notice */}
                   <AnimatePresence>
                     {errors.global && (
                       <motion.p className={styles.fieldErr}

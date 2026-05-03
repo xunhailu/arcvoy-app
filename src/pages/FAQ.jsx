@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import styles from './FAQ.module.css'
 
@@ -105,16 +105,12 @@ function Highlight({ text, query }) {
 
 /* accordion item */
 function AccordionItem({ q, a, query, autoOpen }) {
-  const [open, setOpen] = useState(autoOpen)
-
-  // when search clears, collapse
-  useEffect(() => {
-    if (!query && open && !autoOpen) setOpen(false)
-  }, [query, autoOpen])
+  const [manualOpen, setManualOpen] = useState(false)
+  const open = autoOpen || manualOpen
 
   return (
     <div className={`${styles.item} ${open ? styles.itemOpen : ''}`}>
-      <button className={styles.question} onClick={() => setOpen(o => !o)}>
+      <button className={styles.question} onClick={() => setManualOpen(o => !o)}>
         <span><Highlight text={q} query={query} /></span>
         <span className={`${styles.chevron} ${open ? styles.chevronOpen : ''}`}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -252,9 +248,9 @@ export default function FAQ({ onNavigate }) {
                   viewport={{ once: true }} transition={{ duration: 0.5, delay: si * 0.06 }}>
                   <div className={styles.catLabel}>{section.category}</div>
                   <div className={styles.accordion}>
-                    {section.items.map((item, i) => (
+                    {section.items.map(item => (
                       <AccordionItem
-                        key={item.q}
+                        key={`${item.q}-${query ? 'search' : 'browse'}`}
                         q={item.q}
                         a={item.a}
                         query={search.trim()}

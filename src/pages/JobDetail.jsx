@@ -6,16 +6,21 @@ import { useBookmarks } from '../hooks/useBookmarks'
 import { useSEO } from '../hooks/useSEO'
 import styles from './JobDetail.module.css'
 
-export default function JobDetail({ user }) {
+export default function JobDetail() {
   const { id }     = useParams()
   const navigate   = useNavigate()
   const [job, setJob]           = useState(null)
-  const [loading, setLoading]   = useState(true)
+  const [loading, setLoading]   = useState(() => Boolean(id))
   const { isBookmarked, toggle } = useBookmarks()
 
   useEffect(() => {
-    if (!id) { setLoading(false); return }
-    fetchJob(id).then(setJob).catch(() => setJob(null)).finally(() => setLoading(false))
+    if (!id) return
+    let cancelled = false
+    fetchJob(id)
+      .then(data => { if (!cancelled) setJob(data) })
+      .catch(() => { if (!cancelled) setJob(null) })
+      .finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
   }, [id])
 
   useSEO({

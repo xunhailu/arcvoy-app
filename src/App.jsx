@@ -64,7 +64,6 @@ export default function App() {
   const { theme, toggle }             = useTheme()
   const [showCandAuth, setShowCandAuth] = useState(false)
   const [candidateUser, setCandidateUser] = useState(null)
-  const [pendingJob, setPendingJob]   = useState(null)
   const navigate  = useNavigate()
   const location  = useLocation()
 
@@ -186,13 +185,12 @@ export default function App() {
             <motion.div key="home" variants={pageVariants} initial="initial" animate="animate" exit="exit">
               <Home
                 onNavigate={onNavigate}
-                onApply={job => { setPendingJob(job); navigate('/jobs') }}
               />
             </motion.div>
           } />
           <Route path="/jobs" element={
             <motion.div key="jobs" variants={pageVariants} initial="initial" animate="animate" exit="exit">
-              <Jobs initialJob={pendingJob} onClearInitial={() => setPendingJob(null)} user={candidateUser} />
+              <Jobs />
             </motion.div>
           } />
           <Route path="/about" element={
@@ -217,7 +215,7 @@ export default function App() {
           } />
           <Route path="/jobs/:id" element={
             <motion.div key="job-detail" variants={pageVariants} initial="initial" animate="animate" exit="exit">
-              <JobDetail user={candidateUser} />
+              <JobDetail />
             </motion.div>
           } />
           <Route path="/jobs/:id/apply" element={

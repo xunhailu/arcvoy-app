@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -18,7 +18,7 @@ import {
   updateTicketStatus,
   fetchSubscribers,
 } from '../lib/applications'
-import { fetchJobs, createJob, updateJob, deleteJob } from '../lib/jobs'
+import { createJob, updateJob } from '../lib/jobs'
 import styles from './AdminDashboard.module.css'
 import authStyles from './CandidateAuth.module.css'
 
@@ -70,7 +70,7 @@ function LoginScreen({ onLogin, onClose }) {
     setLoading(true); setError('')
     try {
       await onLogin(email, password)
-    } catch (e) {
+    } catch {
       setError('Incorrect email or password.')
     }
     setLoading(false)
@@ -112,12 +112,11 @@ function LoginScreen({ onLogin, onClose }) {
 }
 
 /* ── Applicant Detail Drawer ── */
-function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete }) {
+function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
   const [notes, setNotes] = useState(app.notes || '')
   const [saving, setSaving] = useState(false)
   const [downloading, setDownloading] = useState(false)
   const [statusLoading, setStatusLoading] = useState(false)
-  const [deleting, setDeleting] = useState(false)
   const [identityLink, setIdentityLink] = useState(app.identity_link || '')
   const [complianceLink, setComplianceLink] = useState(app.compliance_link || '')
   const [savingLinks, setSavingLinks] = useState(false)
@@ -128,19 +127,13 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
     try {
       await sendWelcomeEmail(app)
       alert(`Welcome email sent to ${app.email}`)
-    } catch (e) { alert('Welcome email failed to send. Please try again.') }
+    } catch { alert('Welcome email failed to send. Please try again.') }
     setSendingWelcome(false)
-  }
-
-  const handleDelete = async () => {
-    if (!window.confirm(`Delete application from ${app.first_name} ${app.last_name}? This cannot be undone.`)) return
-    setDeleting(true)
-    try { await onDelete(app.id) } catch { setDeleting(false) }
   }
 
   const saveLinks = async () => {
     setSavingLinks(true)
-    try { await updateVerificationLinks(app.id, identityLink, complianceLink) } catch {}
+    try { await updateVerificationLinks(app.id, identityLink, complianceLink) } catch { alert('Failed to save verification links. Please try again.') }
     setSavingLinks(false)
   }
 
@@ -202,7 +195,7 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
       await supabase.functions.invoke('send-email', {
         body: { to: app.email, from: 'Arcvoy Careers <careers@arcvoy.com>', replyTo: 'support@arcvoy.com', subject: 'Identity Verification — Arcvoy', html }
       })
-    } catch (e) { alert('Identity verification email failed to send. Please try again.') }
+    } catch { alert('Identity verification email failed to send. Please try again.') }
   }
 
   const sendComplianceEmail = async () => {
@@ -256,7 +249,7 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
       await supabase.functions.invoke('send-email', {
         body: { to: app.email, from: 'Arcvoy Careers <careers@arcvoy.com>', replyTo: 'support@arcvoy.com', subject: 'Compliance Verification — Arcvoy', html }
       })
-    } catch (e) { alert('Compliance verification email failed to send. Please try again.') }
+    } catch { alert('Compliance verification email failed to send. Please try again.') }
   }
 
   const saveNotes = async () => {
@@ -271,14 +264,14 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onDelete
     try {
       const url = await getCVUrl(app.cv_path)
       window.open(url, '_blank')
-    } catch (e) { alert('Could not download CV. Please try again.') }
+    } catch { alert('Could not download CV. Please try again.') }
     setDownloading(false)
   }
 
   const changeStatus = async (status) => {
     setStatusLoading(true)
     await onStatusChange(app.id, status, app)
-    try { await sendStatusEmail(status, app) } catch (e) { alert('Status update email failed to send. The status was saved but the applicant was not notified.') }
+    try { await sendStatusEmail(status, app) } catch { alert('Status update email failed to send. The status was saved but the applicant was not notified.') }
     setStatusLoading(false)
   }
 
@@ -519,7 +512,10 @@ function OverviewView({ apps }) {
         ])
         setJobs(j || [])
         setTickets(t || [])
-      } catch {}
+      } catch {
+        setJobs([])
+        setTickets([])
+      }
     }
     load()
   }, [])
@@ -564,6 +560,7 @@ function OverviewView({ apps }) {
           { label: 'Total Applications', value: total, sub: period === 'all' ? 'all time' : `last ${period} days` },
           { label: 'Sourced Candidates', value: sourced, sub: total > 0 ? `${Math.round(sourced / total * 100)}% of total` : '—' },
           { label: 'Active Jobs', value: activeJobs, sub: `${jobs.length} total posted` },
+          { label: 'Open Tickets', value: openTickets, sub: `${tickets.length} total tickets` },
           { label: 'Hired', value: hired, sub: total > 0 ? `${Math.round(hired / total * 100)}% conversion` : '—' },
         ].map(card => (
           <div key={card.label} className={styles.statCard}>
@@ -852,7 +849,6 @@ function ApplicationsView({ apps, loading }) {
             onClose={() => setSelected(null)}
             onStatusChange={onStatusChange}
             onNotesChange={onNotesChange}
-            onDelete={onDelete}
           />
         )}
       </AnimatePresence>
@@ -1173,7 +1169,7 @@ function JobsView() {
       else await updateJob(editing, payload)
       await load()
       close()
-    } catch (e) { alert('Failed to save job. Please try again.') }
+    } catch { alert('Failed to save job. Please try again.') }
     setSaving(false)
   }
 
@@ -1292,6 +1288,12 @@ export default function AdminDashboard() {
   const [appsLoading, setAppsLoading] = useState(true)
   const [activeView, setActiveView] = useState('overview')
 
+  const loadApps = useCallback(async () => {
+    setAppsLoading(true)
+    try { setApps(await fetchApplications()) } catch (e) { console.error(e) }
+    setAppsLoading(false)
+  }, [])
+
   useEffect(() => {
     getAdminSession()
       .then(s => {
@@ -1300,13 +1302,7 @@ export default function AdminDashboard() {
         else setAppsLoading(false)
       })
       .catch(() => setAppsLoading(false))
-  }, [])
-
-  const loadApps = async () => {
-    setAppsLoading(true)
-    try { setApps(await fetchApplications()) } catch (e) { console.error(e) }
-    setAppsLoading(false)
-  }
+  }, [loadApps])
 
   const login = async (email, password) => {
     await adminLogin(email, password)
