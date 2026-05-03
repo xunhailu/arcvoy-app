@@ -503,6 +503,128 @@ function TicketDrawer({ ticket, onClose, onStatusChange }) {
   )
 }
 
+/* ── Overview / Stats View ── */
+function OverviewView({ apps }) {
+  const [period, setPeriod] = useState('all')
+  const [jobs, setJobs] = useState([])
+  const [tickets, setTickets] = useState([])
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const { supabase } = await import('../lib/supabase')
+        const [{ data: j }, { data: t }] = await Promise.all([
+          supabase.from('jobs').select('id,active'),
+          supabase.from('tickets').select('id,status'),
+        ])
+        setJobs(j || [])
+        setTickets(t || [])
+      } catch {}
+    }
+    load()
+  }, [])
+
+  const cutoff = period === 'all' ? null : new Date(Date.now() - parseInt(period) * 86400000)
+  const filtered = cutoff ? apps.filter(a => new Date(a.created_at) >= cutoff) : apps
+
+  const total = filtered.length
+  const sourced = filtered.filter(a => a.source === 'sourced').length
+  const hired = filtered.filter(a => a.status === 'hired').length
+  const activeJobs = jobs.filter(j => j.active).length
+  const openTickets = tickets.filter(t => t.status === 'open' || t.status === 'in_progress').length
+
+  const pipeline = STATUS_ORDER.map(s => ({
+    key: s,
+    label: STATUS_COLORS[s].label,
+    color: STATUS_COLORS[s].color,
+    count: filtered.filter(a => a.status === s).length,
+  }))
+
+  const recent = [...apps]
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .slice(0, 6)
+
+  return (
+    <div className={styles.overviewWrap}>
+      <div className={styles.overviewHead}>
+        <div>
+          <div className={styles.mainTitle}>Overview</div>
+          <div className={styles.mainSub}>Platform at a glance</div>
+        </div>
+        <select className={styles.periodSelect} value={period} onChange={e => setPeriod(e.target.value)}>
+          <option value="all">All time</option>
+          <option value="7">Last 7 days</option>
+          <option value="30">Last 30 days</option>
+          <option value="90">Last 90 days</option>
+        </select>
+      </div>
+
+      <div className={styles.statsGrid}>
+        {[
+          { label: 'Total Applications', value: total, sub: period === 'all' ? 'all time' : `last ${period} days` },
+          { label: 'Sourced Candidates', value: sourced, sub: total > 0 ? `${Math.round(sourced / total * 100)}% of total` : '—' },
+          { label: 'Active Jobs', value: activeJobs, sub: `${jobs.length} total posted` },
+          { label: 'Hired', value: hired, sub: total > 0 ? `${Math.round(hired / total * 100)}% conversion` : '—' },
+        ].map(card => (
+          <div key={card.label} className={styles.statCard}>
+            <div className={styles.statValue}>{card.value}</div>
+            <div className={styles.statLabel}>{card.label}</div>
+            <div className={styles.statSub}>{card.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className={styles.overviewSection}>
+        <div className={styles.overviewSectionTitle}>Pipeline Breakdown</div>
+        <div className={styles.pipelineGrid}>
+          {pipeline.map(p => (
+            <div key={p.key} className={styles.pipelineCard}>
+              <div className={styles.pipelineCount} style={{ color: p.color }}>{p.count}</div>
+              <div className={styles.pipelineBar}>
+                <div className={styles.pipelineBarFill} style={{
+                  width: total > 0 ? `${Math.max(p.count > 0 ? 6 : 0, Math.round(p.count / total * 100))}%` : '0%',
+                  background: p.color,
+                }} />
+              </div>
+              <div className={styles.pipelineLabel}>{p.label}</div>
+              <div className={styles.pipelinePct}>{total > 0 ? `${Math.round(p.count / total * 100)}%` : '—'}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className={styles.overviewSection}>
+        <div className={styles.overviewSectionTitle}>Recent Applications</div>
+        <div className={styles.recentList}>
+          {recent.length === 0 ? (
+            <div className={styles.empty}>No applications yet.</div>
+          ) : recent.map(app => {
+            const sc = STATUS_COLORS[app.status] || STATUS_COLORS.applied
+            return (
+              <div key={app.id} className={styles.recentItem}>
+                <div className={styles.avatar} style={{ width: 32, height: 32, fontSize: 11, flexShrink: 0 }}>
+                  {app.first_name?.[0] || '?'}{app.last_name?.[0] || '?'}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className={styles.tdNameMain}>
+                    {app.first_name} {app.last_name}
+                    {app.source === 'sourced' && <span className={styles.sourcedBadge} style={{ marginLeft: 7 }}>Sourced</span>}
+                  </div>
+                  <div className={styles.tdNameSub}>{app.job_title}</div>
+                </div>
+                <span className={styles.statusPill} style={{ background: sc.bg, color: sc.color, flexShrink: 0 }}>{sc.label}</span>
+                <span className={styles.tdDate} style={{ flexShrink: 0, minWidth: 52, textAlign: 'right' }}>
+                  {new Date(app.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /* ── Applications View ── */
 function ApplicationsView({ apps, loading }) {
   const [selected, setSelected] = useState(null)
@@ -1168,7 +1290,7 @@ export default function AdminDashboard() {
   const [session, setSession] = useState(null)
   const [apps, setApps] = useState([])
   const [appsLoading, setAppsLoading] = useState(true)
-  const [activeView, setActiveView] = useState('applications')
+  const [activeView, setActiveView] = useState('overview')
 
   useEffect(() => {
     getAdminSession()
@@ -1232,6 +1354,7 @@ export default function AdminDashboard() {
 
             <div className={styles.topTabs}>
               {[
+                { key: 'overview',     label: 'Overview' },
                 { key: 'applications', label: 'Applications' },
                 { key: 'tickets',      label: 'Tickets' },
                 { key: 'subscribers',  label: 'Subscribers' },
@@ -1250,6 +1373,7 @@ export default function AdminDashboard() {
 
           {/* Content */}
           <div className={styles.viewWrap}>
+            {activeView === 'overview'     && <OverviewView apps={apps} />}
             {activeView === 'applications' && <ApplicationsView apps={apps} loading={appsLoading} />}
             {activeView === 'tickets'      && <TicketsView />}
             {activeView === 'subscribers'  && <SubscribersView />}
