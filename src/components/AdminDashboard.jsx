@@ -123,7 +123,10 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
   const [identityLink, setIdentityLink] = useState(app.identity_link || '')
   const [complianceLink, setComplianceLink] = useState(app.compliance_link || '')
   const [savingLinks, setSavingLinks] = useState(false)
+  const [sendingIdentity, setSendingIdentity] = useState(false)
+  const [sendingCompliance, setSendingCompliance] = useState(false)
   const [sendingWelcome, setSendingWelcome] = useState(false)
+  const [sendingNotify, setSendingNotify] = useState(false)
 
   const sendWelcome = async () => {
     setSendingWelcome(true)
@@ -141,6 +144,7 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
   }
 
   const sendIdentityEmail = async () => {
+    setSendingIdentity(true)
     const html = `
       <table width="580" cellpadding="0" cellspacing="0" border="0" style="font-family:'Raleway',Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;">
         <tr><td>
@@ -198,10 +202,13 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
       await supabase.functions.invoke('send-email', {
         body: { to: app.email, from: 'Arcvoy Careers <careers@arcvoy.com>', replyTo: 'support@arcvoy.com', subject: 'Identity Verification — Arcvoy', html }
       })
+      toast.success(`Identity verification email sent to ${app.email}`)
     } catch { toast.error('Identity verification email failed to send. Please try again.') }
+    setSendingIdentity(false)
   }
 
   const sendComplianceEmail = async () => {
+    setSendingCompliance(true)
     const html = `
       <table width="580" cellpadding="0" cellspacing="0" border="0" style="font-family:'Raleway',Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;">
         <tr><td>
@@ -252,7 +259,9 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
       await supabase.functions.invoke('send-email', {
         body: { to: app.email, from: 'Arcvoy Careers <careers@arcvoy.com>', replyTo: 'support@arcvoy.com', subject: 'Compliance Verification — Arcvoy', html }
       })
+      toast.success(`Compliance verification email sent to ${app.email}`)
     } catch { toast.error('Compliance verification email failed to send. Please try again.') }
+    setSendingCompliance(false)
   }
 
   const saveNotes = async () => {
@@ -274,8 +283,17 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
   const changeStatus = async (status) => {
     setStatusLoading(true)
     await onStatusChange(app.id, status, app)
-    try { await sendStatusEmail(status, app) } catch { toast.error('Status email failed. Status was saved but applicant was not notified.') }
+    toast.info(`Status updated to ${STATUS_COLORS[status]?.label} — candidate not notified yet`)
     setStatusLoading(false)
+  }
+
+  const notifyCandidate = async () => {
+    setSendingNotify(true)
+    try {
+      await sendStatusEmail(app.status, app)
+      toast.success(`${app.first_name} notified — ${STATUS_COLORS[app.status]?.label} email sent`)
+    } catch { toast.error('Email failed to send. Please try again.') }
+    setSendingNotify(false)
   }
 
   const sc = STATUS_COLORS[app.status] || STATUS_COLORS.applied
@@ -323,20 +341,35 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
           </div>
           {statusLoading && <div className={styles.statusHint}>Updating…</div>}
 
+          {app.status !== 'applied' && (
+            <button className={styles.notifyBtn} onClick={notifyCandidate} disabled={sendingNotify} style={{ marginTop: 14 }}>
+              {sendingNotify
+                ? <><div className="spinner" style={{ width: 10, height: 10, borderWidth: 1.5 }} /> Sending…</>
+                : <>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    Notify {app.first_name} — {STATUS_COLORS[app.status]?.label}
+                  </>}
+            </button>
+          )}
+
           <div className={styles.verifyBlock}>
             <div className={styles.statusLabel} style={{ marginBottom: 10 }}>Verification</div>
             <div className={styles.verifyRow}>
               <span className={styles.verifyTag} style={{ color: identityLink ? '#5a8f1a' : 'var(--td)' }}>ID</span>
               <input className={styles.verifyInline} value={identityLink} onChange={e => setIdentityLink(e.target.value)} placeholder="Paste identity link…" />
-              <button className={styles.verifyInlineBtn} onClick={sendIdentityEmail} disabled={!identityLink} title="Send identity email">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              <button className={styles.verifyInlineBtn} onClick={sendIdentityEmail} disabled={!identityLink || sendingIdentity} title="Send identity email">
+                {sendingIdentity
+                  ? <div className="spinner" style={{ width: 10, height: 10, borderWidth: 1.5 }} />
+                  : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>}
               </button>
             </div>
             <div className={styles.verifyRow}>
               <span className={styles.verifyTag} style={{ color: complianceLink ? '#378add' : 'var(--td)' }}>CO</span>
               <input className={styles.verifyInline} value={complianceLink} onChange={e => setComplianceLink(e.target.value)} placeholder="Paste compliance link…" />
-              <button className={styles.verifyInlineBtn} onClick={sendComplianceEmail} disabled={!complianceLink} title="Send compliance email">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              <button className={styles.verifyInlineBtn} onClick={sendComplianceEmail} disabled={!complianceLink || sendingCompliance} title="Send compliance email">
+                {sendingCompliance
+                  ? <div className="spinner" style={{ width: 10, height: 10, borderWidth: 1.5 }} />
+                  : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>}
               </button>
             </div>
             <button className={styles.saveBtn} onClick={saveLinks} disabled={savingLinks} style={{ marginTop: 8 }}>
