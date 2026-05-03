@@ -102,6 +102,13 @@
 }
 .loginInput:focus { border-color: rgba(204,102,51,.5); box-shadow: 0 0 0 3px rgba(204,102,51,.08); }
 .loginInput::placeholder { color: rgba(255,255,255,0.2); }
+.loginInput:-webkit-autofill,
+.loginInput:-webkit-autofill:hover,
+.loginInput:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #1a1310 inset !important;
+  -webkit-text-fill-color: #f2ede7 !important;
+  caret-color: #f2ede7;
+}
 :global([data-theme="light"]) .loginInput {
   background: rgba(0,0,0,0.06); border-color: var(--bd2);
 }
