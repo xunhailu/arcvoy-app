@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   fetchApplications,
+  fetchEmailLogs,
   updateStatus,
   sendStatusEmail,
+  sendIdentityVerificationEmail,
+  sendComplianceVerificationEmail,
   updateNotes,
   getCVUrl,
   deleteApplication,
@@ -59,6 +62,28 @@ function exportCSV(data, filename) {
   const a = document.createElement('a')
   a.href = url; a.download = filename; a.click()
   URL.revokeObjectURL(url)
+}
+
+const EMAIL_TYPE_LABELS = {
+  confirmation:            'Application Confirmation',
+  admin_notification:      'Admin Alert',
+  status_reviewing:        'Reviewing Notification',
+  status_interviewed:      'Interview Notification',
+  status_offered:          'Offer Notification',
+  status_hired:            'Hired Notification',
+  status_rejected:         'Rejection Notification',
+  identity_verification:   'Identity Verification',
+  compliance_verification: 'Compliance Verification',
+  welcome:                 'Welcome Email',
+}
+
+function formatRelativeDate(dateStr) {
+  const diff = (Date.now() - new Date(dateStr).getTime()) / 1000
+  if (diff < 60)        return 'just now'
+  if (diff < 3600)      return `${Math.floor(diff / 60)}m ago`
+  if (diff < 86400)     return `${Math.floor(diff / 3600)}h ago`
+  if (diff < 86400 * 7) return `${Math.floor(diff / 86400)}d ago`
+  return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
 }
 
 /* ── Login Screen ── */
@@ -127,12 +152,20 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
   const [sendingCompliance, setSendingCompliance] = useState(false)
   const [sendingWelcome, setSendingWelcome] = useState(false)
   const [sendingNotify, setSendingNotify] = useState(false)
+  const [emailLogs, setEmailLogs] = useState([])
+
+  useEffect(() => {
+    fetchEmailLogs(app.id).then(setEmailLogs).catch(() => {})
+  }, [app.id])
+
+  const refreshLogs = () => fetchEmailLogs(app.id).then(setEmailLogs).catch(() => {})
 
   const sendWelcome = async () => {
     setSendingWelcome(true)
     try {
       await sendWelcomeEmail(app)
       toast.success(`Welcome email sent to ${app.email}`)
+      refreshLogs()
     } catch { toast.error('Welcome email failed to send. Please try again.') }
     setSendingWelcome(false)
   }
@@ -145,121 +178,20 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
 
   const sendIdentityEmail = async () => {
     setSendingIdentity(true)
-    const html = `
-      <table width="580" cellpadding="0" cellspacing="0" border="0" style="font-family:'Raleway',Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;">
-        <tr><td>
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#1A1410;border-radius:10px 10px 0 0;">
-            <tr>
-              <td style="padding:22px 32px;"><span style="font-family:Georgia,serif;font-size:20px;color:#F5F0EB;font-weight:400;letter-spacing:0.01em;">Arcvoy</span></td>
-              <td style="padding:22px 32px;text-align:right;"><span style="font-size:10px;color:#6a5a4a;letter-spacing:0.12em;text-transform:uppercase;">Talent Platform</span></td>
-            </tr>
-          </table>
-        </td></tr>
-        <tr><td style="background:#cc6633;padding:28px 32px;">
-          <p style="margin:0 0 8px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.14em;text-transform:uppercase;">Action Required</p>
-          <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:700;line-height:1.2;">IDENTITY VERIFICATION</h1>
-        </td></tr>
-        <tr><td style="padding:38px 32px;background:#ffffff;">
-          <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${app.first_name},</p>
-          <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 28px;">Your application with Arcvoy is currently in progress. The next step is to complete your identity verification. This is a quick process and ensures we can move your application forward securely.</p>
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E0DAD4;border-radius:8px;margin-bottom:28px;background:#faf9f7;">
-            <tr><td style="padding:24px;">
-              <p style="font-size:13px;color:#1A1410;font-weight:700;margin:0 0 12px;line-height:1.5;">To help your verification go through quickly, please follow these tips:</p>
-              <ul style="margin:0 0 16px;padding-left:18px;">
-                <li style="font-size:13px;color:#6b5e4e;padding:3px 0;line-height:1.6;">Use a valid, non-expired ID</li>
-                <li style="font-size:13px;color:#6b5e4e;padding:3px 0;line-height:1.6;">Take photos in good lighting (no glare or shadows)</li>
-                <li style="font-size:13px;color:#6b5e4e;padding:3px 0;line-height:1.6;">Make sure the entire ID is visible and clear (not blurry)</li>
-                <li style="font-size:13px;color:#6b5e4e;padding:3px 0;line-height:1.6;">Ensure all details match what you entered</li>
-                <li style="font-size:13px;color:#6b5e4e;padding:3px 0;line-height:1.6;">For selfies: look straight at the camera and avoid hats or sunglasses</li>
-              </ul>
-              <p style="font-size:13px;color:#6b5e4e;line-height:1.7;margin:0 0 18px;">Click the button below to begin. If it doesn't open, use the copy button to copy the link and paste it directly into your browser.</p>
-              <a href="${identityLink}" style="display:inline-block;background:#cc6633;color:#ffffff;font-family:'Raleway',Calibri,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:5px;text-decoration:none;margin-bottom:14px;">Verify Identity</a><br/>
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #D8D2CC;border-radius:5px;table-layout:fixed;margin-top:4px;">
-                <tr>
-                  <td style="background:#f0ece8;padding:11px 14px;font-size:12px;color:#9a8f85;word-break:break-all;width:100%;">${identityLink}</td>
-                  <td width="96" style="padding:0;vertical-align:middle;"><a href="${identityLink}" style="display:block;background:#1A1410;color:#ffffff;font-family:'Raleway',Calibri,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:11px 14px;text-decoration:none;text-align:center;white-space:nowrap;">Copy Link</a></td>
-                </tr>
-              </table>
-            </td></tr>
-          </table>
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-left:3px solid #cc6633;margin-bottom:28px;">
-            <tr><td style="padding:10px 16px;"><p style="font-size:13px;color:#6b5e4e;line-height:1.7;margin:0;">If you have any issues completing this step, reply to this email and our team will assist you as soon as possible.</p></td></tr>
-          </table>
-          <p style="font-size:14px;color:#6b5e4e;margin:0 0 2px;">Regards,</p>
-          <p style="font-size:14px;color:#1A1410;margin:0;font-weight:700;">Arcvoy Team</p>
-        </td></tr>
-        <tr><td>
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F0EB;border-radius:0 0 10px 10px;">
-            <tr>
-              <td style="padding:16px 32px;"><span style="font-size:11px;color:#b0a090;">© 2026 Arcvoy</span></td>
-              <td style="padding:16px 32px;text-align:right;"><span style="font-size:11px;color:#b0a090;"><a href="https://arcvoy.com" style="color:#b0a090;text-decoration:none;">arcvoy.com</a> &nbsp;·&nbsp; <a href="https://x.com/helloarcvoy" style="color:#b0a090;text-decoration:none;">@helloarcvoy</a></span></td>
-            </tr>
-          </table>
-        </td></tr>
-      </table>`
     try {
-      const { supabase } = await import('../lib/supabase')
-      await supabase.functions.invoke('send-email', {
-        body: { to: app.email, from: 'Arcvoy Careers <careers@arcvoy.com>', replyTo: 'support@arcvoy.com', subject: 'Identity Verification — Arcvoy', html }
-      })
+      await sendIdentityVerificationEmail(app, identityLink)
       toast.success(`Identity verification email sent to ${app.email}`)
+      refreshLogs()
     } catch { toast.error('Identity verification email failed to send. Please try again.') }
     setSendingIdentity(false)
   }
 
   const sendComplianceEmail = async () => {
     setSendingCompliance(true)
-    const html = `
-      <table width="580" cellpadding="0" cellspacing="0" border="0" style="font-family:'Raleway',Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;">
-        <tr><td>
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#1A1410;border-radius:10px 10px 0 0;">
-            <tr>
-              <td style="padding:22px 32px;"><span style="font-family:Georgia,serif;font-size:20px;color:#F5F0EB;font-weight:400;letter-spacing:0.01em;">Arcvoy</span></td>
-              <td style="padding:22px 32px;text-align:right;"><span style="font-size:10px;color:#6a5a4a;letter-spacing:0.12em;text-transform:uppercase;">Talent Platform</span></td>
-            </tr>
-          </table>
-        </td></tr>
-        <tr><td style="background:#378add;padding:28px 32px;">
-          <p style="margin:0 0 8px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.14em;text-transform:uppercase;">Final Step</p>
-          <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:700;line-height:1.2;">COMPLIANCE VERIFICATION</h1>
-        </td></tr>
-        <tr><td style="padding:38px 32px;background:#ffffff;">
-          <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${app.first_name},</p>
-          <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 28px;">Thank you for completing your identity verification. You are now one step away. Please complete your compliance verification to finalise your application with Arcvoy.</p>
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E0DAD4;border-radius:8px;margin-bottom:28px;background:#faf9f7;">
-            <tr><td style="padding:24px;">
-              <p style="font-size:13px;color:#1A1410;font-weight:700;margin:0 0 12px;line-height:1.5;">Click the button below to complete your compliance check:</p>
-              <p style="font-size:13px;color:#6b5e4e;line-height:1.7;margin:0 0 18px;">If the button doesn't open, use the copy button to copy the link and paste it directly into your browser.</p>
-              <a href="${complianceLink}" style="display:inline-block;background:#378add;color:#ffffff;font-family:'Raleway',Calibri,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:5px;text-decoration:none;margin-bottom:14px;">Begin Compliance Check</a><br/>
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #D8D2CC;border-radius:5px;table-layout:fixed;margin-top:4px;">
-                <tr>
-                  <td style="background:#f0ece8;padding:11px 14px;font-size:12px;color:#9a8f85;word-break:break-all;width:100%;">${complianceLink}</td>
-                  <td width="96" style="padding:0;vertical-align:middle;"><a href="${complianceLink}" style="display:block;background:#1A1410;color:#ffffff;font-family:'Raleway',Calibri,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:11px 14px;text-decoration:none;text-align:center;white-space:nowrap;">Copy Link</a></td>
-                </tr>
-              </table>
-            </td></tr>
-          </table>
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-left:3px solid #378add;margin-bottom:28px;">
-            <tr><td style="padding:10px 16px;"><p style="font-size:13px;color:#6b5e4e;line-height:1.7;margin:0;">If you have any issues completing this step, reply to this email and our team will assist you as soon as possible.</p></td></tr>
-          </table>
-          <p style="font-size:14px;color:#6b5e4e;margin:0 0 2px;">Regards,</p>
-          <p style="font-size:14px;color:#1A1410;margin:0;font-weight:700;">Arcvoy Team</p>
-        </td></tr>
-        <tr><td>
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F0EB;border-radius:0 0 10px 10px;">
-            <tr>
-              <td style="padding:16px 32px;"><span style="font-size:11px;color:#b0a090;">© 2026 Arcvoy</span></td>
-              <td style="padding:16px 32px;text-align:right;"><span style="font-size:11px;color:#b0a090;"><a href="https://arcvoy.com" style="color:#b0a090;text-decoration:none;">arcvoy.com</a> &nbsp;·&nbsp; <a href="https://x.com/helloarcvoy" style="color:#b0a090;text-decoration:none;">@helloarcvoy</a></span></td>
-            </tr>
-          </table>
-        </td></tr>
-      </table>`
     try {
-      const { supabase } = await import('../lib/supabase')
-      await supabase.functions.invoke('send-email', {
-        body: { to: app.email, from: 'Arcvoy Careers <careers@arcvoy.com>', replyTo: 'support@arcvoy.com', subject: 'Compliance Verification — Arcvoy', html }
-      })
+      await sendComplianceVerificationEmail(app, complianceLink)
       toast.success(`Compliance verification email sent to ${app.email}`)
+      refreshLogs()
     } catch { toast.error('Compliance verification email failed to send. Please try again.') }
     setSendingCompliance(false)
   }
@@ -288,15 +220,22 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
   }
 
   const notifyCandidate = async () => {
+    const lastSameLog = emailLogs.find(l => l.email_type === `status_${app.status}` && l.status === 'sent')
+    if (lastSameLog) {
+      const mins = (Date.now() - new Date(lastSameLog.sent_at).getTime()) / 60000
+      if (mins < 120 && !window.confirm(`${STATUS_COLORS[app.status]?.label} email was already sent ${formatRelativeDate(lastSameLog.sent_at)}. Send again?`)) return
+    }
     setSendingNotify(true)
     try {
       await sendStatusEmail(app.status, app)
       toast.success(`${app.first_name} notified — ${STATUS_COLORS[app.status]?.label} email sent`)
+      refreshLogs()
     } catch { toast.error('Email failed to send. Please try again.') }
     setSendingNotify(false)
   }
 
   const sc = STATUS_COLORS[app.status] || STATUS_COLORS.applied
+  const lastNotify = emailLogs.find(l => l.email_type === `status_${app.status}`)
 
   return (
     <motion.div className={styles.drawer}
@@ -342,14 +281,23 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
           {statusLoading && <div className={styles.statusHint}>Updating…</div>}
 
           {app.status !== 'applied' && (
-            <button className={styles.notifyBtn} onClick={notifyCandidate} disabled={sendingNotify} style={{ marginTop: 14 }}>
-              {sendingNotify
-                ? <><div className="spinner" style={{ width: 10, height: 10, borderWidth: 1.5 }} /> Sending…</>
-                : <>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                    Notify {app.first_name} — {STATUS_COLORS[app.status]?.label}
-                  </>}
-            </button>
+            <>
+              <button className={styles.notifyBtn} onClick={notifyCandidate} disabled={sendingNotify} style={{ marginTop: 14 }}>
+                {sendingNotify
+                  ? <><div className="spinner" style={{ width: 10, height: 10, borderWidth: 1.5 }} /> Sending…</>
+                  : <>
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                      Notify {app.first_name} — {STATUS_COLORS[app.status]?.label}
+                    </>}
+              </button>
+              {lastNotify && (
+                <div className={styles.notifyHint}>
+                  {lastNotify.status === 'sent'
+                    ? `Last notified ${formatRelativeDate(lastNotify.sent_at)}`
+                    : `Last send failed ${formatRelativeDate(lastNotify.sent_at)}`}
+                </div>
+              )}
+            </>
           )}
 
           <div className={styles.verifyBlock}>
@@ -431,6 +379,24 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange }) {
               <button className={styles.welcomeBtn} onClick={sendWelcome} disabled={sendingWelcome}>
                 {sendingWelcome ? 'Sending…' : 'Send Welcome Email'}
               </button>
+            </div>
+          </>
+        )}
+
+        {emailLogs.length > 0 && (
+          <>
+            <div className={styles.divider} />
+            <div className={styles.section}>
+              <div className={styles.sectionTitle}>Email History</div>
+              <div className={styles.emailLogList}>
+                {emailLogs.slice(0, 8).map(log => (
+                  <div key={log.id} className={styles.emailLogRow}>
+                    <span className={`${styles.emailLogDot} ${log.status === 'sent' ? styles.emailLogDotSent : styles.emailLogDotFailed}`} title={log.status} />
+                    <span className={styles.emailLogType}>{EMAIL_TYPE_LABELS[log.email_type] || log.email_type}</span>
+                    <span className={styles.emailLogDate}>{formatRelativeDate(log.sent_at)}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </>
         )}

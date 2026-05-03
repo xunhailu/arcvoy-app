@@ -198,6 +198,19 @@
 .jobFormFooter { padding: 16px 24px; border-top: 1px solid var(--bd); display: flex; gap: 10px; justify-content: flex-end; flex-shrink: 0; }
 .field { display: flex; flex-direction: column; gap: 6px; }
 
+/* notify hint */
+.notifyHint { font-size: 10px; color: var(--td); font-family: 'Raleway', sans-serif; margin-top: 6px; padding-left: 2px; letter-spacing: .02em; }
+
+/* email history */
+.emailLogList { display: flex; flex-direction: column; }
+.emailLogRow { display: flex; align-items: center; gap: 9px; padding: 7px 0; border-bottom: 1px solid var(--bd); }
+.emailLogRow:last-child { border-bottom: none; }
+.emailLogDot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.emailLogDotSent { background: #5a8f1a; }
+.emailLogDotFailed { background: #E24B4A; }
+.emailLogType { font-size: 11px; color: var(--tm); font-family: 'Raleway', sans-serif; flex: 1; }
+.emailLogDate { font-size: 10px; color: var(--td); font-family: 'Raleway', sans-serif; flex-shrink: 0; }
+
 /* ── Mobile responsiveness ── */
 @media (max-width: 900px) {
   .topNav { padding: 0 16px; height: auto; flex-wrap: wrap; gap: 10px; padding-top: 12px; padding-bottom: 12px; }

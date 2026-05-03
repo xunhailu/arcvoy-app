@@ -13,7 +13,37 @@ serve(async (req) => {
   }
 
   try {
-    const { to, subject, html, from: fromAddr, replyTo } = await req.json()
+    const body = await req.json()
+
+    // Batch mode — sends up to 100 emails per call via Resend batch endpoint
+    if (body.batch && Array.isArray(body.batch)) {
+      const payload = body.batch.map(({ to, subject, html, from: fromAddr, replyTo }: any) => {
+        const item: Record<string, unknown> = {
+          from: fromAddr || 'Arcvoy <careers@arcvoy.com>',
+          to, subject, html,
+        }
+        if (replyTo) item.reply_to = replyTo
+        return item
+      })
+
+      const res = await fetch('https://api.resend.com/emails/batch', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${RESEND_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const data = await res.json()
+      return new Response(JSON.stringify(data), {
+        status: res.ok ? 200 : res.status,
+        headers: { ...cors, 'Content-Type': 'application/json' },
+      })
+    }
+
+    // Single email mode
+    const { to, subject, html, from: fromAddr, replyTo } = body
 
     if (!to || !subject || !html) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), {
@@ -23,9 +53,7 @@ serve(async (req) => {
 
     const payload: Record<string, unknown> = {
       from: fromAddr || 'Arcvoy <careers@arcvoy.com>',
-      to,
-      subject,
-      html,
+      to, subject, html,
     }
     if (replyTo) payload.reply_to = replyTo
 
