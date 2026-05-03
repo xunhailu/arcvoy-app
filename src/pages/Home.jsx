@@ -316,6 +316,23 @@ export default function Home({ onNavigate }) {
         </motion.div>
       </section>
 
+      {/* ── SPONSORS ── */}
+      <section className={styles.sponsors}>
+        <div className={styles.sponsorsLabel}>Professionals from leading AI companies apply through Arcvoy</div>
+        <div className={styles.marqueeWrap}>
+          <div className={styles.marqueeTrack}>
+            {[
+              'Anthropic','DeepMind','Mistral AI','Hugging Face','Cohere',
+              'Stability AI','Runway ML','Scale AI','Together AI','Weights & Biases',
+              'Anthropic','DeepMind','Mistral AI','Hugging Face','Cohere',
+              'Stability AI','Runway ML','Scale AI','Together AI','Weights & Biases',
+            ].map((name, i) => (
+              <span key={i} className={styles.sponsorName}>{name}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── ABOUT ── */}
       <section className={styles.about} id="about">
         <motion.div initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
