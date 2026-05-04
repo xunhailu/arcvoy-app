@@ -45,8 +45,12 @@ export default function SignIn() {
     setLoading(true); setError('')
     try {
       if (tab === 'login') {
-        const { error } = await supabase.auth.signInWithPassword({ email, password })
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
+        if (data.user?.app_metadata?.role === 'admin') {
+          await supabase.auth.signOut()
+          throw new Error('Please use the admin portal to sign in.')
+        }
         navigate('/')
       } else {
         const { error } = await supabase.auth.signUp({
