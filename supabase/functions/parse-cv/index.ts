@@ -47,8 +47,12 @@ serve(async (req) => {
             },
             {
               type: 'text',
-              text: `Extract contact details from this CV. Return ONLY a JSON object with these exact keys (use null for anything not found):
-{"first":"","last":"","email":"","address":"","city":"","state":"","country":"","zip":"","linkedin":"","lang1":"","lang2":""}
+              text: `First decide if this document is a genuine CV or resume — a professional document showing someone's work experience, education, skills, or contact details. Then extract contact details.
+
+Return ONLY a JSON object with these exact keys (use null for anything not found):
+{"is_cv":true,"first":"","last":"","email":"","address":"","city":"","state":"","country":"","zip":"","linkedin":"","lang1":"","lang2":""}
+
+Set is_cv to false if the document is NOT a CV or resume (e.g. invoice, receipt, article, bank statement, image, random file). Set is_cv to true only if it is a CV, resume, or professional profile.
 For country use the full English name (e.g. "United States" not "US"). For languages use full names (e.g. "English", "Spanish"). Return JSON only.`,
             },
           ],

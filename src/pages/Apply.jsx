@@ -203,7 +203,8 @@ export default function Apply({ user }) {
     setErrors(prev => ({ ...prev, cv: false }))
     if (f.type === 'application/pdf') {
       setParsing(true)
-      setCvLabel('Reading your CV…')
+      setCvLabel('Verifying your CV…')
+      let rejected = false
       try {
         const base64 = await new Promise((res, rej) => {
           const r = new FileReader()
@@ -215,34 +216,41 @@ export default function Apply({ user }) {
           body: { fileBase64: base64, fileType: f.type },
         })
         if (data && !data.error) {
-          const usefulFields = ['first','last','email','address','city','zip','linkedin','country','state','dob']
-          const hasContent = usefulFields.some(k => data[k] && String(data[k]).trim())
-          if (!hasContent) setCvWarning('We could not extract any information from this file. Please make sure you are uploading a real, readable CV — not a scanned image or unrelated document.')
-          const match = (val, list) => list.find(o => o.toLowerCase() === (val || '').toLowerCase()) || null
-          const parseDOB = raw => {
-            if (!raw) return {}
-            const d = new Date(raw)
-            if (isNaN(d.getTime())) return {}
-            return { dobDay: String(d.getUTCDate()), dobMonth: DOB_MONTHS[d.getUTCMonth()], dobYear: String(d.getUTCFullYear()) }
+          if (data.is_cv === false) {
+            setCvFile(null)
+            setCvLabel('This does not appear to be a CV — please upload your actual CV')
+            setErrors(prev => ({ ...prev, cv: true }))
+            rejected = true
+          } else {
+            const usefulFields = ['first','last','email','address','city','zip','linkedin','country','state','dob']
+            const hasContent = usefulFields.some(k => data[k] && String(data[k]).trim())
+            if (!hasContent) setCvWarning('We could not read text from your file. If your CV is a scanned image, please export it as a text-based PDF.')
+            const match = (val, list) => list.find(o => o.toLowerCase() === (val || '').toLowerCase()) || null
+            const parseDOB = raw => {
+              if (!raw) return {}
+              const d = new Date(raw)
+              if (isNaN(d.getTime())) return {}
+              return { dobDay: String(d.getUTCDate()), dobMonth: DOB_MONTHS[d.getUTCMonth()], dobYear: String(d.getUTCFullYear()) }
+            }
+            setFields(prev => ({
+              ...prev,
+              first:    data.first    || prev.first,
+              last:     data.last     || prev.last,
+              email:    data.email    || prev.email,
+              ...parseDOB(data.dob),
+              address:  data.address  || prev.address,
+              city:     data.city     || prev.city,
+              zip:      data.zip      || prev.zip,
+              linkedin: data.linkedin || prev.linkedin,
+              country:  match(data.country, countries) || prev.country,
+              state:    data.state    || prev.state,
+              lang1:    match(data.lang1, langs) || prev.lang1,
+              lang2:    match(data.lang2, langs) || prev.lang2,
+            }))
           }
-          setFields(prev => ({
-            ...prev,
-            first:    data.first    || prev.first,
-            last:     data.last     || prev.last,
-            email:    data.email    || prev.email,
-            ...parseDOB(data.dob),
-            address:  data.address  || prev.address,
-            city:     data.city     || prev.city,
-            zip:      data.zip      || prev.zip,
-            linkedin: data.linkedin || prev.linkedin,
-            country:  match(data.country, countries) || prev.country,
-            state:    data.state    || prev.state,
-            lang1:    match(data.lang1, langs) || prev.lang1,
-            lang2:    match(data.lang2, langs) || prev.lang2,
-          }))
         }
-      } catch { /* parsing is best-effort */ }
-      setCvLabel(f.name)
+      } catch { /* parsing is best-effort — allow through on network/API failure */ }
+      if (!rejected) setCvLabel(f.name)
       setParsing(false)
     }
   }
