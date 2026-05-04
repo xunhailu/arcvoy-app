@@ -23,7 +23,7 @@
 
 /* ── continuous particles ── */
 .loginParticles {
-  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
 }
 .loginParticle {
   position: absolute; bottom: -10px; border-radius: 50%;
@@ -44,17 +44,17 @@
   filter: blur(70px);
 }
 .loginOrb1 {
-  width: 500px; height: 500px; top: -15%; left: -10%;
+  width: 500px; height: 500px; top: -15%; left: -10%; z-index: 0;
   background: radial-gradient(circle, rgba(204,102,51,.18) 0%, transparent 70%);
   animation: orbDrift1 20s ease-in-out infinite;
 }
 .loginOrb2 {
-  width: 420px; height: 420px; bottom: -10%; right: -8%;
+  width: 420px; height: 420px; bottom: -10%; right: -8%; z-index: 0;
   background: radial-gradient(circle, rgba(224,122,74,.13) 0%, transparent 70%);
   animation: orbDrift2 26s ease-in-out infinite;
 }
 .loginOrb3 {
-  width: 320px; height: 320px; top: 35%; left: 38%;
+  width: 320px; height: 320px; top: 35%; left: 38%; z-index: 0;
   background: radial-gradient(circle, rgba(204,102,51,.09) 0%, transparent 70%);
   animation: orbDrift3 32s ease-in-out infinite;
 }
@@ -75,7 +75,7 @@
 
 /* ── split card ── */
 .loginCard {
-  position: relative; z-index: 1;
+  position: relative; z-index: 2;
   width: 100%; max-width: 820px;
   display: grid; grid-template-columns: 280px 1fr;
   border-radius: 20px; overflow: hidden;
