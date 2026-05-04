@@ -92,7 +92,6 @@ export default function Navbar({ theme, onToggleTheme, onShowLogin, onShowCandid
           <button className={styles.navBtn} onClick={onShowCandidateAuth}>Sign In</button>
         )}
 
-        <button className={`${styles.navBtn} ${styles.adminBtn}`} onClick={onShowLogin}>Employee</button>
 
         {/* hamburger — mobile only */}
         <button className={styles.hamburger} onClick={() => setMenuOpen(v => !v)} aria-label="Menu" aria-expanded={menuOpen}>
@@ -125,7 +124,6 @@ export default function Navbar({ theme, onToggleTheme, onShowLogin, onShowCandid
         ) : (
           <button className={styles.mobileLink} onClick={() => { onShowCandidateAuth(); setMenuOpen(false) }}>Sign In</button>
         )}
-        <button className={styles.mobileLink} onClick={() => { onShowLogin(); setMenuOpen(false) }}>Employee Login</button>
       </motion.div>
       )}
     </AnimatePresence>
