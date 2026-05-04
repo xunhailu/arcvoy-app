@@ -105,12 +105,32 @@ function LoginScreen({ onLogin, onClose }) {
     setLoading(false)
   }
 
+  const particles = Array.from({ length: 28 }, (_, i) => ({
+    id: i,
+    left:     `${(i * 13.7 + 3) % 98}%`,
+    size:     `${1.5 + (i * 0.6) % 3}px`,
+    duration: `${9 + (i * 1.4) % 13}s`,
+    delay:    `${(i * 0.85) % 10}s`,
+    opacity:  `${0.15 + (i * 0.025) % 0.45}`,
+  }))
+
   return (
     <>
       {/* ── Animated background orbs ── */}
       <div className={styles.loginOrb1} />
       <div className={styles.loginOrb2} />
       <div className={styles.loginOrb3} />
+
+      {/* ── Continuous floating particles ── */}
+      <div className={styles.loginParticles}>
+        {particles.map(p => (
+          <span key={p.id} className={styles.loginParticle} style={{
+            left: p.left, width: p.size, height: p.size,
+            animationDuration: p.duration, animationDelay: `-${p.delay}`,
+            opacity: p.opacity,
+          }} />
+        ))}
+      </div>
 
       <div className={styles.loginCard}>
 
