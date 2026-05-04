@@ -181,6 +181,13 @@
 
 /* ── Field error message ── */
 .fieldError { font-size: 11px; color: #E24B4A; font-family: 'Raleway', sans-serif; letter-spacing: .01em; }
+.cvWarning {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 12px; color: #c8850a; line-height: 1.55;
+  background: rgba(200,133,10,.08); border: 1px solid rgba(200,133,10,.22);
+  border-radius: 8px; padding: 10px 14px; margin-top: 6px;
+  font-family: 'Raleway', sans-serif;
+}
 
 /* ── Optional tag ── */
 .optionalTag { font-size: 9px; color: var(--td); letter-spacing: .06em; text-transform: uppercase; font-weight: 500; margin-left: 6px; }
