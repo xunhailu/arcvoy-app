@@ -106,7 +106,13 @@ function LoginScreen({ onLogin, onClose }) {
   }
 
   return (
-    <div className={styles.loginCard}>
+    <>
+      {/* ── Animated background orbs ── */}
+      <div className={styles.loginOrb1} />
+      <div className={styles.loginOrb2} />
+      <div className={styles.loginOrb3} />
+
+      <div className={styles.loginCard}>
 
       {/* ── Left brand panel ── */}
       <div className={styles.loginLeft}>
@@ -178,7 +184,8 @@ function LoginScreen({ onLogin, onClose }) {
         <button className={styles.loginBack} onClick={onClose}>← Back to site</button>
       </div>
 
-    </div>
+      </div>
+    </>
   )
 }
 
