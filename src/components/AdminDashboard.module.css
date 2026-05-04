@@ -21,23 +21,6 @@
   background: radial-gradient(ellipse, rgba(193,68,14,.07) 0%, transparent 65%);
 }
 
-/* ── continuous particles ── */
-.loginParticles {
-  position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
-}
-.loginParticle {
-  position: absolute; bottom: -10px; border-radius: 50%;
-  background: var(--gd);
-  box-shadow: 0 0 6px rgba(204,102,51,.6);
-  animation: particleRise linear infinite;
-}
-@keyframes particleRise {
-  0%   { transform: translateY(0) scale(0.4);   opacity: 0; }
-  10%  { opacity: 1; }
-  85%  { opacity: 1; }
-  100% { transform: translateY(-100vh) scale(1); opacity: 0; }
-}
-
 /* ── floating orbs ── */
 .loginOrb1, .loginOrb2, .loginOrb3 {
   position: absolute; border-radius: 50%; pointer-events: none;

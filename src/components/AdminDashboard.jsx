@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../hooks/useTheme'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -86,6 +86,88 @@ function formatRelativeDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
 }
 
+/* ── Particle Network Canvas ── */
+function ParticleNetwork() {
+  const canvasRef = useRef(null)
+  const theme = document.documentElement.getAttribute('data-theme')
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    let animId
+
+    const resize = () => {
+      canvas.width  = canvas.offsetWidth
+      canvas.height = canvas.offsetHeight
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    const COUNT    = 55
+    const CONNECT  = 160
+    const isLight  = document.documentElement.getAttribute('data-theme') === 'light'
+    const dotColor = isLight ? 'rgba(193,68,14,' : 'rgba(204,102,51,'
+    const lineBase = isLight ? 'rgba(193,68,14,' : 'rgba(204,102,51,'
+
+    const nodes = Array.from({ length: COUNT }, () => ({
+      x:  Math.random() * canvas.width,
+      y:  Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.45,
+      vy: (Math.random() - 0.5) * 0.45,
+      r:  1.2 + Math.random() * 2,
+    }))
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i]
+        for (let j = i + 1; j < nodes.length; j++) {
+          const b    = nodes[j]
+          const dx   = a.x - b.x
+          const dy   = a.y - b.y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          if (dist < CONNECT) {
+            const alpha = (1 - dist / CONNECT) * 0.35
+            ctx.beginPath()
+            ctx.moveTo(a.x, a.y)
+            ctx.lineTo(b.x, b.y)
+            ctx.strokeStyle = `${lineBase}${alpha})`
+            ctx.lineWidth   = 0.7
+            ctx.stroke()
+          }
+        }
+      }
+
+      for (const n of nodes) {
+        ctx.beginPath()
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2)
+        ctx.fillStyle = `${dotColor}0.6)`
+        ctx.shadowColor = isLight ? 'rgba(193,68,14,0.4)' : 'rgba(204,102,51,0.5)'
+        ctx.shadowBlur  = 6
+        ctx.fill()
+        ctx.shadowBlur  = 0
+
+        n.x += n.vx
+        n.y += n.vy
+        if (n.x < 0 || n.x > canvas.width)  n.vx *= -1
+        if (n.y < 0 || n.y > canvas.height) n.vy *= -1
+      }
+
+      animId = requestAnimationFrame(draw)
+    }
+    draw()
+
+    return () => {
+      cancelAnimationFrame(animId)
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
+  return <canvas ref={canvasRef} style={{ position:'absolute', inset:0, width:'100%', height:'100%', zIndex:0, pointerEvents:'none' }} />
+}
+
 /* ── Login Screen ── */
 function LoginScreen({ onLogin, onClose }) {
   const [email, setEmail]       = useState('')
@@ -105,32 +187,10 @@ function LoginScreen({ onLogin, onClose }) {
     setLoading(false)
   }
 
-  const particles = Array.from({ length: 28 }, (_, i) => ({
-    id: i,
-    left:     `${(i * 13.7 + 3) % 98}%`,
-    size:     `${1.5 + (i * 0.6) % 3}px`,
-    duration: `${9 + (i * 1.4) % 13}s`,
-    delay:    `${(i * 0.85) % 10}s`,
-    opacity:  `${0.15 + (i * 0.025) % 0.45}`,
-  }))
-
   return (
     <>
-      {/* ── Animated background orbs ── */}
-      <div className={styles.loginOrb1} />
-      <div className={styles.loginOrb2} />
-      <div className={styles.loginOrb3} />
-
-      {/* ── Continuous floating particles ── */}
-      <div className={styles.loginParticles}>
-        {particles.map(p => (
-          <span key={p.id} className={styles.loginParticle} style={{
-            left: p.left, width: p.size, height: p.size,
-            animationDuration: p.duration, animationDelay: `-${p.delay}`,
-            opacity: p.opacity,
-          }} />
-        ))}
-      </div>
+      {/* ── Particle network canvas ── */}
+      <ParticleNetwork />
 
       <div className={styles.loginCard}>
 
