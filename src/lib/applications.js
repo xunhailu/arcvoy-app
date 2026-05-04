@@ -564,6 +564,10 @@ export async function sendBlastEmail(subject, body, subscribers) {
 export async function adminLogin(email, password) {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
   if (error) throw error
+  if (data.user?.app_metadata?.role !== 'admin') {
+    await supabase.auth.signOut()
+    throw new Error('Access denied.')
+  }
   return data
 }
 
