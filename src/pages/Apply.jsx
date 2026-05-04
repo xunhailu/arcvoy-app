@@ -123,7 +123,7 @@ export default function Apply({ user }) {
 
   const validateStep1 = () => {
     const e = {}
-    if (!cvFile) e.cv = true
+    if (!cvFile || parsing) e.cv = true
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -398,8 +398,8 @@ export default function Apply({ user }) {
 
                     <div className={styles.stepNav}>
                       <div />
-                      <button className={styles.continueBtn} onClick={goNext}>
-                        Continue →
+                      <button className={styles.continueBtn} onClick={goNext} disabled={parsing}>
+                        {parsing ? 'Verifying CV…' : 'Continue →'}
                       </button>
                     </div>
                   </div>
