@@ -20,7 +20,7 @@ const ResetPassword = lazy(() => import('./pages/ResetPassword'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const Terms         = lazy(() => import('./pages/Terms'))
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'))
-const CandidateAuth  = lazy(() => import('./components/CandidateAuth'))
+const SignIn         = lazy(() => import('./pages/SignIn'))
 
 /* ── Scroll progress bar ── */
 function ScrollProgress() {
@@ -55,6 +55,7 @@ const SEO_MAP = {
   '/dashboard':      { title: 'My Dashboard',   description: 'Track your Arcvoy job applications, view status updates, and manage your profile.' },
   '/faq':            { title: 'FAQ',             description: 'Frequently asked questions about applying to Arcvoy, the hiring process, pay, and remote work policies.' },
   '/helpdesk':       { title: 'Help Desk',       description: "Get in touch with the Arcvoy team. Submit a support request and we'll get back to you within 24 hours." },
+  '/sign-in':        { title: 'Sign In',         description: 'Sign in to your Arcvoy account to track your AI job applications and manage your profile.' },
   '/reset-password': { title: 'Reset Password', description: null },
   '/privacy':        { title: 'Privacy Policy', description: "Read Arcvoy's privacy policy and learn how we collect, use, and protect your personal data." },
   '/terms':          { title: 'Terms of Use',   description: "Review Arcvoy's terms of use governing access to the platform and submission of applications." },
@@ -62,7 +63,6 @@ const SEO_MAP = {
 
 export default function App() {
   const { theme, toggle }             = useTheme()
-  const [showCandAuth, setShowCandAuth] = useState(false)
   const [candidateUser, setCandidateUser] = useState(null)
   const navigate  = useNavigate()
   const location  = useLocation()
@@ -122,16 +122,6 @@ export default function App() {
     return () => document.removeEventListener('mousemove', onMove)
   }, [])
 
-  /* ── keyboard shortcuts ── */
-  useEffect(() => {
-    const handler = e => {
-      if (e.key === 'Escape') {
-        setShowCandAuth(false)
-      }
-    }
-    document.addEventListener('keydown', handler)
-    return () => document.removeEventListener('keydown', handler)
-  }, [])
 
   const onNavigate = useCallback(page => {
     if (page === 'home')           navigate('/')
@@ -159,19 +149,20 @@ export default function App() {
 
   useSEO(seo)
 
-  const isAdmin = location.pathname === '/admin'
+  const isAdmin  = location.pathname === '/admin'
+  const isSignIn = location.pathname === '/sign-in'
 
   return (
     <>
-      {!isAdmin && <CursorGlow />}
-      {!isAdmin && <ScrollProgress />}
+      {!isAdmin && !isSignIn && <CursorGlow />}
+      {!isAdmin && !isSignIn && <ScrollProgress />}
 
-      {!isAdmin && (
+      {!isAdmin && !isSignIn && (
         <Navbar
           theme={theme}
           onToggleTheme={toggle}
           onShowLogin={() => navigate('/admin')}
-          onShowCandidateAuth={() => setShowCandAuth(true)}
+          onShowCandidateAuth={() => navigate('/sign-in')}
           page={currentPage}
           onNavigate={onNavigate}
           user={candidateUser}
@@ -238,6 +229,9 @@ export default function App() {
               <Terms />
             </motion.div>
           } />
+          <Route path="/sign-in" element={
+            <SignIn />
+          } />
           <Route path="/admin" element={
             <AdminDashboard />
           } />
@@ -250,18 +244,6 @@ export default function App() {
       </AnimatePresence>
       </Suspense>
 
-      {/* Candidate auth modal */}
-      <Suspense fallback={null}>
-        <AnimatePresence>
-          {showCandAuth && (
-            <CandidateAuth
-              key="cand-auth"
-              onClose={() => setShowCandAuth(false)}
-              onSuccess={user => { setCandidateUser(user); setShowCandAuth(false); navigate('/dashboard') }}
-            />
-          )}
-        </AnimatePresence>
-      </Suspense>
     </>
   )
 }
