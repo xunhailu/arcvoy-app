@@ -186,7 +186,7 @@ export default function Apply({ user }) {
       setErrors(prev => ({ ...prev, cv: true }))
       return
     }
-    if (f.size < 20 * 1024) {
+    if (f.size < 5 * 1024) {
       setCvFile(null)
       setCvLabel('File too small to be a CV — please upload your actual CV')
       setErrors(prev => ({ ...prev, cv: true }))
