@@ -6,55 +6,10 @@
   min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
   padding: 40px 20px;
-  background: #070504;
+  background: #0d0906;
   position: relative; overflow: hidden;
 }
-.loginPage::before {
-  content: '';
-  position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%);
-  width: 900px; height: 700px;
-  background: radial-gradient(ellipse, rgba(204,102,51,.11) 0%, transparent 65%);
-  pointer-events: none;
-}
-:global([data-theme="light"]) .loginPage { background: #F0EBE4; }
-:global([data-theme="light"]) .loginPage::before {
-  background: radial-gradient(ellipse, rgba(193,68,14,.07) 0%, transparent 65%);
-}
-
-/* ── floating orbs ── */
-.loginOrb1, .loginOrb2, .loginOrb3 {
-  position: absolute; border-radius: 50%; pointer-events: none;
-  filter: blur(70px);
-}
-.loginOrb1 {
-  width: 500px; height: 500px; top: -15%; left: -10%; z-index: 0;
-  background: radial-gradient(circle, rgba(204,102,51,.18) 0%, transparent 70%);
-  animation: orbDrift1 20s ease-in-out infinite;
-}
-.loginOrb2 {
-  width: 420px; height: 420px; bottom: -10%; right: -8%; z-index: 0;
-  background: radial-gradient(circle, rgba(224,122,74,.13) 0%, transparent 70%);
-  animation: orbDrift2 26s ease-in-out infinite;
-}
-.loginOrb3 {
-  width: 320px; height: 320px; top: 35%; left: 38%; z-index: 0;
-  background: radial-gradient(circle, rgba(204,102,51,.09) 0%, transparent 70%);
-  animation: orbDrift3 32s ease-in-out infinite;
-}
-@keyframes orbDrift1 {
-  0%,100% { transform: translate(0,0) scale(1); }
-  33%      { transform: translate(60px,80px) scale(1.12); }
-  66%      { transform: translate(-30px,50px) scale(0.92); }
-}
-@keyframes orbDrift2 {
-  0%,100% { transform: translate(0,0) scale(1); }
-  40%      { transform: translate(-70px,-60px) scale(1.08); }
-  75%      { transform: translate(40px,-20px) scale(0.94); }
-}
-@keyframes orbDrift3 {
-  0%,100% { transform: translate(0,0) scale(1); }
-  50%      { transform: translate(-60px,40px) scale(1.18); }
-}
+:global([data-theme="light"]) .loginPage { background: #F4EFE8; }
 
 /* ── split card ── */
 .loginCard {
