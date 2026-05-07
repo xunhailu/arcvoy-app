@@ -827,7 +827,9 @@ function ApplicationsView({ apps, loading }) {
                 onClick={() => setFilter(s)}>
                 <span className={styles.dot} style={{ background: c.color }} />
                 {c.label}
-                <span className={styles.count}>{counts[s] || 0}</span>
+                <span className={styles.count} style={{ background: c.color, color: '#fff', border: 'none', boxShadow: `0 1px 8px ${c.color}55` }}>
+                  {counts[s] || 0}
+                </span>
               </button>
             )
           })}
@@ -1068,7 +1070,9 @@ function TicketsView() {
                 onClick={() => setFilter(s)}>
                 <span className={styles.dot} style={{ background: c.color }} />
                 {c.label}
-                <span className={styles.count}>{counts[s] || 0}</span>
+                <span className={styles.count} style={{ background: c.color, color: '#fff', border: 'none', boxShadow: `0 1px 8px ${c.color}55` }}>
+                  {counts[s] || 0}
+                </span>
               </button>
             )
           })}
