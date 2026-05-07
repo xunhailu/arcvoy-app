@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Navbar from './components/Navbar'
 import CursorGlow from './components/CursorGlow'
+import ErrorBoundary from './components/ErrorBoundary'
 import { useTheme } from './hooks/useTheme'
 import { supabase } from './lib/supabase'
 import { useSEO } from './hooks/useSEO'
@@ -177,6 +178,7 @@ export default function App() {
         />
       )}
 
+      <ErrorBoundary>
       <Suspense fallback={<div style={{ position:'fixed', top:0, left:0, right:0, height:2, background:'var(--gd)', zIndex:9998, animation:'none' }} />}>
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
@@ -251,6 +253,7 @@ export default function App() {
         </Routes>
       </AnimatePresence>
       </Suspense>
+      </ErrorBoundary>
 
     </>
   )
