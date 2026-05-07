@@ -120,6 +120,12 @@ html { scrollbar-color: var(--bd2) transparent; scrollbar-width: thin; }
 }
 @keyframes label-draw { from { transform: scaleX(0); opacity: 0; } to { transform: scaleX(1); opacity: 1; } }
 
+/* ── suppress transitions on first paint to prevent theme flash ── */
+.no-transition *, .no-transition *::before, .no-transition *::after {
+  transition: none !important;
+  animation-duration: 0.001ms !important;
+}
+
 /* ── reduced motion: stop all looping CSS animations ── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -135,6 +141,12 @@ html { scrollbar-color: var(--bd2) transparent; scrollbar-width: thin; }
     -webkit-tap-highlight-color: transparent;
   }
   input, textarea, select { font-size: 16px; } /* prevent iOS zoom */
+
+  /* disable grain overlay on mobile — mix-blend-mode forces full-page compositing every frame */
+  body::after { display: none; }
+
+  /* drop backdrop-filter on job cards — too many stacked blurs cause scroll jank on mobile */
+  .job-card { backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 
 /* ── buttons ── */

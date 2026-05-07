@@ -67,6 +67,14 @@ export default function App() {
   const navigate  = useNavigate()
   const location  = useLocation()
 
+  /* remove no-transition class after first paint so theme toggle animates smoothly */
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      document.documentElement.classList.remove('no-transition')
+    })
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
   /* restore candidate session on load */
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
