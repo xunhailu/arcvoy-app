@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { supabase } from '../lib/supabase'
-import Sponsors from '../components/Sponsors'
 import BrandMark from '../components/BrandMark'
 import Particles from '../components/Particles'
 import { useTilt } from '../hooks/useTilt'
-import { PILLARS, FEATURES, ABOUT_TEXT, HOW_IT_WORKS, TESTIMONIALS } from '../data'
+import { PILLARS, FEATURES, ABOUT_TEXT, HOW_IT_WORKS, TESTIMONIALS, JOBS } from '../data'
 import styles from './Home.module.css'
 
 /* ── feature icons ── */
@@ -195,6 +194,19 @@ export default function Home({ onNavigate }) {
   const [email, setEmail] = useState('')
   const [toastVisible, setToastVisible] = useState(false)
 
+  const subscribe = async () => {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return
+    try {
+      const { error } = await supabase.from('subscribers').insert([{ email }])
+      if (error && error.code !== '23505') throw error
+      setEmail('')
+      setToastVisible(true)
+      setTimeout(() => setToastVisible(false), 3200)
+    } catch (err) {
+      console.error('Subscribe failed:', err)
+    }
+  }
+
   /* typewriter — line 1 only */
   const { display, curLine } = useTypewriter(TW_LINES)
 
@@ -220,18 +232,12 @@ export default function Home({ onNavigate }) {
     return () => clearInterval(id)
   }, [])
 
-  const subscribe = async () => {
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return
-    try {
-      const { error } = await supabase.from('subscribers').insert([{ email }])
-      if (error && error.code !== '23505') throw error
-      setEmail('')
-      setToastVisible(true)
-      setTimeout(() => setToastVisible(false), 3200)
-    } catch (err) {
-      console.error('Subscribe failed:', err)
-    }
-  }
+  /* floating role card */
+  const [activeRole, setActiveRole] = useState(0)
+  useEffect(() => {
+    const id = setInterval(() => setActiveRole(i => (i + 1) % JOBS.length), 3200)
+    return () => clearInterval(id)
+  }, [])
 
   return (
     <div className={styles.page}>
@@ -244,69 +250,108 @@ export default function Home({ onNavigate }) {
         <div className={styles.orbSecondary} />
         <div className={styles.grid} />
 
-        <motion.div className={styles.heroTag}
-          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2 }}>
-          <span className={styles.heroTagIcon}>▲</span>
-          Now Hiring · AI Specialists
-        </motion.div>
+        <div className={styles.heroInner}>
+          {/* LEFT */}
+          <div className={styles.heroLeft}>
+            <motion.div className={styles.heroTag}
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}>
+              <span className={styles.heroTagIcon}>▲</span>
+              Now Hiring · AI Specialists
+            </motion.div>
 
-        <motion.h1 className={styles.heroTitle}
-          initial={{ opacity: 0, y: 18, filter: 'blur(10px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          transition={{ duration: 0.85, delay: 0.15, ease: [0.25, 0, 0, 1] }}>
-          <span className={styles.l1}>
-            {display[0]}
-            {curLine === 0 && <span className="tw-cursor">|</span>}
-          </span>
-          <span className={styles.l2} style={{ opacity: phraseVisible ? 1 : 0, transition: 'opacity 0.4s ease' }}>
-            <span className={styles.heroArrow}>›</span>
-            <em>{CYCLE_PHRASES[phraseIdx]}</em>
-          </span>
-        </motion.h1>
-
-        <motion.p className={styles.heroSub}
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.5 }}>
-          We find and hire the people who make AI systems better. Remote work, flexible hours, weekly pay. Roles open right now.
-        </motion.p>
-
-        <motion.div className={styles.heroBtns}
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.7 }}>
-          <button className="btn-primary" onClick={() => onNavigate('jobs')}>View Open Roles →</button>
-          <div className={styles.heroChip}>
-            <span className={styles.chipLive} />
-            <span className={styles.chipText}>$20–$25<span className={styles.chipMuted}>/hr</span></span>
-            <span className={styles.chipSep}>·</span>
-            <span className={styles.chipText}>100% Remote</span>
-            <span className={styles.chipSep}>·</span>
-            <span className={styles.chipText}>Vetted Talent</span>
-          </div>
-        </motion.div>
-
-        <motion.div className={styles.heroSubLink}
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.9 }}>
-          <button className={styles.heroTextLink} onClick={() => onNavigate('about')}>
-            Or read our story →
-          </button>
-        </motion.div>
-
-        <motion.div className={styles.heroStats}
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.9 }}>
-          {[
-            { n: 5,    suffix: '',  label: 'Open Roles' },
-            { n: 40,   suffix: '+', label: 'Countries' },
-            { n: 1000, suffix: '+', label: 'Contributors' },
-          ].map(({ n, suffix, label }) => (
-            <div key={label} className={styles.statItem}>
-              <span className={styles.statNum}><Counter target={n} suffix={suffix} /></span>
-              <span className={styles.statLabel}>{label}</span>
+            <div style={{ overflow: 'hidden' }}>
+              <motion.h1 className={styles.heroTitle}
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                transition={{ duration: 0.9, delay: 0.15, ease: [0.25, 0, 0, 1] }}>
+                <span className={styles.l1}>
+                  {display[0]}
+                  {curLine === 0 && <span className="tw-cursor">|</span>}
+                </span>
+                <span className={styles.l2} style={{ opacity: phraseVisible ? 1 : 0, transition: 'opacity 0.4s ease' }}>
+                  <span className={styles.heroArrow}>›</span>
+                  <em>{CYCLE_PHRASES[phraseIdx]}</em>
+                </span>
+              </motion.h1>
             </div>
-          ))}
-        </motion.div>
+
+            <motion.p className={styles.heroSub}
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.5 }}>
+              We find and hire the people who make AI systems better. Remote work, flexible hours, weekly pay. Roles open right now.
+            </motion.p>
+
+            <motion.div className={styles.heroBtns}
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.7 }}>
+              <button data-magnetic className="btn-primary" onClick={() => onNavigate('jobs')}>View Open Roles →</button>
+              <div className={styles.heroChip}>
+                <span className={styles.chipLive} />
+                <span className={styles.chipText}>$20–$25<span className={styles.chipMuted}>/hr</span></span>
+                <span className={styles.chipSep}>·</span>
+                <span className={styles.chipText}>100% Remote</span>
+                <span className={styles.chipSep}>·</span>
+                <span className={styles.chipText}>Vetted Talent</span>
+              </div>
+            </motion.div>
+
+            <motion.div className={styles.heroSubLink}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.9 }}>
+              <button className={styles.heroTextLink} onClick={() => onNavigate('about')}>
+                Or read our story →
+              </button>
+            </motion.div>
+
+            <motion.div className={styles.heroStats}
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.9 }}>
+              {[
+                { n: 5,    suffix: '',  label: 'Open Roles' },
+                { n: 40,   suffix: '+', label: 'Countries' },
+                { n: 1000, suffix: '+', label: 'Contributors' },
+              ].map(({ n, suffix, label }) => (
+                <div key={label} className={styles.statItem}>
+                  <span className={styles.statNum}><Counter target={n} suffix={suffix} /></span>
+                  <span className={styles.statLabel}>{label}</span>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* RIGHT — floating role card */}
+          <motion.div className={styles.heroRight}
+            initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9, delay: 0.4, ease: [0.25, 0, 0, 1] }}>
+            <div className={styles.roleCardWrap}>
+              <div className={styles.roleCardGlow} />
+              <motion.div
+                key={activeRole}
+                className={styles.roleCard}
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, ease: [0.25, 0, 0, 1] }}
+              >
+                <div className={styles.roleCardTop}>
+                  <span className={styles.roleCardBadge}>{JOBS[activeRole].dept}</span>
+                  <span className={styles.roleCardType}>{JOBS[activeRole].type}</span>
+                </div>
+                <div className={styles.roleCardTitle}>{JOBS[activeRole].title}</div>
+                <p className={styles.roleCardDesc}>{JOBS[activeRole].desc.slice(0, 90)}…</p>
+                <div className={styles.roleCardFooter}>
+                  <span className={styles.roleCardSalary}>{JOBS[activeRole].salary}</span>
+                  <button className={styles.roleCardBtn} onClick={() => onNavigate('jobs')}>Apply →</button>
+                </div>
+              </motion.div>
+              <div className={styles.roleCardDots}>
+                {JOBS.slice(0, 5).map((_, i) => (
+                  <button key={i} className={`${styles.roleCardDot} ${i === activeRole % 5 ? styles.roleCardDotActive : ''}`} onClick={() => setActiveRole(i)} />
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
 
         <motion.div className={styles.scrollHint}
           initial={{ opacity: 0 }} animate={{ opacity: 1 }}
@@ -316,7 +361,24 @@ export default function Home({ onNavigate }) {
         </motion.div>
       </section>
 
-      {/* ── SPONSORS ── */}
+      {/* ── NUMBERS STRIP ── */}
+      <div className={styles.numbersStrip}>
+        <div className={styles.numbersTrack}>
+          {[
+            '$20–$25/hr', '100% Remote', '40+ Countries', '1,000+ Contributors',
+            'Weekly Pay', 'Real Reviews', 'No Automated Rejections', 'Vetted Talent',
+            '$20–$25/hr', '100% Remote', '40+ Countries', '1,000+ Contributors',
+            'Weekly Pay', 'Real Reviews', 'No Automated Rejections', 'Vetted Talent',
+          ].map((item, i) => (
+            <span key={i} className={styles.numbersItem}>
+              <span className={styles.numbersDot} />
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── SPONSORS MARQUEE ── */}
       <section className={styles.sponsors}>
         <div className={styles.sponsorsLabel}>Professionals from leading AI companies apply through Arcvoy</div>
         <div className={styles.marqueeWrap}>
@@ -333,87 +395,50 @@ export default function Home({ onNavigate }) {
         </div>
       </section>
 
-      {/* ── ABOUT ── */}
-      <section className={styles.about} id="about">
-        <motion.div initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
+      {/* ── HOW IT WORKS + FEATURES ── */}
+      <section className={styles.mergedSection}>
+        <motion.div className={styles.mergedLeft}
+          initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.25,0,0,1] }}>
-          <div className="label" style={{ marginBottom: 16 }}>Who We Are</div>
+          <div className="label">The Process</div>
           <h2 className={styles.secH}>
-            Talent meets<br /><em style={{ color: 'var(--gd)', fontStyle: 'italic' }}>opportunity</em>,<br />precisely.
+            From application to <em style={{ color: 'var(--gd)', fontStyle: 'italic' }}>day one</em>
           </h2>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.25,0,0,1], delay: 0.12 }}>
-          <div className={styles.aboutBody}>
-            {ABOUT_TEXT.map((p, i) => <p key={i}>{p}</p>)}
-          </div>
-          <div className={styles.pillars}>
-            {PILLARS.map((p, i) => (
-              <motion.div key={p.num} className={styles.pillar}
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.12 }}>
-                <span className={styles.pillarNum}>{p.num}</span>
-                <div>
-                  <div className={styles.pillarTitle}>{p.title}</div>
-                  <div className={styles.pillarText}>{p.text}</div>
+          <div className={styles.howList}>
+            {HOW_IT_WORKS.map((step, i) => (
+              <motion.div key={step.step} className={styles.howItem}
+                initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.6, ease: [0.25,0,0,1], delay: i * 0.1 }}>
+                <span className={styles.howBigNum}>{step.step}</span>
+                <div className={styles.howContent}>
+                  <div className={styles.howTitle}>{step.title}</div>
+                  <p className={styles.howText}>{step.text}</p>
                 </div>
+                <div className={styles.howIconBadge}>{howIcons[step.icon]}</div>
               </motion.div>
             ))}
           </div>
         </motion.div>
-      </section>
 
-      {/* ── HOW IT WORKS ── */}
-      <section className={styles.howSection}>
-        <motion.div className={styles.howHead}
+        <motion.div className={styles.mergedRight}
           initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.25,0,0,1] }}>
-          <div className="label" style={{ justifyContent: 'center' }}>The Process</div>
-          <h2 className={styles.secH} style={{ textAlign: 'center' }}>
-            From application to <em style={{ color: 'var(--gd)', fontStyle: 'italic' }}>day one</em>
-          </h2>
-        </motion.div>
-
-        <div className={styles.howGrid}>
-          {HOW_IT_WORKS.map((step, i) => (
-            <TiltCard key={step.step} className={styles.howCard}
-              initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.65, ease: [0.25,0,0,1], delay: i * 0.14 }}>
-              <div className={styles.howIconWrap}>
-                <span className={styles.howIcon}>{howIcons[step.icon]}</span>
-                {i < HOW_IT_WORKS.length - 1 && <div className={styles.howConnector} />}
-              </div>
-              <div className={styles.howStep}>{step.step}</div>
-              <div className={styles.howTitle}>{step.title}</div>
-              <p className={styles.howText}>{step.text}</p>
-            </TiltCard>
-          ))}
-        </div>
-      </section>
-
-      {/* ── FEATURES ── */}
-      <section className={styles.features}>
-        <motion.div className={styles.featHead}
-          initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.25,0,0,1] }}>
-          <div className="label" style={{ justifyContent: 'center' }}>Why Arcvoy</div>
-          <h2 className={styles.secH} style={{ fontSize: 'clamp(28px,4vw,48px)', textAlign: 'center' }}>
+          viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.25,0,0,1], delay: 0.1 }}>
+          <div className="label">Why Arcvoy</div>
+          <h2 className={styles.secH}>
             Built for the <em style={{ color: 'var(--gd)', fontStyle: 'italic' }}>async era</em>
           </h2>
+          <div className={styles.featStack}>
+            {FEATURES.map((f, i) => (
+              <TiltCard key={f.title} className={styles.featCard}
+                initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.6, ease: [0.25,0,0,1], delay: i * 0.1 }}>
+                <span className={styles.featIcon}>{icons[f.icon]}</span>
+                <div className={styles.featTitle}>{f.title}</div>
+                <p className={styles.featText}>{f.text}</p>
+              </TiltCard>
+            ))}
+          </div>
         </motion.div>
-
-        <div className={styles.featGrid}>
-          {FEATURES.map((f, i) => (
-            <TiltCard key={f.title} className={styles.featCard}
-              initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.65, ease: [0.25,0,0,1], delay: i * 0.14 }}>
-              <span className={styles.featIcon}>{icons[f.icon]}</span>
-              <div className={styles.featTitle}>{f.title}</div>
-              <p className={styles.featText}>{f.text}</p>
-            </TiltCard>
-          ))}
-        </div>
       </section>
 
       {/* ── TESTIMONIALS ── */}
@@ -428,51 +453,42 @@ export default function Home({ onNavigate }) {
         </motion.div>
 
         <div
-          className={styles.testimonialsGrid}
+          className={styles.quoteStage}
           onTouchStart={e => { touchStartX.current = e.touches[0].clientX }}
           onTouchEnd={e => {
             const dx = e.changedTouches[0].clientX - touchStartX.current
             if (Math.abs(dx) > 50) setActiveT(i => dx < 0 ? (i + 1) % TESTIMONIALS.length : (i - 1 + TESTIMONIALS.length) % TESTIMONIALS.length)
           }}
         >
-          {TESTIMONIALS.map((t, i) => (
-            <motion.div
-              key={t.name}
-              className={`${styles.testimonialCard} ${i === activeT ? styles.testimonialActive : ''}`}
-              initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.65, ease: [0.25,0,0,1], delay: i * 0.14 }}
-              onClick={() => setActiveT(i)}
-            >
-              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
-                <Stars />
-                <IconQuote />
+          <motion.div
+            key={activeT}
+            className={styles.quoteWrap}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: [0.25,0,0,1] }}
+          >
+            <span className={styles.quoteMark}>"</span>
+            <p className={styles.quoteText}>{TESTIMONIALS[activeT].quote}</p>
+            <div className={styles.quoteAuthor}>
+              <div className={styles.testimonialAvatar}>
+                {TESTIMONIALS[activeT].photo
+                  ? <img src={TESTIMONIALS[activeT].photo} alt={TESTIMONIALS[activeT].name} className={styles.testimonialPhoto} />
+                  : TESTIMONIALS[activeT].initials}
               </div>
-              <p className={styles.testimonialQuote}>{t.quote}</p>
-              <div className={styles.testimonialAuthor}>
-                <div className={styles.testimonialAvatar}>
-                  {t.photo
-                    ? <img src={t.photo} alt={t.name} className={styles.testimonialPhoto} />
-                    : t.initials}
-                </div>
-                <div>
-                  <div className={styles.testimonialName}>{t.name}</div>
-                  <div className={styles.testimonialRole}>{t.role} · {t.location}</div>
-                </div>
+              <div>
+                <div className={styles.testimonialName}>{TESTIMONIALS[activeT].name}</div>
+                <div className={styles.testimonialRole}>{TESTIMONIALS[activeT].role} · {TESTIMONIALS[activeT].location}</div>
               </div>
-            </motion.div>
-          ))}
+            </div>
+          </motion.div>
         </div>
 
-        {/* carousel dots */}
         <div className={styles.carouselDots}>
           {TESTIMONIALS.map((_, i) => (
             <button key={i} className={`${styles.dot} ${i === activeT ? styles.dotActive : ''}`} onClick={() => setActiveT(i)} />
           ))}
         </div>
       </section>
-
-      {/* ── SPONSORS ── */}
-      <Sponsors />
 
       {/* ── CTA BANNER ── */}
       <section className={styles.ctaBanner}>
@@ -488,10 +504,10 @@ export default function Home({ onNavigate }) {
             Take a look at what is open. Every application gets a real review and a real response — good news or not.
           </p>
           <div className={styles.ctaBtns}>
-            <button className="btn-primary" onClick={() => onNavigate('jobs')} style={{ padding: '15px 40px', fontSize: '11px' }}>
+            <button data-magnetic className="btn-primary" onClick={() => onNavigate('jobs')} style={{ padding: '15px 40px', fontSize: '11px' }}>
               Browse Open Roles →
             </button>
-            <button className="btn-ghost" onClick={() => onNavigate('about')} style={{ padding: '15px 40px', fontSize: '11px' }}>
+            <button data-magnetic className="btn-ghost" onClick={() => onNavigate('about')} style={{ padding: '15px 40px', fontSize: '11px' }}>
               Learn More
             </button>
           </div>
@@ -564,7 +580,6 @@ export default function Home({ onNavigate }) {
         </div>
       </footer>
 
-      {/* toast */}
       <div className={`toast ${toastVisible ? 'show' : ''}`}>Subscribed</div>
     </div>
   )

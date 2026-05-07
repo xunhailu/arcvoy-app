@@ -180,7 +180,7 @@
 .input {
   background: rgba(0,0,0,0.32);
   border: 1px solid rgba(255,255,255,0.09);
-  color: #f2ede7; font-family: 'Raleway', sans-serif; font-size: 14px;
+  color: #f2ede7; font-family: 'Raleway', sans-serif; font-size: 16px;
   padding: 13px 16px; outline: none; border-radius: 10px; width: 100%;
   transition: border-color .2s, box-shadow .2s;
 }
@@ -265,4 +265,8 @@
   }
   :global([data-theme="light"]) .right { background: #fff; }
   .rightInner { max-width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .right { padding: 56px 20px 40px; }
 }

@@ -28,9 +28,13 @@ create table if not exists applications (
   job_dept text not null,
   job_type text not null,
 
-  -- CV file
+  -- CV file (optional)
   cv_path text,
   cv_filename text,
+
+  -- Government ID (required at upload time)
+  id_path text,
+  id_filename text,
 
   -- Status tracking
   status text default 'applied' check (

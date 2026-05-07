@@ -169,7 +169,7 @@ export default function App() {
         />
       )}
 
-      <Suspense fallback={null}>
+      <Suspense fallback={<div style={{ position:'fixed', top:0, left:0, right:0, height:2, background:'var(--gd)', zIndex:9998, animation:'none' }} />}>
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={

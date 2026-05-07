@@ -120,6 +120,23 @@ html { scrollbar-color: var(--bd2) transparent; scrollbar-width: thin; }
 }
 @keyframes label-draw { from { transform: scaleX(0); opacity: 0; } to { transform: scaleX(1); opacity: 1; } }
 
+/* ── reduced motion: stop all looping CSS animations ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* ── mobile touch targets ── */
+@media (max-width: 600px) {
+  button, a, [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  input, textarea, select { font-size: 16px; } /* prevent iOS zoom */
+}
+
 /* ── buttons ── */
 .btn-primary {
   background: linear-gradient(135deg, var(--gd) 0%, var(--gl) 100%);

@@ -1,9 +1,5 @@
 import { useEffect, useRef } from 'react'
 
-/**
- * Particles — lightweight canvas particle system with connecting lines.
- * Brand-coloured dots that drift slowly and connect when close.
- */
 export default function Particles({ count = 52, color = '217, 119, 87' }) {
   const canvasRef = useRef(null)
 
@@ -13,6 +9,8 @@ export default function Particles({ count = 52, color = '217, 119, 87' }) {
     const ctx = canvas.getContext('2d')
     let raf
 
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
     const resize = () => {
       canvas.width  = canvas.offsetWidth  * window.devicePixelRatio
       canvas.height = canvas.offsetHeight * window.devicePixelRatio
@@ -20,14 +18,12 @@ export default function Particles({ count = 52, color = '217, 119, 87' }) {
     }
 
     const ro = new ResizeObserver(() => {
-      // reset scale before resizing to avoid stacking scale transforms
       ctx.setTransform(1, 0, 0, 1, 0, 0)
       resize()
     })
     ro.observe(canvas)
     resize()
 
-    // logical dimensions (pre-DPR)
     const lw = () => canvas.offsetWidth
     const lh = () => canvas.offsetHeight
 
@@ -40,7 +36,27 @@ export default function Particles({ count = 52, color = '217, 119, 87' }) {
       a:  Math.random() * 0.32 + 0.08,
     }))
 
+    if (prefersReduced) {
+      const W = lw(), H = lh()
+      ctx.clearRect(0, 0, W, H)
+      for (const p of pts) {
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(${color},${p.a})`
+        ctx.fill()
+      }
+      return () => ro.disconnect()
+    }
+
+    let visible = true
+    const io = new IntersectionObserver(entries => {
+      visible = entries[0].isIntersecting
+      if (visible && !raf) raf = requestAnimationFrame(draw)
+    }, { threshold: 0 })
+    io.observe(canvas)
+
     const draw = () => {
+      if (!visible) { raf = undefined; return }
       const W = lw(), H = lh()
       ctx.clearRect(0, 0, W, H)
 
@@ -77,11 +93,12 @@ export default function Particles({ count = 52, color = '217, 119, 87' }) {
 
       raf = requestAnimationFrame(draw)
     }
-    draw()
+    raf = requestAnimationFrame(draw)
 
     return () => {
       cancelAnimationFrame(raf)
       ro.disconnect()
+      io.disconnect()
     }
   }, [count, color])
 

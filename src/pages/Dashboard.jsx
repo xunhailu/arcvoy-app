@@ -112,6 +112,17 @@ export default function Dashboard({ user, onNavigate }) {
 
       <div className={styles.body}>
         {/* summary cards */}
+        {loading ? (
+          <div className={styles.statsRow}>
+            {[0,1,2].map(i => (
+              <div key={i} className={styles.statCard}>
+                <span className={styles.skeletonLine} style={{ width: 32, height: 32, borderRadius: 8 }} />
+                <span className={styles.skeletonLine} style={{ width: '55%', height: 36, marginTop: 10 }} />
+                <span className={styles.skeletonLine} style={{ width: '40%', height: 10, marginTop: 8 }} />
+              </div>
+            ))}
+          </div>
+        ) : (
         <motion.div className={styles.statsRow}
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}>
@@ -132,6 +143,7 @@ export default function Dashboard({ user, onNavigate }) {
             </motion.div>
           ))}
         </motion.div>
+        )}
 
         {/* applications list */}
         <div className={styles.sectionHead}>
@@ -140,7 +152,20 @@ export default function Dashboard({ user, onNavigate }) {
         </div>
 
         {loading ? (
-          <div className={styles.empty}>Loading your applications…</div>
+          <div className={styles.list}>
+            {[0,1,2].map(i => (
+              <div key={i} className={styles.card}>
+                <div className={styles.cardTop}>
+                  <div className={styles.cardLeft} style={{ flex: 1 }}>
+                    <span className={styles.skeletonLine} style={{ width: '50%', height: 18, display: 'block', marginBottom: 10 }} />
+                    <span className={styles.skeletonLine} style={{ width: '32%', height: 12, display: 'block', marginBottom: 8 }} />
+                    <span className={styles.skeletonLine} style={{ width: '24%', height: 10, display: 'block' }} />
+                  </div>
+                </div>
+                <span className={styles.skeletonLine} style={{ width: '100%', height: 20, display: 'block', marginTop: 16, borderRadius: 8 }} />
+              </div>
+            ))}
+          </div>
         ) : apps.length === 0 ? (
           <div className={styles.emptyBox}>
             <div className={styles.emptyIcon}>

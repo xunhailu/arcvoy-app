@@ -256,3 +256,13 @@ button.chip:hover {
   .formHead { padding: 22px 22px 20px; }
   .row    { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 480px) {
+  .hero     { padding: 40px 16px 32px; }
+  .body     { padding: 28px 16px 48px; }
+  .formBody { padding: 18px 16px 24px; }
+  .formHead { padding: 18px 16px 18px; }
+  .formTitle { font-size: 22px; }
+  .successView { padding: 40px 16px; }
+  .infoCard { min-width: 100%; }
+}

@@ -127,6 +127,7 @@ export default function Jobs() {
             placeholder="Title or skill…"
             value={search}
             onChange={e => setSearch(e.target.value)}
+            aria-label="Search roles by title or skill"
           />
 
           <div className={styles.filterGroup}>
@@ -188,9 +189,18 @@ export default function Jobs() {
 
           <AnimatePresence mode="wait">
             {jobsLoading
-              ? <motion.div key="loading" className={styles.empty}
-                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-                  <div className="spinner" />
+              ? <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                  {[0,1,2,3].map(i => (
+                    <div key={i} className={styles.skeletonCard}>
+                      <div className={styles.skeletonLine} style={{ width: '28%', height: 10, marginBottom: 14 }} />
+                      <div className={styles.skeletonLine} style={{ width: '62%', height: 22, marginBottom: 10 }} />
+                      <div className={styles.skeletonLine} style={{ width: '40%', height: 13 }} />
+                      <div style={{ display:'flex', gap: 8, marginTop: 16 }}>
+                        <div className={styles.skeletonLine} style={{ width: 64, height: 24, borderRadius: 100 }} />
+                        <div className={styles.skeletonLine} style={{ width: 64, height: 24, borderRadius: 100 }} />
+                      </div>
+                    </div>
+                  ))}
                 </motion.div>
               : filtered.length === 0
               ? <motion.div key="empty" className={styles.empty}

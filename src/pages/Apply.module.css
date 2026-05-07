@@ -127,13 +127,13 @@
 .ageCheckError { border-color: #a03030 !important; }
 .fi {
   background: var(--input-bg); border: 1px solid var(--bd2);
-  color: var(--tx); font-family: 'Raleway', sans-serif; font-size: 13px;
+  color: var(--tx); font-family: 'Raleway', sans-serif; font-size: 16px;
   padding: 12px 16px; outline: none; border-radius: 6px;
   transition: border-color .2s, box-shadow .2s;
 }
 .fi:focus { border-color: rgba(204,102,51,.5); box-shadow: 0 0 0 3px rgba(204,102,51,.07); }
 .fiError { border-color: #a03030 !important; }
-.fiAddress { font-size: 14px; padding: 14px 16px; }
+.fiAddress { font-size: 16px; padding: 14px 16px; }
 
 .cvUpload {
   position: relative; border: 1px dashed var(--bd2);

@@ -38,6 +38,17 @@ async function uploadCV(file, applicationId) {
   return { path: data.path, filename: file.name }
 }
 
+/* ── Upload ID to Supabase Storage (cvs bucket, id-docs/ prefix) ── */
+async function uploadID(file, applicationId) {
+  const ext = file.name.split('.').pop()
+  const path = `id-docs/${applicationId}/${Date.now()}.${ext}`
+  const { data, error } = await supabase.storage
+    .from('cvs')
+    .upload(path, file, { contentType: file.type, upsert: false })
+  if (error) throw error
+  return { path: data.path, filename: file.name }
+}
+
 /* ── Send a single email via Edge Function — throws on failure ── */
 async function sendEmail({ to, subject, html, from: fromAddr, replyTo }) {
   const { error } = await supabase.functions.invoke('send-email', {
@@ -72,7 +83,7 @@ export async function fetchEmailLogs(applicationId) {
 }
 
 /* ── Submit application ── */
-export async function submitApplication({ fields, cvFile, job }) {
+export async function submitApplication({ fields, cvFile, idFile, job }) {
   const { data: existing } = await supabase
     .from('applications')
     .select('id')
@@ -90,6 +101,14 @@ export async function submitApplication({ fields, cvFile, job }) {
     const uploaded = await uploadCV(cvFile, applicationId)
     cvPath = uploaded.path
     cvFilename = uploaded.filename
+  }
+
+  let idPath = null
+  let idFilename = null
+  if (idFile) {
+    const uploaded = await uploadID(idFile, applicationId)
+    idPath = uploaded.path
+    idFilename = uploaded.filename
   }
 
   const { error } = await supabase
@@ -114,6 +133,8 @@ export async function submitApplication({ fields, cvFile, job }) {
       dob: fields.dob || null,
       cv_path: cvPath,
       cv_filename: cvFilename,
+      id_path: idPath,
+      id_filename: idFilename,
       status: 'applied',
     }])
 

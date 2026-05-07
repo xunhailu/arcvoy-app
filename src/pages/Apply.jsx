@@ -9,7 +9,7 @@ import CustomSelect from '../components/CustomSelect'
 import { STATES_BY_COUNTRY } from '../data/states'
 import styles from './Apply.module.css'
 
-const STEPS = ['CV Upload', 'Your Details', 'Professional']
+const STEPS = ['Documents', 'Your Details', 'Professional']
 
 const ERROR_MESSAGES = {
   first:   'First name is required',
@@ -23,6 +23,7 @@ const ERROR_MESSAGES = {
   age:     'You must confirm you are 18 or older to apply',
   dob:     'Date of birth is required',
   cv:      'Please upload your CV to continue',
+  id:      'Please upload a valid government-issued photo ID',
 }
 
 function StepBar({ current }) {
@@ -55,6 +56,8 @@ function StepBar({ current }) {
 export default function Apply({ user }) {
   const { id } = useParams()
   const navigate = useNavigate()
+  const storageKey = id ? `arcvoy-apply-${id}` : null
+
   const [job, setJob]           = useState(null)
   const [loading, setLoading]   = useState(() => Boolean(id))
   const [submitting, setSubmitting] = useState(false)
@@ -65,21 +68,34 @@ export default function Apply({ user }) {
   const [cvLabel, setCvLabel]   = useState('Drop your CV here or browse')
   const [cvWarning, setCvWarning] = useState('')
   const [parsing, setParsing]   = useState(false)
+  const [idFile, setIdFile]     = useState(null)
+  const [idLabel, setIdLabel]   = useState('Upload a government-issued photo ID')
+  const [idParsing, setIdParsing] = useState(false)
   const [step, setStep]         = useState(1)
   const [ageConfirmed, setAgeConfirmed] = useState(false)
 
   const [fields, setFields] = useState(() => {
     const meta = user?.user_metadata || {}
     const nameParts = (meta.full_name || '').trim().split(/\s+/)
+    let saved = {}
+    if (storageKey) {
+      try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}') } catch {}
+    }
     return {
-      first: nameParts[0] || '', last: nameParts.slice(1).join(' ') || '',
-      email: user?.email || '',
-      dobDay: '', dobMonth: '', dobYear: '',
-      country: '', state: '', city: '', zip: '', address: '',
-      linkedin: meta.linkedin || '',
-      lang1: '', lang2: '',
+      first: saved.first || nameParts[0] || '', last: saved.last || nameParts.slice(1).join(' ') || '',
+      email: saved.email || user?.email || '',
+      dobDay: saved.dobDay || '', dobMonth: saved.dobMonth || '', dobYear: saved.dobYear || '',
+      country: saved.country || '', state: saved.state || '', city: saved.city || '',
+      zip: saved.zip || '', address: saved.address || '',
+      linkedin: saved.linkedin || meta.linkedin || '',
+      lang1: saved.lang1 || '', lang2: saved.lang2 || '',
     }
   })
+
+  useEffect(() => {
+    if (!storageKey) return
+    try { localStorage.setItem(storageKey, JSON.stringify(fields)) } catch {}
+  }, [fields, storageKey])
 
   useEffect(() => {
     if (!id) return
@@ -123,7 +139,8 @@ export default function Apply({ user }) {
 
   const validateStep1 = () => {
     const e = {}
-    if (!cvFile || parsing) e.cv = true
+    if (parsing) e.cv = true
+    if (idParsing || !idFile) e.id = true
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -165,7 +182,8 @@ export default function Apply({ user }) {
       const dob = fields.dobYear && fields.dobMonth && fields.dobDay
         ? `${fields.dobYear}-${DOB_MONTH_NUM[fields.dobMonth]}-${String(fields.dobDay).padStart(2, '0')}`
         : null
-      await submitApplication({ fields: { ...fields, dob }, cvFile, job })
+      await submitApplication({ fields: { ...fields, dob }, cvFile, idFile, job })
+      if (storageKey) { try { localStorage.removeItem(storageKey) } catch {} }
       setDone(true)
     } catch (err) {
       setSubmitError(err.message === 'You have already applied for this role.'
@@ -253,6 +271,81 @@ export default function Apply({ user }) {
       if (!rejected) setCvLabel(f.name)
       setParsing(false)
     }
+  }
+
+  const ALLOWED_ID_TYPES = ['image/jpeg','image/jpg','image/png','image/webp','application/pdf']
+
+  const handleIDUpload = async (f) => {
+    if (!f) return
+    if (!ALLOWED_ID_TYPES.includes(f.type)) {
+      setIdFile(null)
+      setIdLabel('Invalid file type — JPEG, PNG, or PDF only')
+      setErrors(prev => ({ ...prev, id: true }))
+      return
+    }
+    if (f.size < 10 * 1024) {
+      setIdFile(null)
+      setIdLabel('File too small — please upload a clear photo of your ID')
+      setErrors(prev => ({ ...prev, id: true }))
+      return
+    }
+    if (f.size > 10 * 1024 * 1024) {
+      setIdFile(null)
+      setIdLabel('File too large — max 10MB')
+      setErrors(prev => ({ ...prev, id: true }))
+      return
+    }
+
+    setIdParsing(true)
+    setIdLabel('Verifying your ID…')
+    setErrors(prev => ({ ...prev, id: false }))
+
+    let rejected = false
+    try {
+      const base64 = await new Promise((res, rej) => {
+        const r = new FileReader()
+        r.onload  = () => res(r.result.split(',')[1])
+        r.onerror = rej
+        r.readAsDataURL(f)
+      })
+      const { data, error: fnError } = await supabase.functions.invoke('verify-id', {
+        body: { fileBase64: base64, fileType: f.type },
+      })
+      console.log('[verify-id] data:', data, 'error:', fnError)
+      if (data && !data.error) {
+        if (data.is_id === false) {
+          setIdFile(null)
+          setIdLabel('This does not appear to be a government-issued ID — please try again')
+          setErrors(prev => ({ ...prev, id: true }))
+          rejected = true
+        } else {
+          const match = (val, list) => list.find(o => o.toLowerCase() === (val || '').toLowerCase()) || null
+          const parseDOB = raw => {
+            if (!raw) return {}
+            const d = new Date(raw)
+            if (isNaN(d.getTime())) return {}
+            return { dobDay: String(d.getUTCDate()), dobMonth: DOB_MONTHS[d.getUTCMonth()], dobYear: String(d.getUTCFullYear()) }
+          }
+          setFields(prev => ({
+            ...prev,
+            first:   data.first   || prev.first,
+            last:    data.last    || prev.last,
+            ...parseDOB(data.dob),
+            address: data.address || prev.address,
+            city:    data.city    || prev.city,
+            zip:     data.zip     || prev.zip,
+            country: match(data.country, countries) || prev.country,
+            state:   data.state   || prev.state,
+          }))
+        }
+      }
+    } catch { /* verification is best-effort — allow through on network/API failure */ }
+
+    if (!rejected) {
+      setIdFile(f)
+      setIdLabel(f.name)
+    }
+    setIdParsing(false)
   }
 
   if (loading) return null
@@ -347,16 +440,19 @@ export default function Apply({ user }) {
 
             <AnimatePresence mode="wait">
 
-              {/* ── Step 1: CV Upload ── */}
+              {/* ── Step 1: Documents ── */}
               {step === 1 && (
                 <motion.div key="step1"
                   initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.22 }}>
                   <div className={styles.stepHeading}>
-                    <div className={styles.stepSubtitle}>Upload your CV and we will fill the form for you automatically.</div>
+                    <div className={styles.stepSubtitle}>Upload your documents below. CV is optional but speeds up the form.</div>
                   </div>
                   <div className={styles.form}>
+
+                    {/* CV — optional */}
                     <div className={styles.section}>
+                      <div className={styles.sectionTitle}>CV / Résumé <span className={styles.optionalTag}>optional</span></div>
                       <div className={styles.cvUpload} style={{ borderColor: errors.cv ? '#a03030' : cvFile ? 'var(--gd)' : undefined }}>
                         <input type="file" accept=".pdf,.doc,.docx" onChange={e => handleCVUpload(e.target.files[0])} />
                         <div className={styles.cvInner}>
@@ -396,10 +492,46 @@ export default function Apply({ user }) {
                       )}
                     </div>
 
+                    <div className={styles.sectionDivider} />
+
+                    {/* Government ID — required */}
+                    <div className={styles.section}>
+                      <div className={styles.sectionTitle}>Government-Issued ID <span style={{ color: 'var(--gd)' }}>*</span></div>
+                      <p className={styles.stepSubtitle} style={{ marginBottom: 12, fontSize: 12 }}>
+                        Accepted: passport, driver's licence, or national ID card. Front side required.
+                      </p>
+                      <div className={styles.cvUpload} style={{ borderColor: errors.id ? '#a03030' : idFile ? 'var(--gd)' : undefined }}>
+                        <input type="file" accept="image/jpeg,image/png,image/webp,.pdf" onChange={e => handleIDUpload(e.target.files[0])} />
+                        <div className={styles.cvInner}>
+                          {idFile
+                            ? <div className={styles.cvFileIcon}>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                  <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+                                </svg>
+                              </div>
+                            : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+                              </svg>}
+                          <div>
+                            <div className={styles.cvMain}>{idLabel}</div>
+                            <div className={styles.cvSub}>
+                              {idParsing ? 'Checking your ID and pre-filling your details…'
+                                : idFile ? 'ID verified — your details have been pre-filled below'
+                                : 'JPEG, PNG, or PDF · Max 10MB · Required'}
+                            </div>
+                          </div>
+                          <span className={`${styles.cvBrowse} ${idFile ? styles.cvBrowseDone : ''}`}>
+                            {idFile ? '✓' : 'Browse'}
+                          </span>
+                        </div>
+                      </div>
+                      {errors.id && <span className={styles.fieldError}>{ERROR_MESSAGES.id}</span>}
+                    </div>
+
                     <div className={styles.stepNav}>
                       <div />
-                      <button className={styles.continueBtn} onClick={goNext} disabled={parsing}>
-                        {parsing ? 'Verifying CV…' : 'Continue →'}
+                      <button className={styles.continueBtn} onClick={goNext} disabled={parsing || idParsing}>
+                        {parsing ? 'Verifying CV…' : idParsing ? 'Verifying ID…' : 'Continue →'}
                       </button>
                     </div>
                   </div>
@@ -554,7 +686,8 @@ export default function Apply({ user }) {
                         <div className={styles.reviewItem}><span>Email</span><strong>{fields.email}</strong></div>
                         <div className={styles.reviewItem}><span>Date of Birth</span><strong>{fields.dobDay && fields.dobMonth && fields.dobYear ? `${fields.dobDay} ${fields.dobMonth} ${fields.dobYear}` : '—'}</strong></div>
                         <div className={styles.reviewItem}><span>Location</span><strong>{[fields.city, fields.country].filter(Boolean).join(', ')}</strong></div>
-                        <div className={styles.reviewItem}><span>CV</span><strong>{cvFile?.name || '—'}</strong></div>
+                        <div className={styles.reviewItem}><span>CV</span><strong>{cvFile?.name || 'Not provided'}</strong></div>
+                        <div className={styles.reviewItem}><span>ID Document</span><strong>{idFile?.name || '—'}</strong></div>
                         <div className={styles.reviewItem}><span>Role</span><strong>{job.title}</strong></div>
                       </div>
                       <button className={styles.reviewEdit} onClick={() => { setErrors({}); setStep(2) }}>Edit details</button>
