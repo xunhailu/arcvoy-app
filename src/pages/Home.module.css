@@ -998,7 +998,7 @@
   .keepTouch { padding: 48px 16px; gap: 28px; }
   .ktTitle { font-size: clamp(26px, 7vw, 38px); }
   .nlRow { flex-direction: column; gap: 10px; }
-  .nlInput { border-right: 1px solid var(--bd2); border-radius: 8px; }
+  .nlInput { border-right: 1px solid var(--bd2); border-radius: 8px; font-size: 16px; }
   .nlBtn { border-radius: 8px; text-align: center; }
 
   /* footer */

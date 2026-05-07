@@ -71,6 +71,7 @@ export default function Apply({ user }) {
   const [idFile, setIdFile]     = useState(null)
   const [idLabel, setIdLabel]   = useState('Upload a government-issued photo ID')
   const [idParsing, setIdParsing] = useState(false)
+  const [idVerified, setIdVerified] = useState(false)
   const [step, setStep]         = useState(1)
   const [ageConfirmed, setAgeConfirmed] = useState(false)
 
@@ -296,6 +297,7 @@ export default function Apply({ user }) {
       return
     }
 
+    setIdVerified(false)
     setIdParsing(true)
     setIdLabel('Verifying your ID…')
     setErrors(prev => ({ ...prev, id: false }))
@@ -308,10 +310,9 @@ export default function Apply({ user }) {
         r.onerror = rej
         r.readAsDataURL(f)
       })
-      const { data, error: fnError } = await supabase.functions.invoke('verify-id', {
+      const { data } = await supabase.functions.invoke('verify-id', {
         body: { fileBase64: base64, fileType: f.type },
       })
-      console.log('[verify-id] data:', data, 'error:', fnError)
       if (data && !data.error) {
         if (data.is_id === false) {
           setIdFile(null)
@@ -319,6 +320,7 @@ export default function Apply({ user }) {
           setErrors(prev => ({ ...prev, id: true }))
           rejected = true
         } else {
+          setIdVerified(true)
           const match = (val, list) => list.find(o => o.toLowerCase() === (val || '').toLowerCase()) || null
           const parseDOB = raw => {
             if (!raw) return {}
@@ -516,7 +518,8 @@ export default function Apply({ user }) {
                             <div className={styles.cvMain}>{idLabel}</div>
                             <div className={styles.cvSub}>
                               {idParsing ? 'Checking your ID and pre-filling your details…'
-                                : idFile ? 'ID verified — your details have been pre-filled below'
+                                : idVerified ? 'ID verified — your details have been pre-filled below'
+                                : idFile ? 'ID uploaded successfully'
                                 : 'JPEG, PNG, or PDF · Max 10MB · Required'}
                             </div>
                           </div>

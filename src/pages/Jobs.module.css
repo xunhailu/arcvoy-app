@@ -237,6 +237,7 @@
   .jobsHero { padding: 48px 20px 36px; }
   .jobsHeroSub { max-width: 100%; }
   .toolbar { padding: 10px 14px; }
+  .searchInput { font-size: 16px; }
 }
 
 @media (max-width: 480px) {
