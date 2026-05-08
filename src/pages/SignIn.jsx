@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
@@ -21,55 +21,58 @@ const LinkedInIcon = () => (
 
 export default function SignIn() {
   const navigate = useNavigate()
-  const [tab,      setTab]      = useState('login')
-  const [view,     setView]     = useState('auth')
+  const [view,     setView]     = useState('email')
   const [email,    setEmail]    = useState('')
-  const [password, setPassword] = useState('')
-  const [name,     setName]     = useState('')
-  const [showPass, setShowPass] = useState(false)
+  const [otp,      setOtp]      = useState('')
   const [error,    setError]    = useState('')
   const [loading,  setLoading]  = useState(false)
-  const [sent,     setSent]     = useState(false)
+  const [cooldown, setCooldown] = useState(0)
+  const timerRef = useRef(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session?.user) navigate('/')
+      if (data.session?.user) navigate('/dashboard')
     })
+    return () => clearInterval(timerRef.current)
   }, [navigate])
 
-  const reset = () => { setError(''); setEmail(''); setPassword(''); setName('') }
-  const switchTab = t => { setTab(t); setError('') }
+  const startCooldown = () => {
+    setCooldown(60)
+    timerRef.current = setInterval(() => {
+      setCooldown(v => { if (v <= 1) { clearInterval(timerRef.current); return 0 } return v - 1 })
+    }, 1000)
+  }
 
-  const submit = async () => {
-    if (!email || !password) return
+  const sendOtp = async () => {
+    if (!email) return setError('Please enter your email address.')
     setLoading(true); setError('')
-    try {
-      if (tab === 'login') {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-        if (error) throw error
-        if (data.user?.app_metadata?.role === 'admin') {
-          await supabase.auth.signOut()
-          throw new Error('Please use the admin portal to sign in.')
-        }
-        navigate('/')
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email, password,
-          options: { data: { full_name: name || email.split('@')[0] } },
-        })
-        if (error) throw error
-        setSent(true)
-      }
-    } catch (e) { setError(e.message) }
+    const { error } = await supabase.auth.signInWithOtp({
+      email, options: { shouldCreateUser: true },
+    })
     setLoading(false)
+    if (error) return setError(error.message)
+    setView('otp')
+    startCooldown()
+  }
+
+  const verifyOtp = async () => {
+    if (otp.length !== 6) return setError('Please enter the 6-digit code.')
+    setLoading(true); setError('')
+    const { data, error } = await supabase.auth.verifyOtp({ email, token: otp, type: 'email' })
+    if (error) { setError('Invalid or expired code. Please try again.'); setLoading(false); return }
+    if (data.user?.app_metadata?.role === 'admin') {
+      await supabase.auth.signOut()
+      setError('Please use the admin portal to sign in.')
+      setLoading(false); return
+    }
+    navigate('/dashboard')
   }
 
   const socialLogin = async provider => {
     setLoading(true); setError('')
     try {
       const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: { redirectTo: window.location.origin },
+        provider, options: { redirectTo: `${window.location.origin}/dashboard` },
       })
       if (error) throw error
     } catch (e) { setError(e.message) }
@@ -111,8 +114,8 @@ export default function SignIn() {
           <div className={styles.features}>
             {[
               ['Track every application in real time', 'Stay on top of where each role stands as it moves through the pipeline.'],
-              ['Receive status updates instantly', 'Get notified the moment your application status changes.'],
-              ['One profile, every opportunity', 'Apply once and let your profile work across all open roles.'],
+              ['Receive status updates instantly',      'Get notified the moment your application status changes.'],
+              ['One profile, every opportunity',        'Apply once and let your profile work across all open roles.'],
             ].map(([title, desc]) => (
               <div key={title} className={styles.feature}>
                 <div className={styles.featureDot} />
@@ -131,29 +134,18 @@ export default function SignIn() {
         <div className={styles.rightInner}>
           <AnimatePresence mode="wait">
 
-            {/* Forgot password sent */}
+            {/* Reset link sent */}
             {view === 'forgot-sent' && (
               <motion.div key="forgot-sent" className={styles.formWrap}
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
                 <div className={styles.sentIcon}>✉</div>
                 <h2 className={styles.formTitle}>Check your inbox</h2>
-                <p className={styles.formSub}>We sent a reset link to <strong>{email}</strong>. Follow the link to set a new password.</p>
-                <button className={styles.switchLink} onClick={() => { setView('auth'); reset() }}>← Back to Sign In</button>
+                <p className={styles.formSub}>We sent a reset link to <strong>{email}</strong>.</p>
+                <button className={styles.switchLink} onClick={() => { setView('email'); setError('') }}>← Back to Sign In</button>
               </motion.div>
             )}
 
-            {/* Email verification sent */}
-            {view === 'auth' && sent && (
-              <motion.div key="sent" className={styles.formWrap}
-                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-                <div className={styles.sentIcon}>✓</div>
-                <h2 className={styles.formTitle}>Check your inbox</h2>
-                <p className={styles.formSub}>We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account, then sign in.</p>
-                <button className={styles.switchLink} onClick={() => { setSent(false); switchTab('login') }}>← Back to Sign In</button>
-              </motion.div>
-            )}
-
-            {/* Forgot password form */}
+            {/* Forgot password */}
             {view === 'forgot' && (
               <motion.div key="forgot" className={styles.formWrap}
                 initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
@@ -171,28 +163,61 @@ export default function SignIn() {
                 <button className={styles.submitBtn} onClick={sendReset} disabled={loading}>
                   {loading ? 'Sending…' : 'Send Reset Link →'}
                 </button>
-                <button className={styles.switchLink} onClick={() => { setView('auth'); setError('') }}>← Back to Sign In</button>
+                <button className={styles.switchLink} onClick={() => { setView('email'); setError('') }}>← Back</button>
               </motion.div>
             )}
 
-            {/* Main auth form */}
-            {view === 'auth' && !sent && (
-              <motion.div key={tab} className={styles.formWrap}
-                initial={{ opacity: 0, x: tab === 'login' ? -12 : 12 }}
-                animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
+            {/* OTP code entry */}
+            {view === 'otp' && (
+              <motion.div key="otp" className={styles.formWrap}
+                initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.22 }}>
+                <div className={styles.otpIcon}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                </div>
+                <h2 className={styles.formTitle}>Check your email</h2>
+                <p className={styles.formSub}>We sent a 6-digit code to <strong>{email}</strong>. Expires in 10 minutes.</p>
+
+                <div className={styles.fg}>
+                  <label className={styles.label}>Verification code</label>
+                  <input
+                    className={`${styles.input} ${styles.otpInput}`}
+                    type="text" inputMode="numeric" pattern="[0-9]*" maxLength={6}
+                    value={otp} placeholder="000000"
+                    onChange={e => { setOtp(e.target.value.replace(/\D/g, '').slice(0, 6)); setError('') }}
+                    onKeyDown={e => e.key === 'Enter' && verifyOtp()}
+                    autoFocus autoComplete="one-time-code" />
+                </div>
+
+                {error && <div className={styles.err}>{error}</div>}
+
+                <button className={styles.submitBtn} onClick={verifyOtp} disabled={loading || otp.length !== 6}>
+                  {loading ? 'Verifying…' : 'Verify & Continue →'}
+                </button>
+
+                <div className={styles.resendRow}>
+                  <span>Didn't receive it?</span>
+                  {cooldown > 0
+                    ? <span className={styles.cooldownText}>Resend in {cooldown}s</span>
+                    : <button className={styles.switchLink} onClick={sendOtp}>Resend code</button>}
+                </div>
+                <button className={styles.switchLink} onClick={() => { setView('email'); setOtp(''); setError('') }}>
+                  ← Change email
+                </button>
+              </motion.div>
+            )}
+
+            {/* Email entry */}
+            {view === 'email' && (
+              <motion.div key="email" className={styles.formWrap}
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                 transition={{ duration: 0.22 }}>
 
-                <h2 className={styles.formTitle}>
-                  {tab === 'login' ? 'Welcome back' : 'Create your account'}
-                </h2>
-                <p className={styles.formSub}>
-                  {tab === 'login' ? 'Sign in to continue to Arcvoy' : 'Join Arcvoy and track your AI career'}
-                </p>
-
-                <div className={styles.tabs}>
-                  <button className={`${styles.tab} ${tab === 'login'    ? styles.tabActive : ''}`} onClick={() => switchTab('login')}>Sign In</button>
-                  <button className={`${styles.tab} ${tab === 'register' ? styles.tabActive : ''}`} onClick={() => switchTab('register')}>Register</button>
-                </div>
+                <h2 className={styles.formTitle}>Welcome to Arcvoy</h2>
+                <p className={styles.formSub}>Sign in or create an account to track your AI career</p>
 
                 <div className={styles.socialBtns}>
                   <button className={styles.socialBtn} onClick={() => socialLogin('google')} disabled={loading}>
@@ -205,59 +230,25 @@ export default function SignIn() {
 
                 <div className={styles.dividerRow}><span>or continue with email</span></div>
 
-                {tab === 'register' && (
-                  <div className={styles.fg}>
-                    <label className={styles.label}>Full Name</label>
-                    <input className={styles.input} type="text" value={name}
-                      onChange={e => setName(e.target.value)}
-                      placeholder="Your name" autoFocus />
-                  </div>
-                )}
-
                 <div className={styles.fg}>
                   <label className={styles.label}>Email address</label>
                   <input className={styles.input} type="email" value={email}
                     onChange={e => { setEmail(e.target.value); setError('') }}
-                    onKeyDown={e => e.key === 'Enter' && submit()}
-                    placeholder="you@email.com" autoFocus={tab === 'login'} />
-                </div>
-
-                <div className={styles.fg}>
-                  <div className={styles.passRow}>
-                    <label className={styles.label}>Password</label>
-                    {tab === 'login' && (
-                      <button className={styles.forgotLink} onClick={() => { setView('forgot'); setError('') }}>
-                        Forgot password?
-                      </button>
-                    )}
-                  </div>
-                  <div className={styles.passWrap}>
-                    <input className={`${styles.input} ${styles.passInput}`}
-                      type={showPass ? 'text' : 'password'} value={password}
-                      onChange={e => setPassword(e.target.value)}
-                      onKeyDown={e => e.key === 'Enter' && submit()}
-                      placeholder="••••••••" />
-                    <button className={styles.eyeBtn} onClick={() => setShowPass(v => !v)} tabIndex={-1} aria-label={showPass ? 'Hide password' : 'Show password'}>
-                      {showPass
-                        ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                        : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                      }
-                    </button>
-                  </div>
+                    onKeyDown={e => e.key === 'Enter' && sendOtp()}
+                    placeholder="you@email.com" autoFocus />
                 </div>
 
                 {error && <div className={styles.err}>{error}</div>}
 
-                <button className={styles.submitBtn} onClick={submit} disabled={loading}>
-                  {loading
-                    ? (tab === 'login' ? 'Signing in…' : 'Creating account…')
-                    : (tab === 'login' ? 'Sign In →' : 'Create Account →')}
+                <button className={styles.submitBtn} onClick={sendOtp} disabled={loading || !email}>
+                  {loading ? 'Sending code…' : 'Send Code →'}
                 </button>
 
                 <p className={styles.hint}>
-                  {tab === 'login'
-                    ? <>New here? <button className={styles.switchLink} onClick={() => switchTab('register')}>Create an account</button></>
-                    : <>Already have one? <button className={styles.switchLink} onClick={() => switchTab('login')}>Sign in</button></>}
+                  By continuing you agree to our{' '}
+                  <button className={styles.switchLink} onClick={() => navigate('/terms')}>Terms</button>
+                  {' '}and{' '}
+                  <button className={styles.switchLink} onClick={() => navigate('/privacy')}>Privacy Policy</button>.
                 </p>
 
               </motion.div>

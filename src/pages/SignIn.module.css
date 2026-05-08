@@ -252,6 +252,34 @@
 }
 .switchLink:hover { text-decoration-color: #cc6633; }
 
+/* ── OTP specific ── */
+.otpIcon {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: var(--ga); border: 1px solid var(--gb);
+  color: var(--gd); display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(204,102,51,.2);
+}
+
+.otpInput {
+  font-size: 24px !important;
+  letter-spacing: 0.35em;
+  text-align: center;
+  font-weight: 700 !important;
+}
+
+.resendRow {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--td);
+  font-family: 'Raleway', sans-serif;
+  margin-top: 12px;
+}
+
+.cooldownText {
+  font-size: 12px; color: var(--td);
+  font-family: 'Raleway', sans-serif;
+}
+
 /* ── Mobile ── */
 @media (max-width: 800px) {
   .page { grid-template-columns: 1fr; }

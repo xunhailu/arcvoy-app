@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../hooks/useTheme'
 import { motion, AnimatePresence } from 'framer-motion'
+import { fetchAllW9, fetchAllPaymentInfo, fetchPaymentRecords, recordPayment } from '../lib/contractor'
 import {
   fetchApplications,
   fetchEmailLogs,
@@ -1423,6 +1424,257 @@ function JobsView() {
   )
 }
 
+/* ── Payments View ── */
+function PaymentsView() {
+  const [w9List,    setW9List]    = useState([])
+  const [payList,   setPayList]   = useState([])
+  const [payRecs,   setPayRecs]   = useState([])
+  const [hiredApps, setHiredApps] = useState([])
+  const [loading,   setLoading]   = useState(true)
+  const [subTab,    setSubTab]    = useState('ready')
+  const [modal,     setModal]     = useState(null)
+  const [payForm,   setPayForm]   = useState({ amount: '', method: '', reference: '', note: '' })
+  const [saving,    setSaving]    = useState(false)
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [w9, pay, recs, { data: apps }] = await Promise.all([
+          fetchAllW9(),
+          fetchAllPaymentInfo(),
+          fetchPaymentRecords(),
+          supabase.from('applications').select('*').eq('status', 'hired').order('created_at', { ascending: false }),
+        ])
+        setW9List(w9); setPayList(pay); setPayRecs(recs); setHiredApps(apps || [])
+      } catch { setHiredApps([]) }
+      setLoading(false)
+    }
+    load()
+  }, [])
+
+  const w9Map  = Object.fromEntries(w9List.map(w => [w.email, w]))
+  const payMap = Object.fromEntries(payList.map(p => [p.email, p]))
+
+  const ready   = hiredApps.filter(a => w9Map[a.email] && payMap[a.email])
+  const pending = hiredApps.filter(a => !w9Map[a.email])
+
+  const openPay = app => {
+    const info = payMap[app.email]
+    setPayForm({
+      amount: '', reference: '', note: '',
+      method: info ? (info.method === 'bank' ? 'Bank Transfer' : info.method === 'paypal' ? 'PayPal' : 'Wise') : '',
+    })
+    setModal(app)
+  }
+
+  const submitPayment = async () => {
+    if (!payForm.amount || isNaN(payForm.amount)) return toast.error('Enter a valid amount.')
+    setSaving(true)
+    try {
+      const rec = await recordPayment({
+        application_id: modal.id,
+        email: modal.email,
+        first_name: modal.first_name,
+        last_name: modal.last_name,
+        amount: parseFloat(payForm.amount),
+        currency: 'USD',
+        method: payForm.method,
+        reference: payForm.reference,
+        note: payForm.note,
+        paid_at: new Date().toISOString(),
+      })
+      setPayRecs(prev => [rec, ...prev])
+      setModal(null)
+      toast.success(`Payment of $${parseFloat(payForm.amount).toFixed(2)} recorded.`)
+    } catch { toast.error('Could not record payment. Please try again.') }
+    setSaving(false)
+  }
+
+  const payHistory = email => payRecs.filter(r => r.email === email)
+
+  return (
+    <div className={styles.dashboard}>
+      <div className={styles.sidebar}>
+        <div className={styles.sideNav} style={{ paddingTop: 12 }}>
+          <div className={styles.sideLabel}>View</div>
+          {[
+            { id: 'ready',   label: 'Ready to Pay',  count: ready.length,   color: '#1a9e4a' },
+            { id: 'pending', label: 'Pending W-9',    count: pending.length, color: '#cc6633' },
+            { id: 'history', label: 'Payment History',count: payRecs.length, color: '#378add' },
+          ].map(t => (
+            <button key={t.id}
+              className={`${styles.sideItem} ${subTab === t.id ? styles.sideItemActive : ''}`}
+              onClick={() => setSubTab(t.id)}>
+              {t.label}
+              <span className={styles.count} style={{ background: t.color, color: '#fff', border: 'none', boxShadow: `0 1px 8px ${t.color}55` }}>
+                {t.count}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className={styles.main}>
+        <div className={styles.mainHead}>
+          <div>
+            <div className={styles.mainTitle}>
+              {subTab === 'ready' ? 'Ready to Pay' : subTab === 'pending' ? 'Pending W-9' : 'Payment History'}
+            </div>
+            <div className={styles.mainSub}>
+              {subTab === 'ready'   && `${ready.length} contractor${ready.length !== 1 ? 's' : ''} with W-9 and payment info`}
+              {subTab === 'pending' && `${pending.length} hired contractor${pending.length !== 1 ? 's' : ''} missing W-9`}
+              {subTab === 'history' && `${payRecs.length} payment${payRecs.length !== 1 ? 's' : ''} recorded`}
+            </div>
+          </div>
+        </div>
+
+        {loading ? (
+          <div className={styles.empty}>Loading…</div>
+        ) : subTab === 'ready' ? (
+          ready.length === 0 ? (
+            <div className={styles.empty}>No contractors are ready to pay yet.</div>
+          ) : (
+            <div className={styles.table}>
+              <div className={styles.thead} style={{ gridTemplateColumns: '2fr 1.5fr 1.2fr 1fr 0.8fr 100px' }}>
+                <span>Contractor</span><span>Role</span><span>Pay Method</span><span>W-9</span><span>Paid</span><span></span>
+              </div>
+              {ready.map(app => {
+                const info    = payMap[app.email]
+                const history = payHistory(app.email)
+                const total   = history.reduce((s, r) => s + parseFloat(r.amount || 0), 0)
+                return (
+                  <div key={app.id} className={styles.trow} style={{ gridTemplateColumns: '2fr 1.5fr 1.2fr 1fr 0.8fr 100px', cursor: 'default' }}>
+                    <span className={styles.tdName}>
+                      <div className={styles.avatar}>{app.first_name?.[0]}{app.last_name?.[0]}</div>
+                      <div>
+                        <div className={styles.tdNameMain}>{app.first_name} {app.last_name}</div>
+                        <div className={styles.tdNameSub}>{app.email}</div>
+                      </div>
+                    </span>
+                    <span>
+                      <div className={styles.tdRole}>{app.job_title}</div>
+                      <div className={styles.tdDept}>{app.job_dept}</div>
+                    </span>
+                    <span className={styles.tdRole} style={{ textTransform: 'capitalize' }}>
+                      {info?.method === 'bank' ? 'Bank (ACH)' : info?.method === 'paypal' ? 'PayPal' : 'Wise'}
+                    </span>
+                    <span>
+                      <span className={styles.statusPill} style={{ background: 'rgba(29,185,84,0.14)', color: '#1a9e4a' }}>Filed</span>
+                    </span>
+                    <span className={styles.tdRole}>${total.toFixed(2)}</span>
+                    <span>
+                      <button className={styles.editBtn} style={{ color: 'var(--gd)', borderColor: 'var(--gb)' }} onClick={() => openPay(app)}>
+                        Pay
+                      </button>
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          )
+        ) : subTab === 'pending' ? (
+          pending.length === 0 ? (
+            <div className={styles.empty}>All hired contractors have submitted their W-9.</div>
+          ) : (
+            <div className={styles.table}>
+              <div className={styles.thead} style={{ gridTemplateColumns: '2fr 1.5fr 1fr 1fr' }}>
+                <span>Contractor</span><span>Role</span><span>Hired</span><span>W-9 Status</span>
+              </div>
+              {pending.map(app => (
+                <div key={app.id} className={styles.trow} style={{ gridTemplateColumns: '2fr 1.5fr 1fr 1fr', cursor: 'default' }}>
+                  <span className={styles.tdName}>
+                    <div className={styles.avatar}>{app.first_name?.[0]}{app.last_name?.[0]}</div>
+                    <div>
+                      <div className={styles.tdNameMain}>{app.first_name} {app.last_name}</div>
+                      <div className={styles.tdNameSub}>{app.email}</div>
+                    </div>
+                  </span>
+                  <span><div className={styles.tdRole}>{app.job_title}</div></span>
+                  <span className={styles.tdDate}>{new Date(app.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>
+                  <span><span className={styles.statusPill} style={{ background: 'rgba(204,102,51,0.14)', color: '#cc6633' }}>Awaiting W-9</span></span>
+                </div>
+              ))}
+            </div>
+          )
+        ) : (
+          payRecs.length === 0 ? (
+            <div className={styles.empty}>No payments recorded yet.</div>
+          ) : (
+            <div className={styles.table}>
+              <div className={styles.thead} style={{ gridTemplateColumns: '2fr 1.2fr 0.8fr 1fr 1.2fr' }}>
+                <span>Contractor</span><span>Method</span><span>Amount</span><span>Date</span><span>Reference</span>
+              </div>
+              {payRecs.map(rec => (
+                <div key={rec.id} className={styles.trow} style={{ gridTemplateColumns: '2fr 1.2fr 0.8fr 1fr 1.2fr', cursor: 'default' }}>
+                  <span className={styles.tdName}>
+                    <div>
+                      <div className={styles.tdNameMain}>{rec.first_name} {rec.last_name}</div>
+                      <div className={styles.tdNameSub}>{rec.email}</div>
+                    </div>
+                  </span>
+                  <span className={styles.tdRole}>{rec.method || '—'}</span>
+                  <span className={styles.tdRole}>${parseFloat(rec.amount).toFixed(2)}</span>
+                  <span className={styles.tdDate}>{new Date(rec.paid_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                  <span className={styles.tdDate}>{rec.reference || '—'}</span>
+                </div>
+              ))}
+            </div>
+          )
+        )}
+
+        {/* Pay modal */}
+        <AnimatePresence>
+          {modal && (
+            <motion.div className={styles.jobFormOverlay}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={e => { if (e.target === e.currentTarget) setModal(null) }}>
+              <motion.div className={styles.jobForm}
+                initial={{ y: 24, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 12, opacity: 0 }}>
+                <div className={styles.jobFormHead}>
+                  <div className={styles.sectionTitle}>Record Payment — {modal.first_name} {modal.last_name}</div>
+                  <button className="close-btn" onClick={() => setModal(null)}>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                      <line x1="1" y1="1" x2="11" y2="11"/><line x1="11" y1="1" x2="1" y2="11"/>
+                    </svg>
+                  </button>
+                </div>
+                <div className={styles.jobFormBody}>
+                  <div className={styles.field}>
+                    <label className="fl">Amount (USD) *</label>
+                    <input className="fi" type="number" min="0" step="0.01" placeholder="e.g. 500.00"
+                      value={payForm.amount} onChange={e => setPayForm(p => ({ ...p, amount: e.target.value }))} />
+                  </div>
+                  <div className={styles.field}>
+                    <label className="fl">Payment Method</label>
+                    <input className="fi" placeholder="e.g. Bank Transfer, PayPal, Wise"
+                      value={payForm.method} onChange={e => setPayForm(p => ({ ...p, method: e.target.value }))} />
+                  </div>
+                  <div className={styles.field}>
+                    <label className="fl">Reference / Transaction ID</label>
+                    <input className="fi" placeholder="Optional transaction reference"
+                      value={payForm.reference} onChange={e => setPayForm(p => ({ ...p, reference: e.target.value }))} />
+                  </div>
+                  <div className={styles.field}>
+                    <label className="fl">Note</label>
+                    <input className="fi" placeholder="Optional internal note"
+                      value={payForm.note} onChange={e => setPayForm(p => ({ ...p, note: e.target.value }))} />
+                  </div>
+                </div>
+                <div className={styles.jobFormFooter}>
+                  <button className="btn-ghost" onClick={() => setModal(null)}>Cancel</button>
+                  <button className="sub-btn" onClick={submitPayment} disabled={saving || !payForm.amount}>
+                    {saving ? 'Recording…' : 'Record Payment'}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  )
+}
+
 /* ── Main Dashboard ── */
 export default function AdminDashboard() {
   const navigate = useNavigate()
@@ -1515,6 +1767,7 @@ export default function AdminDashboard() {
                 { key: 'tickets',      label: 'Tickets' },
                 { key: 'subscribers',  label: 'Subscribers' },
                 { key: 'jobs',         label: 'Jobs' },
+                { key: 'payments',     label: 'Payments' },
               ].map(tab => (
                 <button key={tab.key}
                   className={`${styles.topTab} ${activeView === tab.key ? styles.topTabActive : ''}`}
@@ -1557,6 +1810,7 @@ export default function AdminDashboard() {
             {activeView === 'tickets'      && <TicketsView />}
             {activeView === 'subscribers'  && <SubscribersView />}
             {activeView === 'jobs'         && <JobsView />}
+            {activeView === 'payments'     && <PaymentsView />}
           </div>
 
         </div>
