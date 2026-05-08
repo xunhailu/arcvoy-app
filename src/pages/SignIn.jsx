@@ -47,16 +47,25 @@ export default function SignIn() {
     if (!email) return setError('Please enter your email address.')
     setLoading(true); setError('')
     const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        shouldCreateUser: true,
-        emailRedirectTo: `${window.location.origin}/dashboard`,
-      },
+      email, options: { shouldCreateUser: true },
     })
     setLoading(false)
     if (error) return setError(error.message)
     setView('otp')
     startCooldown()
+  }
+
+  const verifyOtp = async () => {
+    if (otp.length !== 6) return setError('Please enter the 6-digit code.')
+    setLoading(true); setError('')
+    const { data, error } = await supabase.auth.verifyOtp({ email, token: otp, type: 'email' })
+    if (error) { setError('Invalid or expired code. Please try again.'); setLoading(false); return }
+    if (data.user?.app_metadata?.role === 'admin') {
+      await supabase.auth.signOut()
+      setError('Please use the admin portal to sign in.')
+      setLoading(false); return
+    }
+    navigate('/dashboard')
   }
 
   const socialLogin = async provider => {
@@ -158,7 +167,7 @@ export default function SignIn() {
               </motion.div>
             )}
 
-            {/* Magic link sent */}
+            {/* OTP code entry */}
             {view === 'otp' && (
               <motion.div key="otp" className={styles.formWrap}
                 initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
@@ -170,7 +179,7 @@ export default function SignIn() {
                   </svg>
                 </div>
                 <h2 className={styles.formTitle}>Check your email</h2>
-                <p className={styles.formSub}>We sent a sign-in link to <strong>{email}</strong>. Click it to continue — no password needed.</p>
+                <p className={styles.formSub}>We sent a 6-digit code to <strong>{email}</strong>. Expires in 10 minutes.</p>
 
                 <div className={styles.spamNotice}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -181,18 +190,30 @@ export default function SignIn() {
                   <span>Can't find it? Check your <strong>spam or junk folder</strong> — it sometimes lands there.</span>
                 </div>
 
-                <div className={styles.linkWaiting}>
-                  <div className={styles.linkDot} />
-                  <span>Waiting for you to click the link…</span>
+                <div className={styles.fg}>
+                  <label className={styles.label}>6-digit code</label>
+                  <input
+                    className={`${styles.input} ${styles.otpInput}`}
+                    type="text" inputMode="numeric" pattern="[0-9]*" maxLength={6}
+                    value={otp} placeholder="000000"
+                    onChange={e => { setOtp(e.target.value.replace(/\D/g, '').slice(0, 6)); setError('') }}
+                    onKeyDown={e => e.key === 'Enter' && verifyOtp()}
+                    autoFocus autoComplete="one-time-code" />
                 </div>
+
+                {error && <div className={styles.err}>{error}</div>}
+
+                <button className={styles.submitBtn} onClick={verifyOtp} disabled={loading || otp.length !== 6}>
+                  {loading ? 'Verifying…' : 'Verify & Continue →'}
+                </button>
 
                 <div className={styles.resendRow}>
                   <span>Didn't receive it?</span>
                   {cooldown > 0
                     ? <span className={styles.cooldownText}>Resend in {cooldown}s</span>
-                    : <button className={styles.switchLink} onClick={sendOtp}>Resend link</button>}
+                    : <button className={styles.switchLink} onClick={sendOtp}>Resend code</button>}
                 </div>
-                <button className={styles.switchLink} onClick={() => { setView('email'); setError('') }}>
+                <button className={styles.switchLink} onClick={() => { setView('email'); setOtp(''); setError('') }}>
                   ← Change email
                 </button>
               </motion.div>
