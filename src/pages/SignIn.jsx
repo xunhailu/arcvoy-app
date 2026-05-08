@@ -181,6 +181,15 @@ export default function SignIn() {
                 <h2 className={styles.formTitle}>Check your email</h2>
                 <p className={styles.formSub}>We sent a 6-digit code to <strong>{email}</strong>. Expires in 10 minutes.</p>
 
+                <div className={styles.spamNotice}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                  <span>Can't find it? Check your <strong>spam or junk folder</strong> — it sometimes lands there.</span>
+                </div>
+
                 <div className={styles.fg}>
                   <label className={styles.label}>Verification code</label>
                   <input

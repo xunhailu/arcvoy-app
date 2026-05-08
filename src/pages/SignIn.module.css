@@ -268,6 +268,24 @@
   font-weight: 700 !important;
 }
 
+.spamNotice {
+  display: flex; align-items: flex-start; gap: 9px;
+  background: rgba(204,102,51,0.08);
+  border: 1px solid rgba(204,102,51,0.2);
+  border-radius: 10px;
+  padding: 11px 14px;
+  margin-bottom: 4px;
+  color: rgba(204,102,51,0.9);
+  font-size: 12px; line-height: 1.55;
+  font-family: 'Raleway', sans-serif;
+}
+.spamNotice svg { flex-shrink: 0; margin-top: 1px; }
+.spamNotice strong { color: #cc6633; font-weight: 700; }
+:global([data-theme="light"]) .spamNotice {
+  background: rgba(204,102,51,0.06);
+  border-color: rgba(204,102,51,0.18);
+}
+
 .resendRow {
   display: flex; align-items: center; gap: 8px;
   font-size: 12px; color: var(--td);
