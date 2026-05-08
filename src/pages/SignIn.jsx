@@ -46,11 +46,9 @@ export default function SignIn() {
   const sendOtp = async () => {
     if (!email) return setError('Please enter your email address.')
     setLoading(true); setError('')
-    const { error } = await supabase.auth.signInWithOtp({
-      email, options: { shouldCreateUser: true },
-    })
+    const { data, error } = await supabase.functions.invoke('send-otp', { body: { email } })
     setLoading(false)
-    if (error) return setError(error.message)
+    if (error || data?.error) return setError(data?.error || 'Could not send code. Please try again.')
     setView('otp')
     startCooldown()
   }
@@ -58,9 +56,13 @@ export default function SignIn() {
   const verifyOtp = async () => {
     if (otp.length !== 6) return setError('Please enter the 6-digit code.')
     setLoading(true); setError('')
-    const { data, error } = await supabase.auth.verifyOtp({ email, token: otp, type: 'email' })
-    if (error) { setError('Invalid or expired code. Please try again.'); setLoading(false); return }
-    if (data.user?.app_metadata?.role === 'admin') {
+    const { data, error } = await supabase.functions.invoke('verify-otp', { body: { email, code: otp } })
+    if (error || data?.error) { setError(data?.error || 'Invalid or expired code. Please try again.'); setLoading(false); return }
+    const { data: session, error: sessionError } = await supabase.auth.verifyOtp({
+      token_hash: data.token_hash, type: 'magiclink',
+    })
+    if (sessionError) { setError('Could not sign in. Please try again.'); setLoading(false); return }
+    if (session.user?.app_metadata?.role === 'admin') {
       await supabase.auth.signOut()
       setError('Please use the admin portal to sign in.')
       setLoading(false); return
