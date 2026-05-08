@@ -286,6 +286,24 @@
   border-color: rgba(204,102,51,0.18);
 }
 
+.linkWaiting {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px; padding: 14px 16px;
+  font-size: 12px; color: var(--td);
+  font-family: 'Raleway', sans-serif;
+}
+:global([data-theme="light"]) .linkWaiting {
+  background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.08);
+}
+.linkDot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gd); flex-shrink: 0;
+  animation: pulse-ring 1.8s ease-out infinite;
+  box-shadow: 0 0 8px rgba(204,102,51,.6);
+}
+
 .resendRow {
   display: flex; align-items: center; gap: 8px;
   font-size: 12px; color: var(--td);
