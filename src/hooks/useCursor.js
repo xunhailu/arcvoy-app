@@ -33,7 +33,7 @@ export function useCursor() {
     document.addEventListener('mousemove', onMove)
     raf.current = requestAnimationFrame(lerp)
 
-    const targets = document.querySelectorAll('button, a, input, select, .job-card')
+    const targets = document.querySelectorAll('button, a, input, select, .job-row')
     targets.forEach(el => {
       el.addEventListener('mouseenter', onEnter)
       el.addEventListener('mouseleave', onLeave)

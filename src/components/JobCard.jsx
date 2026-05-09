@@ -1,67 +1,33 @@
 import { motion } from 'framer-motion'
-import { useTilt } from '../hooks/useTilt'
 
 export default function JobCard({ job, onClick, onApply, delay = 0, isBookmarked = false, onBookmark }) {
-  const tilt = useTilt(6)
-
   return (
     <motion.div
-      layout
-      className="job-card"
+      className="job-row"
       onClick={e => { if (window.getSelection()?.toString()) return; onClick(e) }}
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 14, scale: 0.98 }}
-      whileHover={{ y: -5 }}
-      whileTap={{ scale: 0.995 }}
-      transition={{ duration: 0.5, delay, ease: [0.25, 0, 0, 1] }}
-      style={{ ...tilt.style, cursor: 'pointer' }}
-      onMouseMove={tilt.onMouseMove}
-      onMouseLeave={tilt.onMouseLeave}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3, delay, ease: [0.25, 0, 0, 1] }}
+      style={{ cursor: 'pointer' }}
     >
-      {/* shine overlay — tracks mouse position via useTilt */}
-      <div data-shine style={{
-        position: 'absolute', inset: 0, borderRadius: 'inherit',
-        pointerEvents: 'none', transition: 'opacity .3s', opacity: 0,
-      }} />
-
-      <div className="job-top">
+      <div className="job-row-info">
         <span className="job-dept">{job.dept}</span>
-        <div className="job-right">
-          <div className="job-type">{job.type}</div>
-          <div className="job-salary">{job.salary}</div>
-        </div>
+        <span className="job-row-title">{job.title}</span>
       </div>
 
-      <span className="job-title-text">{job.title}</span>
-      <p className="job-desc">{job.desc}</p>
-
-      {job.locations?.length > 0 && (
-        <div className="job-locations">
-          {job.locations.map(loc => (
-            <span key={loc} className="loc-tag">
-              <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                <circle cx="12" cy="10" r="3"/>
-              </svg>
-              {loc}
-            </span>
-          ))}
-        </div>
-      )}
-
-      <div className="job-tags">
-        {job.reqs.map(r => <span key={r} className="chip">{r}</span>)}
+      <div className="job-row-meta">
+        {job.locations?.[0] && <span className="job-row-loc">{job.locations[0]}</span>}
+        <span className="job-row-type">{job.type}</span>
       </div>
 
-      <div className="job-cta-row">
+      <div className="job-row-actions">
+        <span className="job-row-salary">{job.salary}</span>
         <button
-          className="btn-primary job-apply-btn"
-          style={{ fontSize: '10px', padding: '8px 18px' }}
+          className="job-row-apply"
           onClick={e => { e.stopPropagation(); onApply ? onApply(job) : onClick(e) }}
         >
-          <span>Apply Now</span>
-          <span className="arrow">→</span>
+          Apply <span className="arrow">→</span>
         </button>
         {onBookmark && (
           <motion.button
@@ -70,7 +36,7 @@ export default function JobCard({ job, onClick, onApply, delay = 0, isBookmarked
             onClick={e => { e.stopPropagation(); onBookmark(job.id) }}
             title={isBookmarked ? 'Remove bookmark' : 'Save for later'}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24"
+            <svg width="13" height="13" viewBox="0 0 24 24"
               fill={isBookmarked ? 'currentColor' : 'none'}
               stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>

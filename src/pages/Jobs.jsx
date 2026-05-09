@@ -6,50 +6,31 @@ import { fetchJobs } from '../lib/jobs'
 import { useBookmarks } from '../hooks/useBookmarks'
 import styles from './Jobs.module.css'
 
-/* ── department icons ── */
-const DeptIcon = ({ dept }) => {
-  if (dept === 'AI') return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2a4 4 0 0 1 4 4v1h1a3 3 0 0 1 0 6h-1v1a4 4 0 0 1-8 0v-1H7a3 3 0 0 1 0-6h1V6a4 4 0 0 1 4-4z"/>
-      <circle cx="9" cy="9" r="1" fill="currentColor"/><circle cx="15" cy="9" r="1" fill="currentColor"/>
-    </svg>
-  )
-  if (dept === 'Support') return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-    </svg>
-  )
-  if (dept === 'Analytics') return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
-      <line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
-    </svg>
-  )
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
-    </svg>
-  )
-}
+const SearchIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </svg>
+)
 
 export default function Jobs() {
   const navigate = useNavigate()
-  const [search, setSearch] = useState('')
+  const [search, setSearch]       = useState('')
   const [deptFilter, setDeptFilter] = useState(new Set())
   const [typeFilter, setTypeFilter] = useState(new Set())
-  const [sort, setSort] = useState('def')
-  const [showSticky, setShowSticky] = useState(false)
+  const [sort, setSort]           = useState('def')
   const [showSaved, setShowSaved] = useState(false)
-  const [jobs, setJobs] = useState([])
-  const [jobsLoading, setJobsLoading] = useState(true)
+  const [jobs, setJobs]           = useState([])
+  const [loading, setLoading]     = useState(true)
+  const [stuck, setStuck]         = useState(false)
+  const [showSticky, setShowSticky] = useState(false)
   const { saved, toggle, isBookmarked } = useBookmarks()
 
   useEffect(() => {
-    fetchJobs().then(setJobs).finally(() => setJobsLoading(false))
+    fetchJobs().then(setJobs).finally(() => setLoading(false))
   }, [])
 
   useEffect(() => {
-    const fn = () => setShowSticky(window.scrollY > 320)
+    const fn = () => { setStuck(window.scrollY > 160); setShowSticky(window.scrollY > 480) }
     window.addEventListener('scroll', fn, { passive: true })
     return () => window.removeEventListener('scroll', fn)
   }, [])
@@ -57,184 +38,188 @@ export default function Jobs() {
   const depts = [...new Set(jobs.map(j => j.dept))]
   const types = [...new Set(jobs.map(j => j.type))]
 
-  const toggleFilter = (set, setFn, val) => {
-    setFn(prev => {
-      const next = new Set(prev)
-      next.has(val) ? next.delete(val) : next.add(val)
-      return next
-    })
-  }
+  const toggle_ = (set, setFn, val) => setFn(prev => {
+    const n = new Set(prev); n.has(val) ? n.delete(val) : n.add(val); return n
+  })
 
   const filtered = useMemo(() => {
     let list = jobs.filter(j => {
       const q = search.toLowerCase()
-      const mq = !q || j.title.toLowerCase().includes(q) || (j.reqs || []).some(r => r.toLowerCase().includes(q))
-      const md = deptFilter.size === 0 || deptFilter.has(j.dept)
-      const mt = typeFilter.size === 0 || typeFilter.has(j.type)
-      const ms = !showSaved || saved.has(j.id)
-      return mq && md && mt && ms
+      return (
+        (!q || j.title.toLowerCase().includes(q) || (j.reqs||[]).some(r => r.toLowerCase().includes(q))) &&
+        (deptFilter.size === 0 || deptFilter.has(j.dept)) &&
+        (typeFilter.size === 0 || typeFilter.has(j.type)) &&
+        (!showSaved || saved.has(j.id))
+      )
     })
-    if (sort === 'az') list = [...list].sort((a, b) => a.title.localeCompare(b.title))
-    if (sort === 'dept') list = [...list].sort((a, b) => a.dept.localeCompare(b.dept))
+    if (sort === 'az')   list = [...list].sort((a,b) => a.title.localeCompare(b.title))
+    if (sort === 'dept') list = [...list].sort((a,b) => a.dept.localeCompare(b.dept))
     return list
   }, [jobs, search, deptFilter, typeFilter, sort, showSaved, saved])
+
+  const grouped = useMemo(() => {
+    const g = {}
+    filtered.forEach(j => { (g[j.dept] = g[j.dept] || []).push(j) })
+    return g
+  }, [filtered])
+
+  const activeFilters = deptFilter.size + typeFilter.size + (showSaved ? 1 : 0) + (search ? 1 : 0)
 
   return (
     <div className={styles.page}>
 
-      {/* breadcrumb */}
-      <div className={styles.breadcrumb}>
-        <span className={styles.bcLink} onClick={() => navigate('/')}>Home</span>
-        <span className={styles.bcSep}>/</span>
-        <span className={styles.bcCurrent}>Careers</span>
-      </div>
+      {/* ══ HERO ══ */}
+      <section className={styles.hero}>
+        <div className={styles.heroGlow} />
+        <div className={styles.heroGrid} />
 
-      {/* jobs hero */}
-      <div className={styles.jobsHero}>
-        <motion.div className="label" style={{ marginBottom: 14 }}
-          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          Open Positions
-        </motion.div>
-        <motion.h2 className={styles.jobsHeroTitle}
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}>
-          Find your <em>role</em> at Arcvoy
-        </motion.h2>
-        <motion.p className={styles.jobsHeroSub}
-          initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}>
-          We're hiring AI Specialists across multiple verticals. Multiple AI roles available from $20–$25/hr — fully remote.
-        </motion.p>
+        <div className={styles.heroInner}>
+          <motion.div className={styles.heroTop}
+            initial={{ opacity:0, y:14 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.5 }}>
+            <span className={styles.heroLabel}>Now Hiring · AI Specialists</span>
+            <span className={styles.heroCount}>{loading ? '—' : jobs.length} open roles</span>
+          </motion.div>
 
-        {/* dept quick-filter pills */}
-        <motion.div className={styles.deptPills}
-          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}>
-          {depts.map(d => (
-            <button key={d} className={`${styles.deptPill} ${deptFilter.has(d) ? styles.deptPillActive : ''}`}
-              onClick={() => toggleFilter(deptFilter, setDeptFilter, d)}>
-              <span className={styles.deptPillIcon}><DeptIcon dept={d} /></span>
-              {d}
-            </button>
-          ))}
-        </motion.div>
-      </div>
+          <motion.h1 className={styles.title}
+            initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.75, delay:0.1 }}>
+            Find your <em>role</em><br/>at Arcvoy.
+          </motion.h1>
 
-      {/* layout */}
-      <div className={styles.layout}>
-        {/* sidebar */}
-        <aside className={styles.sidebar}>
-          <span className={styles.sideLabel}>Search Roles</span>
-          <input
-            className={styles.searchInput}
-            placeholder="Title or skill…"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            aria-label="Search roles by title or skill"
-          />
+          <motion.p className={styles.sub}
+            initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.6, delay:0.25 }}>
+            Specialist roles powering the next generation of AI. $20–$25/hr, fully remote,
+            with a personal and direct hiring process.
+          </motion.p>
 
-          <div className={styles.filterGroup}>
-            <span className={styles.sideLabel}>Department</span>
-            {depts.map(d => (
-              <span key={d} className={`filter-chip ${deptFilter.has(d) ? 'active' : ''}`}
-                onClick={() => toggleFilter(deptFilter, setDeptFilter, d)}>{d}</span>
-            ))}
-          </div>
-
-          <div className={styles.filterGroup}>
-            <span className={styles.sideLabel}>Work Type</span>
-            {types.map(t => (
-              <span key={t} className={`filter-chip ${typeFilter.has(t) ? 'active' : ''}`}
-                onClick={() => toggleFilter(typeFilter, setTypeFilter, t)}>{t}</span>
-            ))}
-          </div>
-
-          <div className={styles.filterGroup}>
-            <span className={styles.sideLabel}>Saved Jobs</span>
-            <span
-              className={`filter-chip ${showSaved ? 'active' : ''}`}
-              onClick={() => setShowSaved(v => !v)}>
-              <svg width="10" height="10" viewBox="0 0 24 24"
-                fill={showSaved ? 'currentColor' : 'none'}
-                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                style={{ marginRight: 4, verticalAlign: 'middle' }}>
-                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-              </svg>
-              Saved ({saved.size})
-            </span>
-          </div>
-
-          <div className={styles.sideStats}>
-            <span className={styles.sideLabel}>At a Glance</span>
+          <motion.div className={styles.statsRow}
+            initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:0.7, delay:0.45 }}>
             {[
-              ['Open roles', filtered.length],
-              ['Pay rate', '$20–$25 / hr'],
-              ['Hiring process', 'Personal & direct'],
-              ['Work style', 'Remote'],
-            ].map(([k, v]) => (
-              <div key={k} className={styles.statRow}>
-                <span>{k}</span><strong>{v}</strong>
+              ['$20–$25', 'per hour'],
+              ['100%', 'remote'],
+              ['40+', 'countries'],
+              ['Direct', 'hiring model'],
+            ].map(([val, label]) => (
+              <div key={label} className={styles.stat}>
+                <strong>{val}</strong>
+                <span>{label}</span>
               </div>
             ))}
-          </div>
-        </aside>
+          </motion.div>
+        </div>
+      </section>
 
-        {/* main */}
-        <main className={styles.main}>
-          <div className={styles.toolbar}>
-            <span className={styles.count}>{filtered.length} position{filtered.length !== 1 ? 's' : ''}</span>
-            <select className={styles.sortSelect} value={sort} onChange={e => setSort(e.target.value)}>
-              <option value="def">Sort: Featured</option>
-              <option value="az">Sort: A–Z</option>
-              <option value="dept">Sort: Department</option>
+      {/* ══ FILTER BAR ══ */}
+      <div className={`${styles.bar} ${stuck ? styles.barStuck : ''}`}>
+        <div className={styles.barInner}>
+
+          <label className={styles.searchBox}>
+            <SearchIcon />
+            <input
+              className={styles.searchInput}
+              placeholder="Search roles or skills…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+            {search && (
+              <button className={styles.clearSearch} onClick={() => setSearch('')}>×</button>
+            )}
+          </label>
+
+          <div className={styles.sep} />
+
+          <div className={styles.pills}>
+            <button className={`${styles.pill} ${activeFilters === 0 ? styles.pillOn : ''}`}
+              onClick={() => { setDeptFilter(new Set()); setTypeFilter(new Set()); setShowSaved(false); setSearch('') }}>
+              All
+            </button>
+            {depts.map(d => (
+              <button key={d} className={`${styles.pill} ${deptFilter.has(d) ? styles.pillOn : ''}`}
+                onClick={() => toggle_(deptFilter, setDeptFilter, d)}>{d}</button>
+            ))}
+            {types.map(t => (
+              <button key={t} className={`${styles.pill} ${typeFilter.has(t) ? styles.pillOn : ''}`}
+                onClick={() => toggle_(typeFilter, setTypeFilter, t)}>{t}</button>
+            ))}
+            <button className={`${styles.pill} ${showSaved ? styles.pillOn : ''}`}
+              onClick={() => setShowSaved(v => !v)}>
+              Saved {saved.size > 0 && <span className={styles.badge}>{saved.size}</span>}
+            </button>
+          </div>
+
+          <div className={styles.barRight}>
+            <span className={styles.tally}>{filtered.length} role{filtered.length !== 1 ? 's' : ''}</span>
+            <select className={styles.sort} value={sort} onChange={e => setSort(e.target.value)}>
+              <option value="def">Featured</option>
+              <option value="az">A – Z</option>
+              <option value="dept">Department</option>
             </select>
           </div>
-
-          <AnimatePresence mode="wait">
-            {jobsLoading
-              ? <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  {[0,1,2,3].map(i => (
-                    <div key={i} className={styles.skeletonCard}>
-                      <div className={styles.skeletonLine} style={{ width: '28%', height: 10, marginBottom: 14 }} />
-                      <div className={styles.skeletonLine} style={{ width: '62%', height: 22, marginBottom: 10 }} />
-                      <div className={styles.skeletonLine} style={{ width: '40%', height: 13 }} />
-                      <div style={{ display:'flex', gap: 8, marginTop: 16 }}>
-                        <div className={styles.skeletonLine} style={{ width: 64, height: 24, borderRadius: 100 }} />
-                        <div className={styles.skeletonLine} style={{ width: 64, height: 24, borderRadius: 100 }} />
-                      </div>
-                    </div>
-                  ))}
-                </motion.div>
-              : filtered.length === 0
-              ? <motion.div key="empty" className={styles.empty}
-                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color:'var(--td)', marginBottom:12 }}>
-                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                  </svg>
-                  <p style={{ color:'var(--tm)', fontSize:14 }}>No roles match your filters.</p>
-                  <button className="btn-ghost" style={{ marginTop:12, fontSize:10 }}
-                    onClick={() => { setSearch(''); setDeptFilter(new Set()); setTypeFilter(new Set()) }}>
-                    Clear filters
-                  </button>
-                </motion.div>
-              : filtered.map((j, i) => (
-                  <JobCard key={j.id} job={j} delay={i * 0.08}
-                    onClick={() => navigate('/jobs/' + j.id)}
-                    onApply={j => navigate('/jobs/' + j.id + '/apply')}
-                    isBookmarked={isBookmarked(j.id)}
-                    onBookmark={toggle} />
-                ))
-            }
-          </AnimatePresence>
-        </main>
+        </div>
       </div>
 
-      {/* sticky apply button */}
+      {/* ══ LIST ══ */}
+      <div className={styles.listWrap}>
+        <AnimatePresence mode="wait">
+
+          {loading && (
+            <motion.div key="sk" initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}>
+              {[...Array(5)].map((_,i) => (
+                <div key={i} className={styles.skRow}>
+                  <div className={styles.sk} style={{ width:52, height:20, borderRadius:100 }} />
+                  <div className={styles.sk} style={{ width:'26%', height:14, marginLeft:10 }} />
+                  <div style={{ marginLeft:'auto', display:'flex', gap:8 }}>
+                    <div className={styles.sk} style={{ width:58, height:20, borderRadius:100 }} />
+                    <div className={styles.sk} style={{ width:42, height:20, borderRadius:100 }} />
+                    <div className={styles.sk} style={{ width:76, height:34, borderRadius:100 }} />
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          )}
+
+          {!loading && filtered.length === 0 && (
+            <motion.div key="empty" className={styles.empty}
+              initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ color:'var(--td)', marginBottom:20 }}>
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <p className={styles.emptyTitle}>No matching roles</p>
+              <p className={styles.emptySub}>Try adjusting your search or clearing the filters.</p>
+              <button className="btn-ghost" style={{ marginTop:24, fontSize:10, letterSpacing:'.1em' }}
+                onClick={() => { setSearch(''); setDeptFilter(new Set()); setTypeFilter(new Set()); setShowSaved(false) }}>
+                Clear all filters
+              </button>
+            </motion.div>
+          )}
+
+          {!loading && filtered.length > 0 && (
+            <motion.div key="list" initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}>
+              {Object.entries(grouped).map(([dept, deptJobs], gi) => (
+                <div key={dept} className={styles.group}>
+                  <div className={styles.groupHeader}>
+                    <span className={styles.groupName}>{dept}</span>
+                    <span className={styles.groupCount}>{deptJobs.length} {deptJobs.length === 1 ? 'role' : 'roles'}</span>
+                  </div>
+                  {deptJobs.map((j, i) => (
+                    <JobCard key={j.id} job={j} delay={(gi * 2 + i) * 0.04}
+                      onClick={() => navigate('/jobs/' + j.id)}
+                      onApply={() => navigate('/jobs/' + j.id + '/apply')}
+                      isBookmarked={isBookmarked(j.id)}
+                      onBookmark={toggle} />
+                  ))}
+                </div>
+              ))}
+            </motion.div>
+          )}
+
+        </AnimatePresence>
+      </div>
+
       <AnimatePresence>
         {showSticky && (
-          <motion.button
-            className={styles.stickyApply}
-            initial={{ y: 80, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 80, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.25, 0, 0, 1] }}
+          <motion.button className={styles.fab}
+            initial={{ y:80, opacity:0 }} animate={{ y:0, opacity:1 }} exit={{ y:80, opacity:0 }}
+            transition={{ duration:0.3, ease:[0.25,0,0,1] }}
             onClick={() => filtered.length > 0 && navigate('/jobs/' + filtered[0].id + '/apply')}>
             Apply Now →
           </motion.button>
