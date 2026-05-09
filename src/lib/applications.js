@@ -458,6 +458,15 @@ export async function getCVUrl(path) {
   return data.signedUrl
 }
 
+/* ── Get signed ID document URL (same cvs bucket, id-docs/ prefix) ── */
+export async function getIdUrl(path) {
+  const { data, error } = await supabase.storage
+    .from('cvs')
+    .createSignedUrl(path, 3600)
+  if (error) throw error
+  return data.signedUrl
+}
+
 /* ── Create sourced application (admin only) ── */
 export async function createSourcedApplication({ firstName, lastName, email, job }) {
   const applicationId = crypto.randomUUID()

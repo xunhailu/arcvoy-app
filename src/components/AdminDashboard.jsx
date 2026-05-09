@@ -12,6 +12,7 @@ import {
   sendComplianceVerificationEmail,
   updateNotes,
   getCVUrl,
+  getIdUrl,
   deleteApplication,
   updateVerificationLinks,
   createSourcedApplication,
@@ -191,6 +192,7 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onLinksC
   const [notes, setNotes] = useState(app.notes || '')
   const [saving, setSaving] = useState(false)
   const [downloading, setDownloading] = useState(false)
+  const [downloadingId, setDownloadingId] = useState(false)
   const [statusLoading, setStatusLoading] = useState(false)
   const [identityLink, setIdentityLink] = useState(app.identity_link || '')
   const [complianceLink, setComplianceLink] = useState(app.compliance_link || '')
@@ -265,6 +267,16 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onLinksC
       window.open(url, '_blank')
     } catch { toast.error('Could not download CV. Please try again.') }
     setDownloading(false)
+  }
+
+  const downloadId = async (path, label) => {
+    if (!path) return
+    setDownloadingId(true)
+    try {
+      const url = await getIdUrl(path)
+      window.open(url, '_blank')
+    } catch { toast.error(`Could not open ${label}. Please try again.`) }
+    setDownloadingId(false)
   }
 
   const changeStatus = async (status) => {
@@ -439,6 +451,41 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onLinksC
             <div className={styles.noCV}>No CV uploaded</div>
           )}
         </div>
+
+        {(app.id_path || app.id_back_path) && (
+          <>
+            <div className={styles.divider} />
+            <div className={styles.section}>
+              <div className={styles.sectionTitle}>Government ID</div>
+              {app.id_type && (
+                <div className={styles.detailItem} style={{ marginBottom: 10 }}>
+                  <span>Type</span>
+                  <strong style={{ textTransform: 'capitalize' }}>{app.id_type.replace(/_/g, ' ')}</strong>
+                </div>
+              )}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {app.id_path && (
+                  <button className={styles.cvBtn} onClick={() => downloadId(app.id_path, 'ID front')} disabled={downloadingId}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="2" y="5" width="20" height="14" rx="2"/>
+                      <path d="M2 10h20"/>
+                    </svg>
+                    {downloadingId ? 'Opening…' : `View ID Front — ${app.id_filename || 'file'}`}
+                  </button>
+                )}
+                {app.id_back_path && (
+                  <button className={styles.cvBtn} onClick={() => downloadId(app.id_back_path, 'ID back')} disabled={downloadingId}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="2" y="5" width="20" height="14" rx="2"/>
+                      <path d="M2 10h20"/>
+                    </svg>
+                    {downloadingId ? 'Opening…' : `View ID Back — ${app.id_back_filename || 'file'}`}
+                  </button>
+                )}
+              </div>
+            </div>
+          </>
+        )}
 
         {app.source === 'sourced' && (
           <>
