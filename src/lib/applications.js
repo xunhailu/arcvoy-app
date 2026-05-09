@@ -83,7 +83,7 @@ export async function fetchEmailLogs(applicationId) {
 }
 
 /* ── Submit application ── */
-export async function submitApplication({ fields, cvFile, idFile, job }) {
+export async function submitApplication({ fields, cvFile, idFrontFile, idBackFile, idType, job }) {
   const { data: existing } = await supabase
     .from('applications')
     .select('id')
@@ -105,10 +105,17 @@ export async function submitApplication({ fields, cvFile, idFile, job }) {
 
   let idPath = null
   let idFilename = null
-  if (idFile) {
-    const uploaded = await uploadID(idFile, applicationId)
+  let idBackPath = null
+  let idBackFilename = null
+  if (idFrontFile) {
+    const uploaded = await uploadID(idFrontFile, applicationId)
     idPath = uploaded.path
     idFilename = uploaded.filename
+  }
+  if (idBackFile) {
+    const uploaded = await uploadID(idBackFile, applicationId)
+    idBackPath = uploaded.path
+    idBackFilename = uploaded.filename
   }
 
   const { error } = await supabase
@@ -135,6 +142,9 @@ export async function submitApplication({ fields, cvFile, idFile, job }) {
       cv_filename: cvFilename,
       id_path: idPath,
       id_filename: idFilename,
+      id_back_path: idBackPath,
+      id_back_filename: idBackFilename,
+      id_type: idType || null,
       status: 'applied',
     }])
 

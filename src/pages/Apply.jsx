@@ -23,7 +23,9 @@ const ERROR_MESSAGES = {
   age:     'You must confirm you are 18 or older to apply',
   dob:     'Date of birth is required',
   cv:      'Please upload your CV to continue',
-  id:      'Please upload a valid government-issued photo ID',
+  id:      'Please upload the front of your ID',
+  idType:  'Please select your ID type',
+  idBack:  "Please upload the back of your driver's license",
 }
 
 function StepBar({ current }) {
@@ -65,13 +67,17 @@ export default function Apply({ user }) {
   const [submitError, setSubmitError] = useState('')
   const [errors, setErrors]     = useState({})
   const [cvFile, setCvFile]     = useState(null)
-  const [cvLabel, setCvLabel]   = useState('Drop your CV here or browse')
+  const [cvLabel, setCvLabel]   = useState('Drop your CV here or click to upload')
   const [cvWarning, setCvWarning] = useState('')
   const [parsing, setParsing]   = useState(false)
-  const [idFile, setIdFile]     = useState(null)
-  const [idLabel, setIdLabel]   = useState('Upload a government-issued photo ID')
-  const [idParsing, setIdParsing] = useState(false)
-  const [idVerified, setIdVerified] = useState(false)
+  const [idType, setIdType]               = useState('')
+  const [idFrontFile, setIdFrontFile]     = useState(null)
+  const [idFrontLabel, setIdFrontLabel]   = useState('Upload front of ID')
+  const [idFrontParsing, setIdFrontParsing] = useState(false)
+  const [idFrontVerified, setIdFrontVerified] = useState(false)
+  const [idBackFile, setIdBackFile]       = useState(null)
+  const [idBackLabel, setIdBackLabel]     = useState('Upload back of ID')
+  const [idBackParsing, setIdBackParsing] = useState(false)
   const [step, setStep]         = useState(1)
   const [ageConfirmed, setAgeConfirmed] = useState(false)
 
@@ -141,7 +147,12 @@ export default function Apply({ user }) {
   const validateStep1 = () => {
     const e = {}
     if (parsing) e.cv = true
-    if (idParsing || !idFile) e.id = true
+    if (!idType) {
+      e.idType = true
+    } else {
+      if (idFrontParsing || !idFrontFile) e.id = true
+      if (idType === "Driver's License" && (idBackParsing || !idBackFile)) e.idBack = true
+    }
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -183,7 +194,7 @@ export default function Apply({ user }) {
       const dob = fields.dobYear && fields.dobMonth && fields.dobDay
         ? `${fields.dobYear}-${DOB_MONTH_NUM[fields.dobMonth]}-${String(fields.dobDay).padStart(2, '0')}`
         : null
-      await submitApplication({ fields: { ...fields, dob }, cvFile, idFile, job })
+      await submitApplication({ fields: { ...fields, dob }, cvFile, idFrontFile, idBackFile, idType, job })
       if (storageKey) { try { localStorage.removeItem(storageKey) } catch {} }
       setDone(true)
     } catch (err) {
@@ -276,30 +287,30 @@ export default function Apply({ user }) {
 
   const ALLOWED_ID_TYPES = ['image/jpeg','image/jpg','image/png','image/webp','application/pdf']
 
-  const handleIDUpload = async (f) => {
+  const handleIDFrontUpload = async (f) => {
     if (!f) return
     if (!ALLOWED_ID_TYPES.includes(f.type)) {
-      setIdFile(null)
-      setIdLabel('Invalid file type — JPEG, PNG, or PDF only')
+      setIdFrontFile(null)
+      setIdFrontLabel('Invalid file type — JPEG, PNG, or PDF only')
       setErrors(prev => ({ ...prev, id: true }))
       return
     }
     if (f.size < 10 * 1024) {
-      setIdFile(null)
-      setIdLabel('File too small — please upload a clear photo of your ID')
+      setIdFrontFile(null)
+      setIdFrontLabel('File too small — please upload a clear photo of your ID')
       setErrors(prev => ({ ...prev, id: true }))
       return
     }
     if (f.size > 10 * 1024 * 1024) {
-      setIdFile(null)
-      setIdLabel('File too large — max 10MB')
+      setIdFrontFile(null)
+      setIdFrontLabel('File too large — max 10MB')
       setErrors(prev => ({ ...prev, id: true }))
       return
     }
 
-    setIdVerified(false)
-    setIdParsing(true)
-    setIdLabel('Verifying your ID…')
+    setIdFrontVerified(false)
+    setIdFrontParsing(true)
+    setIdFrontLabel('Verifying your ID…')
     setErrors(prev => ({ ...prev, id: false }))
 
     let rejected = false
@@ -315,12 +326,12 @@ export default function Apply({ user }) {
       })
       if (data && !data.error) {
         if (data.is_id === false) {
-          setIdFile(null)
-          setIdLabel('This does not appear to be a government-issued ID — please try again')
+          setIdFrontFile(null)
+          setIdFrontLabel('This does not appear to be a government-issued ID — please try again')
           setErrors(prev => ({ ...prev, id: true }))
           rejected = true
         } else {
-          setIdVerified(true)
+          setIdFrontVerified(true)
           const match = (val, list) => list.find(o => o.toLowerCase() === (val || '').toLowerCase()) || null
           const parseDOB = raw => {
             if (!raw) return {}
@@ -344,10 +355,35 @@ export default function Apply({ user }) {
     } catch { /* verification is best-effort — allow through on network/API failure */ }
 
     if (!rejected) {
-      setIdFile(f)
-      setIdLabel(f.name)
+      setIdFrontFile(f)
+      setIdFrontLabel(f.name)
     }
-    setIdParsing(false)
+    setIdFrontParsing(false)
+  }
+
+  const handleIDBackUpload = (f) => {
+    if (!f) return
+    if (!ALLOWED_ID_TYPES.includes(f.type)) {
+      setIdBackFile(null)
+      setIdBackLabel('Invalid file type — JPEG, PNG, or PDF only')
+      setErrors(prev => ({ ...prev, idBack: true }))
+      return
+    }
+    if (f.size < 10 * 1024) {
+      setIdBackFile(null)
+      setIdBackLabel('File too small — please upload a clear photo of your ID')
+      setErrors(prev => ({ ...prev, idBack: true }))
+      return
+    }
+    if (f.size > 10 * 1024 * 1024) {
+      setIdBackFile(null)
+      setIdBackLabel('File too large — max 10MB')
+      setErrors(prev => ({ ...prev, idBack: true }))
+      return
+    }
+    setIdBackFile(f)
+    setIdBackLabel(f.name)
+    setErrors(prev => ({ ...prev, idBack: false }))
   }
 
   if (loading) return null
@@ -460,26 +496,21 @@ export default function Apply({ user }) {
                         <div className={styles.cvInner}>
                           {cvFile
                             ? <div className={styles.cvFileIcon}>
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                                   <polyline points="14 2 14 8 20 8"/>
                                 </svg>
                               </div>
-                            : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                                 <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
                               </svg>}
-                          <div>
-                            <div className={styles.cvMain}>{cvLabel}</div>
-                            <div className={styles.cvSub}>
-                              {parsing ? 'Filling in your details…'
-                                : cvFile ? 'CV ready — your details have been pre-filled below'
-                                : 'Upload to auto-fill the form · PDF or DOCX · Max 10MB'}
-                            </div>
+                          <div className={styles.cvMain}>{cvLabel}</div>
+                          <div className={styles.cvSub}>
+                            {parsing ? 'Filling in your details…'
+                              : cvFile ? 'CV ready — details pre-filled below'
+                              : 'PDF or DOCX · Max 10MB · Auto-fills the form'}
                           </div>
-                          <span className={`${styles.cvBrowse} ${cvFile ? styles.cvBrowseDone : ''}`}>
-                            {cvFile ? '✓' : 'Browse'}
-                          </span>
                         </div>
                       </div>
                       {errors.cv && <span className={styles.fieldError}>{ERROR_MESSAGES.cv}</span>}
@@ -499,42 +530,94 @@ export default function Apply({ user }) {
                     {/* Government ID — required */}
                     <div className={styles.section}>
                       <div className={styles.sectionTitle}>Government-Issued ID <span style={{ color: 'var(--gd)' }}>*</span></div>
-                      <p className={styles.stepSubtitle} style={{ marginBottom: 12, fontSize: 12 }}>
-                        Accepted: passport, driver's licence, or national ID card. Front side required.
-                      </p>
-                      <div className={styles.cvUpload} style={{ borderColor: errors.id ? '#a03030' : idFile ? 'var(--gd)' : undefined }}>
-                        <input type="file" accept="image/jpeg,image/png,image/webp,.pdf" onChange={e => handleIDUpload(e.target.files[0])} />
-                        <div className={styles.cvInner}>
-                          {idFile
-                            ? <div className={styles.cvFileIcon}>
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                  <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
-                                </svg>
+
+                      <div className={styles.fg}>
+                        <label className={styles.fl}>ID Type <span>*</span></label>
+                        <CustomSelect
+                          value={idType}
+                          onChange={v => {
+                            setIdType(v)
+                            setIdFrontFile(null); setIdFrontLabel('Upload front of ID')
+                            setIdFrontVerified(false)
+                            setIdBackFile(null);  setIdBackLabel('Upload back of ID')
+                            setErrors(prev => ({ ...prev, idType: false, id: false, idBack: false }))
+                          }}
+                          options={["Driver's License", 'Passport', 'National ID']}
+                          placeholder="Select ID type"
+                          error={errors.idType}
+                        />
+                        {errors.idType && <span className={styles.fieldError}>{ERROR_MESSAGES.idType}</span>}
+                      </div>
+
+                      {idType && (
+                        idType === "Driver's License" ? (
+                          <div className={styles.grid2} style={{ alignItems: 'start' }}>
+                            {/* Front */}
+                            <div>
+                              <div className={styles.idColLabel}>Front Side</div>
+                              <div className={styles.cvUpload} style={{ borderColor: errors.id ? '#a03030' : idFrontFile ? 'var(--gd)' : undefined }}>
+                                <input type="file"
+                                  accept="image/jpeg,image/png,image/webp,.pdf"
+                                  onChange={e => handleIDFrontUpload(e.target.files[0])} />
+                                <div className={styles.cvInner}>
+                                  {idFrontFile
+                                    ? <div className={styles.cvFileIcon}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+                                    : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>}
+                                  <div className={styles.cvMain}>{idFrontLabel}</div>
+                                  <div className={styles.cvSub}>
+                                    {idFrontParsing ? 'Verifying…' : idFrontVerified ? 'Verified ✓' : idFrontFile ? 'Uploaded' : 'JPEG · PNG · PDF · Max 10MB'}
+                                  </div>
+                                </div>
                               </div>
-                            : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
-                              </svg>}
-                          <div>
-                            <div className={styles.cvMain}>{idLabel}</div>
-                            <div className={styles.cvSub}>
-                              {idParsing ? 'Checking your ID and pre-filling your details…'
-                                : idVerified ? 'ID verified — your details have been pre-filled below'
-                                : idFile ? 'ID uploaded successfully'
-                                : 'JPEG, PNG, or PDF · Max 10MB · Required'}
+                              {errors.id && <span className={styles.fieldError}>{ERROR_MESSAGES.id}</span>}
+                            </div>
+                            {/* Back */}
+                            <div>
+                              <div className={styles.idColLabel}>Back Side</div>
+                              <div className={styles.cvUpload} style={{ borderColor: errors.idBack ? '#a03030' : idBackFile ? 'var(--gd)' : undefined }}>
+                                <input type="file"
+                                  accept="image/jpeg,image/png,image/webp,.pdf"
+                                  onChange={e => handleIDBackUpload(e.target.files[0])} />
+                                <div className={styles.cvInner}>
+                                  {idBackFile
+                                    ? <div className={styles.cvFileIcon}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+                                    : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>}
+                                  <div className={styles.cvMain}>{idBackLabel}</div>
+                                  <div className={styles.cvSub}>
+                                    {idBackFile ? 'Uploaded' : 'JPEG · PNG · PDF · Max 10MB'}
+                                  </div>
+                                </div>
+                              </div>
+                              {errors.idBack && <span className={styles.fieldError}>{ERROR_MESSAGES.idBack}</span>}
                             </div>
                           </div>
-                          <span className={`${styles.cvBrowse} ${idFile ? styles.cvBrowseDone : ''}`}>
-                            {idFile ? '✓' : 'Browse'}
-                          </span>
-                        </div>
-                      </div>
-                      {errors.id && <span className={styles.fieldError}>{ERROR_MESSAGES.id}</span>}
+                        ) : (
+                          /* Passport / National ID — single column */
+                          <div>
+                            <div className={styles.cvUpload} style={{ borderColor: errors.id ? '#a03030' : idFrontFile ? 'var(--gd)' : undefined }}>
+                              <input type="file"
+                                accept="image/jpeg,image/png,image/webp,.pdf"
+                                onChange={e => handleIDFrontUpload(e.target.files[0])} />
+                              <div className={styles.cvInner}>
+                                {idFrontFile
+                                  ? <div className={styles.cvFileIcon}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+                                  : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>}
+                                <div className={styles.cvMain}>{idFrontLabel}</div>
+                                <div className={styles.cvSub}>
+                                  {idFrontParsing ? 'Verifying your ID…' : idFrontVerified ? 'Verified — details pre-filled below' : idFrontFile ? 'Uploaded' : 'JPEG · PNG · PDF · Max 10MB'}
+                                </div>
+                              </div>
+                            </div>
+                            {errors.id && <span className={styles.fieldError}>{ERROR_MESSAGES.id}</span>}
+                          </div>
+                        )
+                      )}
                     </div>
 
                     <div className={styles.stepNav}>
                       <div />
-                      <button className={styles.continueBtn} onClick={goNext} disabled={parsing || idParsing}>
-                        {parsing ? 'Verifying CV…' : idParsing ? 'Verifying ID…' : 'Continue →'}
+                      <button className={styles.continueBtn} onClick={goNext} disabled={parsing || idFrontParsing}>
+                        {parsing ? 'Verifying CV…' : idFrontParsing ? 'Verifying ID…' : 'Continue →'}
                       </button>
                     </div>
                   </div>
@@ -690,7 +773,9 @@ export default function Apply({ user }) {
                         <div className={styles.reviewItem}><span>Date of Birth</span><strong>{fields.dobDay && fields.dobMonth && fields.dobYear ? `${fields.dobDay} ${fields.dobMonth} ${fields.dobYear}` : '—'}</strong></div>
                         <div className={styles.reviewItem}><span>Location</span><strong>{[fields.city, fields.country].filter(Boolean).join(', ')}</strong></div>
                         <div className={styles.reviewItem}><span>CV</span><strong>{cvFile?.name || 'Not provided'}</strong></div>
-                        <div className={styles.reviewItem}><span>ID Document</span><strong>{idFile?.name || '—'}</strong></div>
+                        <div className={styles.reviewItem}><span>ID Type</span><strong>{idType || '—'}</strong></div>
+                        <div className={styles.reviewItem}><span>ID Front</span><strong>{idFrontFile?.name || '—'}</strong></div>
+                        {idType === "Driver's License" && <div className={styles.reviewItem}><span>ID Back</span><strong>{idBackFile?.name || '—'}</strong></div>}
                         <div className={styles.reviewItem}><span>Role</span><strong>{job.title}</strong></div>
                       </div>
                       <button className={styles.reviewEdit} onClick={() => { setErrors({}); setStep(2) }}>Edit details</button>

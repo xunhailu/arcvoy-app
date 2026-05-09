@@ -136,25 +136,25 @@
 .fiAddress { font-size: 16px; padding: 14px 16px; }
 
 .cvUpload {
-  position: relative; border: 1px dashed var(--bd2);
-  border-radius: 8px; cursor: pointer;
-  transition: border-color .2s;
+  position: relative;
+  border: 1.5px dashed var(--bd2);
+  border-radius: 10px; cursor: pointer;
+  transition: border-color .22s, background .22s;
   overflow: hidden;
 }
-.cvUpload:hover { border-color: var(--gd); }
+.cvUpload:hover {
+  border-color: var(--gd);
+  background: rgba(204,102,51,.03);
+}
+[data-theme="light"] .cvUpload:hover { background: rgba(204,102,51,.04); }
 .cvUpload input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; z-index: 2; }
 .cvInner {
-  display: flex; align-items: center; gap: 14px;
-  padding: 18px 20px; color: var(--td);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 28px 20px 24px; gap: 8px; color: var(--td); text-align: center;
 }
-.cvMain { font-size: 13px; color: var(--tm); font-weight: 500; }
-.cvSub { font-size: 11px; color: var(--td); margin-top: 2px; }
-.cvBrowse {
-  margin-left: auto; font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--gd); font-weight: 700; flex-shrink: 0;
-  border: 1px solid var(--gb); padding: 6px 14px; border-radius: 4px;
-  background: var(--ga);
-}
+.cvMain { font-size: 13.5px; color: var(--tm); font-weight: 600; letter-spacing: -.01em; }
+.cvSub { font-size: 11px; color: var(--td); line-height: 1.5; }
+.cvBrowse { display: none; }
 
 /* ── Step bar ── */
 .stepBar { display: flex; align-items: center; margin-bottom: 36px; }
@@ -193,8 +193,15 @@
 .optionalTag { font-size: 9px; color: var(--td); letter-spacing: .06em; text-transform: uppercase; font-weight: 500; margin-left: 6px; }
 
 /* ── CV upload states ── */
-.cvFileIcon { color: var(--gd); display: flex; align-items: center; }
-.cvBrowseDone { background: rgba(90,143,26,.12); border-color: rgba(90,143,26,.3); color: #5a8f1a; font-size: 14px; }
+.cvFileIcon { color: var(--gd); display: flex; align-items: center; justify-content: center; }
+.cvBrowseDone { display: none; }
+
+/* ── ID upload column label ── */
+.idColLabel {
+  font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--td); font-weight: 700; margin-bottom: 8px;
+}
+
 
 /* ── Step navigation ── */
 .stepNav { display: flex; justify-content: space-between; align-items: flex-start; padding-top: 32px; gap: 16px; }
