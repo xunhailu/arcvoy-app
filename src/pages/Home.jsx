@@ -278,7 +278,7 @@ export default function Home({ onNavigate }) {
             <motion.div className={styles.heroBtns}
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.7 }}>
-              <button data-magnetic className="btn-primary" onClick={() => onNavigate('jobs')}>View Open Roles →</button>
+              <button className="btn-primary" onClick={() => onNavigate('jobs')}>View Open Roles →</button>
               <div className={styles.heroChip}>
                 <span className={styles.chipLive} />
                 <span className={styles.chipText}>$20–$25<span className={styles.chipMuted}>/hr</span></span>
