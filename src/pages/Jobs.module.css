@@ -24,7 +24,7 @@
 
 .heroLabel {
   font-family: 'Raleway', sans-serif;
-  font-size: 10.5px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase;
+  font-size: 11px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase;
   color: var(--gd);
   display: inline-flex; align-items: center; gap: 8px;
   margin-bottom: 20px;
@@ -73,7 +73,7 @@
 }
 .heroStat span {
   font-family: 'Raleway', sans-serif;
-  font-size: 9.5px; color: var(--td);
+  font-size: 11px; color: var(--td);
   letter-spacing: .18em; text-transform: uppercase; font-weight: 600;
 }
 
@@ -122,7 +122,7 @@
 .searchBox svg { color: var(--td); flex-shrink: 0; }
 .searchInput {
   background: none; border: none; outline: none;
-  font-family: 'Raleway', sans-serif; font-size: 12.5px;
+  font-family: 'Raleway', sans-serif; font-size: 13px;
   color: var(--tx); width: 100%; font-weight: 500;
 }
 .searchInput::placeholder { color: var(--td); }
@@ -193,7 +193,7 @@
 
 .badge {
   background: rgba(255,255,255,.28); color: #fff; border-radius: 100px;
-  font-size: 8.5px; font-weight: 800; padding: 1px 6px; line-height: 1.5;
+  font-size: 10px; font-weight: 800; padding: 1px 6px; line-height: 1.5;
 }
 .pill:not(.pillOn) .badge {
   background: var(--gd); color: #fff;
@@ -294,7 +294,7 @@
 
 .cardDept {
   font-family: 'Raleway', sans-serif;
-  font-size: 9.5px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+  font-size: 11px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
   color: var(--gd);
   display: block; margin-bottom: 10px;
 }
@@ -326,7 +326,7 @@
 
 .cardStatus {
   font-family: 'Raleway', sans-serif;
-  font-size: 10.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
   color: var(--td);
   display: inline-flex; align-items: center; gap: 7px;
 }
@@ -352,7 +352,7 @@
 
 .cardApply {
   font-family: 'Raleway', sans-serif;
-  font-size: 10.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+  font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
   color: #fff;
   background: #252525;
   border: none; border-radius: 100px;
@@ -379,7 +379,7 @@
 .cardTags { display: flex; flex-wrap: wrap; align-items: center; gap: 0; }
 .cardTag {
   font-family: 'Raleway', sans-serif;
-  font-size: 11.5px; font-weight: 600; color: var(--td);
+  font-size: 12px; font-weight: 600; color: var(--td);
   background: none; border: none; border-radius: 0; padding: 0;
 }
 .cardTag:not(:last-of-type)::after {
@@ -390,7 +390,7 @@
 [data-theme="light"] .cardTag { color: var(--td); }
 .cardTagMore {
   font-family: 'Raleway', sans-serif;
-  font-size: 10.5px; font-weight: 800; color: var(--gd);
+  font-size: 11px; font-weight: 800; color: var(--gd);
   background: var(--ga); border: 1px solid var(--gb);
   padding: 2px 7px; border-radius: 100px; margin-left: 7px; letter-spacing: .04em;
 }
@@ -456,13 +456,13 @@
 .detailPills { display: flex; gap: 8px; margin-bottom: 22px; }
 .detailDeptPill {
   font-family: 'Raleway', sans-serif;
-  font-size: 10.5px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase;
+  font-size: 11px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase;
   color: var(--gd); background: var(--ga); border: 1px solid var(--gb);
   padding: 5px 14px; border-radius: 100px;
 }
 .detailTypePill {
   font-family: 'Raleway', sans-serif;
-  font-size: 10.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
   color: var(--tm); background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
   padding: 5px 14px; border-radius: 100px;
@@ -473,8 +473,8 @@
 
 .detailTitle {
   font-family: 'Raleway', sans-serif;
-  font-size: clamp(30px, 3.2vw, 42px); font-weight: 800;
-  letter-spacing: -.03em; line-height: 1.08;
+  font-size: clamp(26px, 2.8vw, 38px); font-weight: 800;
+  letter-spacing: .02em; line-height: 1.1; text-transform: uppercase;
   color: var(--tx); margin-bottom: 12px;
 }
 
@@ -505,7 +505,7 @@
 .detailSection { margin-bottom: 30px; }
 .detailSectionLabel {
   font-family: 'Raleway', sans-serif;
-  font-size: 10.5px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase;
+  font-size: 11px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase;
   color: var(--td); margin-bottom: 16px;
 }
 
@@ -528,7 +528,7 @@
 
 .detailDesc {
   font-family: 'Raleway', sans-serif;
-  font-size: 15.5px; color: var(--tm); line-height: 1.85; font-weight: 500;
+  font-size: 16px; color: var(--tm); line-height: 1.85; font-weight: 500;
 }
 
 
@@ -537,7 +537,7 @@
   background: linear-gradient(135deg, var(--gd), var(--gl));
   color: #fff; border: none; padding: 16px 28px;
   font-family: 'Raleway', sans-serif;
-  font-size: 12.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
   border-radius: 100px; cursor: pointer;
   box-shadow: 0 8px 28px rgba(204,102,51,.35), inset 0 1px 0 rgba(255,255,255,.2);
   transition: transform .22s var(--ease-spring, cubic-bezier(.34,1.56,.64,1)), box-shadow .25s, filter .2s;
@@ -609,31 +609,114 @@
 /* ══════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════ */
+
+/* ── Large laptop (≤1280px) ── */
+@media (max-width: 1280px) {
+  .hero { padding: 56px 56px 44px; }
+  .bar { padding: 0 56px; }
+  .splitWrap { padding: 0 56px 72px; grid-template-columns: 360px 1fr; gap: 24px; }
+}
+
+/* ── Small laptop (≤1024px) ── */
 @media (max-width: 1024px) {
-  .hero { padding: 56px 48px 44px; }
-  .splitWrap { padding: 0 48px 72px; grid-template-columns: 360px 1fr; gap: 20px; }
+  .hero { padding: 52px 40px 40px; }
+  .bar { padding: 0 40px; }
+  .splitWrap { padding: 0 40px 64px; grid-template-columns: 320px 1fr; gap: 20px; }
+  .detail { padding: 36px 36px 30px; }
+  .detailTitle { font-size: clamp(22px, 2.6vw, 34px); }
+  .detailSalary { font-size: 26px; }
 }
+
+/* ── Tablet landscape (≤900px) ── */
 @media (max-width: 900px) {
-  .hero { padding: 48px 32px 40px; }
-  .splitWrap { padding: 0 32px 64px; grid-template-columns: 320px 1fr; gap: 16px; }
-  .bar { padding: 0 32px; }
+  .hero { padding: 48px 28px 36px; }
+  .bar { padding: 0 28px; }
+  .splitWrap { padding: 0 28px 56px; grid-template-columns: 280px 1fr; gap: 16px; }
+  .detail { padding: 28px 28px 24px; }
+  .detailHeader { gap: 20px; }
+  .detailActions { flex-direction: column; align-items: stretch; gap: 8px; }
+  .applyBtn { text-align: center; }
+  .detailSalary { font-size: 22px; }
+  .detailTitle { font-size: clamp(20px, 2.4vw, 28px); }
+  .card { padding: 16px 16px 14px; }
+  .cardTitle { font-size: 15px; }
 }
+
+/* ── Tablet portrait (≤768px) — single column, detail pane hidden ── */
 @media (max-width: 768px) {
   .hero { padding: 44px 24px 36px; }
-  .bar  { padding: 0 20px; }
-  .barInner { height: auto; flex-wrap: wrap; padding: 10px 0; gap: 8px; }
-  .searchBox { min-width: 100%; }
+  .sub { font-size: 14px; }
+  .heroStats { gap: 20px; }
+  .heroStat strong { font-size: 16px; }
+
+  /* Filter bar: compact single row, chips scroll horizontally */
+  .bar { padding: 0 20px; }
+  .barInner { height: 56px; gap: 8px; flex-wrap: nowrap; }
+  .searchBox { min-width: 150px; flex: 1; max-width: 200px; }
   .barDivider { display: none; }
-  .pills { flex-wrap: wrap; }
-  .barRight { margin-left: 0; padding-bottom: 4px; }
-  /* single column — hide detail pane, tap card navigates */
+  .pillsWrap { flex: 1; min-width: 0; }
+  .pills { flex-wrap: nowrap; }
+  .barRight { flex-shrink: 0; }
+  .tally { display: none; }
+
+  /* Single column */
   .splitWrap { grid-template-columns: 1fr; padding: 0 20px 64px; gap: 0; }
   .detailPane { display: none; }
   .listPane { padding-top: 16px; }
 }
-@media (max-width: 480px) {
-  .hero { padding: 36px 16px 28px; }
-  .title { font-size: clamp(32px, 10vw, 48px); }
-  .heroStats { gap: 20px; }
+
+/* ── Large phone (≤600px) ── */
+@media (max-width: 600px) {
+  .hero { padding: 36px 20px 28px; }
+  .heroLabel { font-size: 10px; }
+  .title { font-size: clamp(32px, 9vw, 48px); }
+  .sub { font-size: 14px; }
+  .heroStats { gap: 16px; }
+  .heroStat strong { font-size: 15px; }
+  .heroStat span { font-size: 10px; }
+
+  .bar { padding: 0 16px; }
+  .barInner { height: 52px; }
+  .searchBox { min-width: 120px; max-width: 160px; }
+  .pill { font-size: 11px; padding: 6px 12px; }
+  .sort { font-size: 11px; padding: 6px 28px 6px 12px; }
+
   .splitWrap { padding: 0 16px 56px; }
+  .card { padding: 14px 14px 12px; border-radius: 10px; }
+  .cardTitle { font-size: 14px; }
+  .cardSalary { font-size: 13px; }
+  .cardMeta { gap: 8px; margin-bottom: 8px; }
+  .cardMetaItem { font-size: 11px; }
+  .cardTag { font-size: 11px; }
+  .cardFooter { margin-top: 12px; padding-top: 10px; }
+  .cardStatus { font-size: 11px; }
+  .cardApply { font-size: 11px; padding: 7px 14px; }
+}
+
+/* ── Phone (≤480px) ── */
+@media (max-width: 480px) {
+  .hero { padding: 32px 16px 24px; }
+  .title { font-size: clamp(28px, 8.5vw, 40px); }
+  .heroStats { gap: 14px; }
+
+  .barInner { height: 48px; gap: 6px; }
+  .searchBox { min-width: 100px; max-width: 140px; }
+  .pill { font-size: 10px; padding: 5px 10px; }
+  .sort { padding: 5px 26px 5px 10px; }
+
+  .splitWrap { padding: 0 12px 48px; }
+  .card { padding: 13px 13px 11px; }
+  .cardDept { font-size: 10px; margin-bottom: 8px; }
+  .cardTitle { font-size: 14px; }
+  .cardSalary { font-size: 13px; }
+}
+
+/* ── Small phone (≤360px) ── */
+@media (max-width: 360px) {
+  .hero { padding: 28px 12px 20px; }
+  .bar { padding: 0 12px; }
+  .splitWrap { padding: 0 10px 40px; }
+  .searchBox { min-width: 90px; max-width: 120px; }
+  .card { padding: 12px 12px 10px; }
+  .cardTitle { font-size: 13px; }
 }

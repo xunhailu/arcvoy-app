@@ -45,7 +45,7 @@ export const JOBS = [
   },
   {
     id: 5,
-    title: 'Search Engine Evaluator (Crowd – Multiple Markets)',
+    title: 'Search Engine Evaluator',
     dept: 'Search Engine Evaluation',
     type: 'Remote',
     salary: '$20 / hr',
