@@ -49,15 +49,16 @@
   position: relative; overflow: hidden;
 }
 .heroInner {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 56px;
   align-items: center;
   width: 100%;
-  max-width: 860px;
+  max-width: 1300px;
   position: relative;
   z-index: 1;
 }
-.heroLeft { display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%; }
+.heroLeft { display: flex; flex-direction: column; align-items: flex-start; }
 .heroRight { display: flex; align-items: center; justify-content: flex-end; }
 
 /* role card */
@@ -258,15 +259,14 @@
 }
 
 .heroSub {
-  font-size: 17px; color: var(--tm); max-width: 560px;
+  font-size: 17px; color: var(--tm); max-width: 460px;
   line-height: 1.75; margin-bottom: 40px; position: relative; z-index: 1;
-  text-align: center;
 }
 
 .heroBtns {
   display: flex; gap: 12px; align-items: center;
   position: relative; z-index: 1;
-  margin-bottom: 18px; justify-content: center;
+  margin-bottom: 18px; justify-content: flex-start;
   flex-wrap: wrap;
 }
 
@@ -325,10 +325,10 @@
 .heroStats {
   display: flex; position: relative; z-index: 1;
   border-top: 1px solid rgba(255,255,255,0.08); padding-top: 36px;
-  width: 100%; max-width: 440px; justify-content: center;
+  width: 100%; max-width: 440px; justify-content: flex-start;
 }
 [data-theme="light"] .heroStats { border-top-color: var(--bd); }
-.statItem { flex: 1; text-align: center; padding: 0 32px 0 0; transition: transform .3s var(--ease); cursor: default; }
+.statItem { flex: 1; text-align: left; padding: 0 32px 0 0; transition: transform .3s var(--ease); cursor: default; }
 .statItem:first-child { padding-left: 0; }
 .statItem + .statItem { border-left: 1px solid rgba(255,255,255,0.08); padding-left: 32px; }
 [data-theme="light"] .statItem + .statItem { border-left-color: var(--bd); }
@@ -914,6 +914,7 @@
 @media (max-width: 900px) {
   /* hero */
   .hero { padding: 48px 20px 72px; }
+  .heroInner { grid-template-columns: 1fr; gap: 40px; }
   .heroLeft { align-items: center; text-align: center; }
   .heroTag { align-self: center; }
   .heroTitle { max-width: 100%; }
@@ -926,6 +927,9 @@
   .statNum { font-size: 36px; }
   .scrollHint { display: none; }
 
+  /* role card */
+  .heroRight { justify-content: center; }
+  .roleCardWrap { max-width: 480px; width: 100%; }
 
   /* sections */
   .mergedSection { grid-template-columns: 1fr; padding: 64px 20px; gap: 52px; }
@@ -959,6 +963,9 @@
   .statItem:first-child { padding-left: 0; }
   .statNum { font-size: 30px; }
   .statLabel { font-size: 8px; }
+
+  /* hide role card — text is the hero on small screens */
+  .heroRight { display: none; }
 
   /* numbers strip */
   .numbersItem { font-size: 10px; padding: 0 20px; }

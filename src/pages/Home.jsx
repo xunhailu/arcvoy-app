@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 import BrandMark from '../components/BrandMark'
 import Particles from '../components/Particles'
 import { useTilt } from '../hooks/useTilt'
-import { PILLARS, FEATURES, ABOUT_TEXT, HOW_IT_WORKS, TESTIMONIALS } from '../data'
+import { PILLARS, FEATURES, ABOUT_TEXT, HOW_IT_WORKS, TESTIMONIALS, JOBS } from '../data'
 import styles from './Home.module.css'
 
 /* ── feature icons ── */
@@ -232,6 +232,13 @@ export default function Home({ onNavigate }) {
     return () => clearInterval(id)
   }, [])
 
+  /* floating role card */
+  const [activeRole, setActiveRole] = useState(0)
+  useEffect(() => {
+    const id = setInterval(() => setActiveRole(i => (i + 1) % JOBS.length), 3200)
+    return () => clearInterval(id)
+  }, [])
+
   return (
     <div className={styles.page}>
 
@@ -313,6 +320,37 @@ export default function Home({ onNavigate }) {
             </motion.div>
           </div>
 
+          {/* RIGHT — floating role card */}
+          <motion.div className={styles.heroRight}
+            initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9, delay: 0.4, ease: [0.25, 0, 0, 1] }}>
+            <div className={styles.roleCardWrap}>
+              <div className={styles.roleCardGlow} />
+              <motion.div
+                key={activeRole}
+                className={styles.roleCard}
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, ease: [0.25, 0, 0, 1] }}
+              >
+                <div className={styles.roleCardTop}>
+                  <span className={styles.roleCardBadge}>{JOBS[activeRole].dept}</span>
+                  <span className={styles.roleCardType}>{JOBS[activeRole].type}</span>
+                </div>
+                <div className={styles.roleCardTitle}>{JOBS[activeRole].title}</div>
+                <p className={styles.roleCardDesc}>{JOBS[activeRole].desc.slice(0, 90)}…</p>
+                <div className={styles.roleCardFooter}>
+                  <span className={styles.roleCardSalary}>{JOBS[activeRole].salary}</span>
+                  <button className={styles.roleCardBtn} onClick={() => onNavigate('jobs')}>Apply →</button>
+                </div>
+              </motion.div>
+              <div className={styles.roleCardDots}>
+                {JOBS.slice(0, 5).map((_, i) => (
+                  <button key={i} className={`${styles.roleCardDot} ${i === activeRole % 5 ? styles.roleCardDotActive : ''}`} onClick={() => setActiveRole(i)} />
+                ))}
+              </div>
+            </div>
+          </motion.div>
         </div>
 
         <motion.div className={styles.scrollHint}
