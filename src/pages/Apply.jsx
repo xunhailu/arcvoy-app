@@ -121,7 +121,7 @@ export default function Apply({ user }) {
 
   useSEO({ title: job ? `Apply — ${job.title}` : 'Apply', description: null })
 
-  const countries    = ['United States','United Kingdom','Canada','Australia','Germany','France','China','India','Nigeria','Brazil','Japan','Italy','Spain','Netherlands','Sweden','Turkey','Poland','Denmark','Singapore','Other']
+  const countries    = ['United States','United Kingdom','Canada','Mexico','Japan','Germany','France','Italy','Nigeria','Thailand','Taiwan','Poland','Colombia','Denmark','Sweden','Other']
   const langs        = ['English','Spanish','French','German','Chinese','Arabic','Hindi','Portuguese']
   const stateOptions = STATES_BY_COUNTRY[fields.country] || []
 

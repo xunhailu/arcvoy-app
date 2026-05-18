@@ -7,8 +7,13 @@ describe('DIAL_CODES', () => {
     expect(names).toContain('United States')
     expect(names).toContain('United Kingdom')
     expect(names).toContain('Nigeria')
-    expect(names).toContain('Singapore')
+    expect(names).toContain('Mexico')
+    expect(names).toContain('Thailand')
+    expect(names).toContain('Taiwan')
+    expect(names).toContain('Colombia')
     expect(names).not.toContain('Other')
+    expect(names).not.toContain('Singapore')
+    expect(names).not.toContain('Australia')
   })
 
   it('every entry has country, iso, code and flag', () => {
@@ -28,12 +33,16 @@ describe('dialCodeForCountry', () => {
     expect(dialCodeForCountry('Japan')).toBe('+81')
     expect(dialCodeForCountry('United States')).toBe('+1')
     expect(dialCodeForCountry('Canada')).toBe('+1')
+    expect(dialCodeForCountry('Mexico')).toBe('+52')
+    expect(dialCodeForCountry('Thailand')).toBe('+66')
+    expect(dialCodeForCountry('Taiwan')).toBe('+886')
+    expect(dialCodeForCountry('Colombia')).toBe('+57')
   })
 
   it('returns empty string for unmapped values', () => {
     expect(dialCodeForCountry('Other')).toBe('')
     expect(dialCodeForCountry('')).toBe('')
-    expect(dialCodeForCountry('Atlantis')).toBe('')
+    expect(dialCodeForCountry('Australia')).toBe('')
   })
 })
 
