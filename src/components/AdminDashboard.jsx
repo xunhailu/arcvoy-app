@@ -439,7 +439,7 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onLinksC
             {[
               { label: 'Email',         value: app.email },
               { label: 'Phone',         value: app.phone },
-              { label: 'Date of Birth', value: app.dob ? new Date(app.dob).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : null },
+              { label: 'Date of Birth', value: app.dob ? (() => { const [y,m,d] = app.dob.split('-').map(Number); return new Date(y, m-1, d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) })() : null },
               { label: 'Address',       value: [app.address, app.city, app.state, app.zip, app.country].filter(Boolean).join(', ') },
               { label: 'Languages',     value: [app.lang1, app.lang2].filter(Boolean).join(', ') },
               { label: 'Applied',       value: new Date(app.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) },
