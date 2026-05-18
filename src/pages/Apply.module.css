@@ -301,9 +301,6 @@
   .stepBarItem { gap: 0; }
   .stepConnector { margin: 0 8px; }
 
-  /* collapse DOB row to 2 columns so Month has more room */
-  .grid3 { grid-template-columns: 1fr 1fr; }
-
   /* phone row — let dial select shrink slightly */
   .phoneRow { gap: 6px; }
 

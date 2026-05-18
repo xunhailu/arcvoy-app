@@ -390,7 +390,7 @@ export default function Dashboard({ user, authLoading, onNavigate }) {
       setLoading(false)
     }
     load()
-  }, [user, onNavigate])
+  }, [user, authLoading, onNavigate])
 
   const logout = async () => { await supabase.auth.signOut(); onNavigate('home') }
 
