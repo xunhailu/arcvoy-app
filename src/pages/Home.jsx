@@ -169,6 +169,13 @@ const socials = [
 ]
 
 const CYCLE_PHRASES = ['future of work.', 'future of talent.', 'future of AI.', 'future of growth.']
+const HERO_PROOF = ['Weekly pay', 'Training provided', 'Global remote roles']
+const PROJECT_AREAS = [
+  { title: 'AI Search', text: 'Review search results, relevance, and AI-generated answers.', pay: '$20-$25/hr' },
+  { title: 'Data Operations', text: 'Support structured data tasks with accuracy and consistency.', pay: '$20/hr' },
+  { title: 'Customer Care', text: 'Help users through clear remote support and issue resolution.', pay: '$20/hr' },
+  { title: 'Research Projects', text: 'Contribute to evaluation, content analysis, and digital research.', pay: '$20/hr' },
+]
 
 /* ── TiltCard wrapper ── */
 function TiltCard({ children, className, style, ...rest }) {
@@ -278,8 +285,16 @@ export default function Home({ onNavigate }) {
             <motion.p className={styles.heroSub}
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.5 }}>
-              We find and hire the people who make AI systems better. Remote work, flexible hours, weekly pay. Roles open right now.
+              Remote roles across AI, research, and operations — flexible hours, guided onboarding, and clear updates from application to day one.
             </motion.p>
+
+            <motion.div className={styles.heroProof}
+              initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.62 }}>
+              {HERO_PROOF.map(item => (
+                <span key={item}>{item}</span>
+              ))}
+            </motion.div>
 
             <motion.div className={styles.heroBtns}
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
@@ -377,6 +392,26 @@ export default function Home({ onNavigate }) {
         </div>
       </div>
 
+      {/* ── PROJECT AREAS ── */}
+      <section className={styles.domainPreview}>
+        <div className={styles.domainHead}>
+          <div>
+            <div className="label">Project Areas</div>
+            <h2 className={styles.domainTitle}>Find work that matches how you think</h2>
+          </div>
+          <button className={styles.domainAction} onClick={() => onNavigate('jobs')}>Review open roles →</button>
+        </div>
+        <div className={styles.domainGrid}>
+          {PROJECT_AREAS.map(area => (
+            <button key={area.title} className={styles.domainCard} onClick={() => onNavigate('jobs')}>
+              <span className={styles.domainPay}>{area.pay}</span>
+              <strong>{area.title}</strong>
+              <span>{area.text}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
       {/* ── SPONSORS MARQUEE ── */}
       <section className={styles.sponsors}>
         <div className={styles.sponsorsLabel}>Professionals from leading AI companies apply through Arcvoy</div>
@@ -445,10 +480,13 @@ export default function Home({ onNavigate }) {
         <motion.div className={styles.testimonialsHead}
           initial={{ opacity: 0, y: 36 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.25,0,0,1] }}>
-          <div className="label" style={{ justifyContent: 'center' }}>Contributors Say</div>
+          <div className="label" style={{ justifyContent: 'center' }}>Contributor Stories</div>
           <h2 className={styles.secH} style={{ textAlign: 'center' }}>
             Real people, <em style={{ color: 'var(--gd)', fontStyle: 'italic' }}>real results</em>
           </h2>
+          <p className={styles.testimonialsIntro}>
+            First-hand feedback from contributors who have worked through Arcvoy roles.
+          </p>
         </motion.div>
 
         <div
@@ -477,6 +515,7 @@ export default function Home({ onNavigate }) {
               <div>
                 <div className={styles.testimonialName}>{TESTIMONIALS[activeT].name}</div>
                 <div className={styles.testimonialRole}>{TESTIMONIALS[activeT].role} · {TESTIMONIALS[activeT].location}</div>
+                <div className={styles.testimonialProof}>Arcvoy contributor</div>
               </div>
             </div>
           </motion.div>
