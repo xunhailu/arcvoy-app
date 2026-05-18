@@ -464,9 +464,9 @@
 .filterPill {
   appearance: none; background: transparent;
   border: 1px solid rgba(255,255,255,0.1);
-  color: var(--tm); font-size: 10px; font-family: 'Raleway', sans-serif;
-  font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
-  padding: 5px 12px; border-radius: 100px; cursor: pointer;
+  color: var(--tm); font-size: 11px; font-family: 'Raleway', sans-serif;
+  font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+  padding: 6px 13px; border-radius: 100px; cursor: pointer;
   transition: background .18s, color .18s, border-color .18s;
   display: inline-flex; align-items: center; gap: 5px;
 }
@@ -486,20 +486,55 @@
 .filterPillActive .filterPillCount { background: rgba(204,102,51,0.18); }
 :global([data-theme="light"]) .filterPillCount { background: rgba(0,0,0,0.08); }
 
-.dateSelect {
-  appearance: none; -webkit-appearance: none;
-  background: rgba(255,255,255,0.05) url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236b5e4e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;
+.dateDropdown { position: relative; flex-shrink: 0; }
+.dateDropdownTrigger {
+  display: inline-flex; align-items: center;
+  background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.12);
-  color: var(--tm); font-size: 10px; font-family: 'Raleway', sans-serif;
+  color: var(--tm); font-size: 11px; font-family: 'Raleway', sans-serif;
   font-weight: 600; letter-spacing: .04em;
-  padding: 6px 28px 6px 12px; border-radius: 8px; cursor: pointer;
-  outline: none; transition: border-color .2s, color .2s;
-  flex-shrink: 0;
+  padding: 6px 12px; border-radius: 8px; cursor: pointer;
+  transition: background .18s, border-color .18s, color .18s;
+  white-space: nowrap;
 }
-.dateSelect:focus { border-color: rgba(204,102,51,.5); color: var(--tx); }
-:global([data-theme="light"]) .dateSelect {
-  background-color: rgba(0,0,0,0.04);
+.dateDropdownTrigger:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.2); color: var(--tx); }
+:global([data-theme="light"]) .dateDropdownTrigger {
+  background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.1); color: var(--td);
+}
+:global([data-theme="light"]) .dateDropdownTrigger:hover {
+  background: rgba(0,0,0,0.07); color: var(--tx);
+}
+.dateDropdownMenu {
+  position: absolute; right: 0; top: calc(100% + 6px); z-index: 50;
+  min-width: 150px;
+  background: rgba(20,16,13,0.92);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07);
+  overflow: hidden;
+  padding: 5px;
+}
+:global([data-theme="light"]) .dateDropdownMenu {
+  background: rgba(255,255,255,0.94);
   border-color: rgba(0,0,0,0.1);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+}
+.dateDropdownItem {
+  display: flex; align-items: center; width: 100%;
+  background: none; border: none;
+  color: var(--tm); font-size: 12px; font-family: 'Raleway', sans-serif;
+  font-weight: 500; text-align: left;
+  padding: 9px 13px; border-radius: 8px; cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.dateDropdownItem:hover { background: rgba(255,255,255,0.07); color: var(--tx); }
+:global([data-theme="light"]) .dateDropdownItem:hover { background: rgba(0,0,0,0.05); color: var(--tx); }
+.dateDropdownItemActive {
+  background: rgba(204,102,51,0.12) !important;
+  color: var(--gd) !important;
+  font-weight: 700;
 }
 
 /* verify pills (table column) */

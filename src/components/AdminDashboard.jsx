@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../hooks/useTheme'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -778,18 +778,54 @@ function OverviewView({ apps }) {
   )
 }
 
+/* ── Group apps by date bucket ── */
+function groupByDate(apps) {
+  const now = new Date()
+  const todayStart     = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const yesterdayStart = new Date(todayStart - 86400000)
+  const weekStart      = new Date(todayStart - 6 * 86400000)
+  const monthStart     = new Date(now.getFullYear(), now.getMonth(), 1)
+  const buckets = [
+    { key: 'Today',      items: [] },
+    { key: 'Yesterday',  items: [] },
+    { key: 'This Week',  items: [] },
+    { key: 'This Month', items: [] },
+    { key: 'Earlier',    items: [] },
+  ]
+  apps.forEach(app => {
+    const d   = new Date(app.created_at)
+    const day = new Date(d.getFullYear(), d.getMonth(), d.getDate())
+    if      (day >= todayStart)     buckets[0].items.push(app)
+    else if (day >= yesterdayStart) buckets[1].items.push(app)
+    else if (day >= weekStart)      buckets[2].items.push(app)
+    else if (day >= monthStart)     buckets[3].items.push(app)
+    else                            buckets[4].items.push(app)
+  })
+  return buckets.filter(b => b.items.length > 0)
+}
+
 /* ── Applications View ── */
 function ApplicationsView({ apps, loading }) {
   const [selected, setSelected] = useState(null)
   const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [apps_, setApps] = useState(apps)
+  const [dateFilter, setDateFilter] = useState('all')
+  const [showDateMenu, setShowDateMenu] = useState(false)
+  const dateMenuRef = useRef(null)
   const [showAddModal, setShowAddModal] = useState(false)
   const [addForm, setAddForm] = useState({ firstName: '', lastName: '', email: '', jobId: '' })
   const [addJobs, setAddJobs] = useState([])
   const [addSaving, setAddSaving] = useState(false)
 
   useEffect(() => { setApps(apps) }, [apps])
+
+  useEffect(() => {
+    if (!showDateMenu) return
+    const handler = (e) => { if (dateMenuRef.current && !dateMenuRef.current.contains(e.target)) setShowDateMenu(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [showDateMenu])
 
   const openAddModal = async () => {
     setAddForm({ firstName: '', lastName: '', email: '', jobId: '' })
@@ -852,6 +888,14 @@ function ApplicationsView({ apps, loading }) {
     setSelected(null)
   }
 
+  const now = new Date()
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const dateRanges = {
+    today:     { from: todayStart,                              to: null },
+    yesterday: { from: new Date(todayStart - 86400000),         to: todayStart },
+    week:      { from: new Date(todayStart - 6 * 86400000),     to: null },
+    month:     { from: new Date(now.getFullYear(), now.getMonth(), 1), to: null },
+  }
   const filtered = apps_.filter(a => {
     const matchStatus = filter === 'all' || a.status === filter
     const q = search.toLowerCase()
@@ -859,7 +903,13 @@ function ApplicationsView({ apps, loading }) {
       `${a.first_name} ${a.last_name}`.toLowerCase().includes(q) ||
       a.email?.toLowerCase().includes(q) ||
       a.job_title?.toLowerCase().includes(q)
-    return matchStatus && matchSearch
+    let matchDate = true
+    if (dateFilter !== 'all') {
+      const range = dateRanges[dateFilter]
+      const d = new Date(a.created_at)
+      matchDate = d >= range.from && (range.to ? d < range.to : true)
+    }
+    return matchStatus && matchSearch && matchDate
   })
 
   const counts = STATUS_ORDER.reduce((acc, s) => {
@@ -889,48 +939,68 @@ function ApplicationsView({ apps, loading }) {
 
   return (
     <div className={styles.dashboard}>
-      <div className={styles.sidebar}>
-        <div className={styles.sideNav} style={{ paddingTop: 12 }}>
-          <div className={styles.sideLabel}>Filter by Status</div>
-          <button className={`${styles.sideItem} ${filter === 'all' ? styles.sideItemActive : ''}`}
-            onClick={() => setFilter('all')}>
-            All Applications
-            <span className={styles.count}>{apps_.length}</span>
-          </button>
-          {STATUS_ORDER.map(s => {
-            const c = STATUS_COLORS[s]
-            return (
-              <button key={s}
-                className={`${styles.sideItem} ${filter === s ? styles.sideItemActive : ''}`}
-                onClick={() => setFilter(s)}>
-                <span className={styles.dot} style={{ background: c.color }} />
-                {c.label}
-                <span className={styles.count} style={{ background: c.color, color: '#fff', border: 'none', boxShadow: `0 1px 8px ${c.color}55` }}>
-                  {counts[s] || 0}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
       <div className={styles.main}>
         <div className={styles.mainHead}>
           <div>
             <div className={styles.mainTitle}>Applications</div>
-            <div className={styles.mainSub}>{filtered.length} of {apps_.length} total</div>
+            <div className={styles.mainSub}>{filtered.length} {filtered.length === 1 ? 'result' : 'results'} · {apps_.length} total</div>
           </div>
-          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <input className={styles.searchInput} placeholder="Search name, email, role…"
               value={search} onChange={e => setSearch(e.target.value)} />
-            <button className={styles.addBtn} onClick={openAddModal}>+ Add Candidate</button>
-            <button className={styles.exportBtn} onClick={handleExport} title="Export to CSV">
+            <button className={styles.addBtn} onClick={openAddModal}>+ Add</button>
+            <button className={styles.exportBtn} onClick={handleExport} title="Export CSV">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
               </svg>
-              CSV
             </button>
+          </div>
+        </div>
+
+        <div className={styles.filterBar}>
+          <div className={styles.filterPills}>
+            <button className={`${styles.filterPill} ${filter === 'all' ? styles.filterPillActive : ''}`}
+              onClick={() => setFilter('all')}>
+              All <span className={styles.filterPillCount}>{apps_.length}</span>
+            </button>
+            {STATUS_ORDER.map(s => {
+              const c = STATUS_COLORS[s]
+              return (
+                <button key={s}
+                  className={`${styles.filterPill} ${filter === s ? styles.filterPillActive : ''}`}
+                  style={filter === s ? { background: c.bg, color: c.color, borderColor: `${c.color}55` } : {}}
+                  onClick={() => setFilter(s)}>
+                  <span className={styles.dot} style={{ background: c.color, width: 6, height: 6, flexShrink: 0 }} />
+                  {c.label}
+                  <span className={styles.filterPillCount}>{counts[s] || 0}</span>
+                </button>
+              )
+            })}
+          </div>
+          <div className={styles.dateDropdown} ref={dateMenuRef}>
+            <button className={styles.dateDropdownTrigger} onClick={() => setShowDateMenu(v => !v)}>
+              {{ all: 'All time', today: 'Today', yesterday: 'Yesterday', week: 'This week', month: 'This month' }[dateFilter]}
+              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ marginLeft: 6, flexShrink: 0, transition: 'transform .2s', transform: showDateMenu ? 'rotate(180deg)' : 'none' }}>
+                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            {showDateMenu && (
+              <div className={styles.dateDropdownMenu}>
+                {[['all','All time'],['today','Today'],['yesterday','Yesterday'],['week','This week'],['month','This month']].map(([val, label]) => (
+                  <button key={val}
+                    className={`${styles.dateDropdownItem} ${dateFilter === val ? styles.dateDropdownItemActive : ''}`}
+                    onClick={() => { setDateFilter(val); setShowDateMenu(false) }}>
+                    {label}
+                    {dateFilter === val && (
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 'auto' }}>
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -949,9 +1019,9 @@ function ApplicationsView({ apps, loading }) {
                   <div className={styles.skeleton} style={{ height: 13, width: '65%' }} />
                   <div className={styles.skeleton} style={{ height: 10, width: '40%' }} />
                 </span>
-                <span><div className={styles.skeleton} style={{ height: 22, width: 64, borderRadius: 2 }} /></span>
-                <span><div className={styles.skeleton} style={{ height: 13, width: 38 }} /></span>
-                <span /><span /><span />
+                <span><div className={styles.skeleton} style={{ height: 22, width: 64, borderRadius: 100 }} /></span>
+                <span><div className={styles.skeleton} style={{ height: 18, width: 56, borderRadius: 4 }} /></span>
+                <span /><span />
               </div>
             ))}
           </div>
@@ -960,65 +1030,75 @@ function ApplicationsView({ apps, loading }) {
         ) : (
           <div className={styles.table}>
             <div className={styles.thead}>
-              <span>Name</span>
+              <span>Applicant</span>
               <span>Role</span>
               <span>Status</span>
-              <span>Applied</span>
-              <span>CV</span>
               <span>Verified</span>
+              <span>CV</span>
               <span></span>
             </div>
-            {filtered.map(app => {
-              const sc = STATUS_COLORS[app.status] || STATUS_COLORS.applied
-              return (
-                <motion.div key={app.id}
-                  className={`${styles.trow} ${selected?.id === app.id ? styles.trowActive : ''}`}
-                  onClick={() => setSelected(app)}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}>
-                  <span className={styles.tdName}>
-                    <div className={styles.avatar}>{app.first_name?.[0] || '?'}{app.last_name?.[0] || '?'}</div>
-                    <div>
-                      <div className={styles.tdNameMain}>
-                        {app.first_name} {app.last_name}
-                        {app.source === 'sourced' && <span className={styles.sourcedBadge} style={{ marginLeft: 7 }}>Sourced</span>}
-                      </div>
-                      <div className={styles.tdNameSub}>{app.email}</div>
-                    </div>
-                  </span>
-                  <span>
-                    <div className={styles.tdRole}>{app.job_title}</div>
-                    <div className={styles.tdDept}>{app.job_dept} · {app.job_type}</div>
-                  </span>
-                  <span>
-                    <span className={styles.statusPill} style={{ background: sc.bg, color: sc.color }}>
-                      {sc.label}
-                    </span>
-                  </span>
-                  <span className={styles.tdDate}>
-                    {new Date(app.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
-                  </span>
-                  <span>
-                    {app.cv_path
-                      ? <span className={styles.cvBadge}>PDF</span>
-                      : <span className={styles.noCvBadge}>—</span>}
-                  </span>
-                  <span className={styles.verifyDots}>
-                    <span className={styles.verifyDot} title="Identity" style={{ background: app.identity_link ? '#5a8f1a' : 'var(--bd2)' }} />
-                    <span className={styles.verifyDot} title="Compliance" style={{ background: app.compliance_link ? '#378add' : 'var(--bd2)' }} />
-                  </span>
-                  <span>
-                    <button className={styles.trashBtn}
-                      onClick={e => { e.stopPropagation(); if (window.confirm(`Delete application from ${app.first_name} ${app.last_name}?`)) onDelete(app.id) }}>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-                      </svg>
-                    </button>
-                  </span>
-                </motion.div>
-              )
-            })}
+            {groupByDate(filtered).map(({ key, items }) => (
+              <div key={key}>
+                <div className={styles.dateGroupRow}>
+                  <span className={styles.dateGroupLabel}>{key}</span>
+                  <span className={styles.dateGroupCount}>{items.length} {items.length === 1 ? 'application' : 'applications'}</span>
+                </div>
+                {items.map(app => {
+                  const sc = STATUS_COLORS[app.status] || STATUS_COLORS.applied
+                  return (
+                    <motion.div key={app.id}
+                      className={`${styles.trow} ${selected?.id === app.id ? styles.trowActive : ''}`}
+                      onClick={() => setSelected(app)}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}>
+                      <span className={styles.tdName}>
+                        <div className={styles.avatar}>{app.first_name?.[0] || '?'}{app.last_name?.[0] || '?'}</div>
+                        <div>
+                          <div className={styles.tdNameMain}>
+                            {app.first_name} {app.last_name}
+                            {app.source === 'sourced' && <span className={styles.sourcedBadge} style={{ marginLeft: 7 }}>Sourced</span>}
+                          </div>
+                          <div className={styles.tdNameSub}>{app.email}</div>
+                        </div>
+                      </span>
+                      <span>
+                        <div className={styles.tdRole}>{app.job_title}</div>
+                        <div className={styles.tdDept}>{app.job_dept} · {new Date(app.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</div>
+                      </span>
+                      <span>
+                        <span className={styles.statusPill} style={{ background: sc.bg, color: sc.color }}>
+                          {sc.label}
+                        </span>
+                      </span>
+                      <span className={styles.verifyPills}>
+                        <span className={styles.verifyMini}
+                          style={app.identity_link ? { color: '#5a8f1a', borderColor: 'rgba(90,143,26,0.35)', background: 'rgba(90,143,26,0.1)' } : {}}>
+                          ID
+                        </span>
+                        <span className={styles.verifyMini}
+                          style={app.compliance_link ? { color: '#378add', borderColor: 'rgba(55,138,221,0.35)', background: 'rgba(55,138,221,0.1)' } : {}}>
+                          CO
+                        </span>
+                      </span>
+                      <span>
+                        {app.cv_path
+                          ? <span className={styles.cvBadge}>CV</span>
+                          : <span className={styles.noCvBadge}>—</span>}
+                      </span>
+                      <span>
+                        <button className={styles.trashBtn}
+                          onClick={e => { e.stopPropagation(); if (window.confirm(`Delete application from ${app.first_name} ${app.last_name}?`)) onDelete(app.id) }}>
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                          </svg>
+                        </button>
+                      </span>
+                    </motion.div>
+                  )
+                })}
+              </div>
+            ))}
           </div>
         )}
       </div>
