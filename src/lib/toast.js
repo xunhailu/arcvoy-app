@@ -14,7 +14,14 @@ function show(message, type) {
   const el = document.createElement('div')
   el.className = `toast-item toast-${type}`
   const icons = { success: '✓', error: '✕', info: '·' }
-  el.innerHTML = `<span class="toast-icon">${icons[type] || icons.info}</span><span class="toast-msg">${message}</span>`
+  const icon = document.createElement('span')
+  icon.className = 'toast-icon'
+  icon.textContent = icons[type] || icons.info
+  const msg = document.createElement('span')
+  msg.className = 'toast-msg'
+  msg.textContent = message
+  el.appendChild(icon)
+  el.appendChild(msg)
   c.appendChild(el)
   requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('toast-visible')))
   const dismiss = () => {
