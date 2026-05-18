@@ -8,13 +8,9 @@ export function escHtml(str) {
 
 /* ── Shared email template parts ── */
 const BRAND_HEADER = `
-  <tr><td>
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#1A1410;border-radius:10px 10px 0 0;">
-      <tr>
-        <td style="padding:22px 32px;"><span style="font-family:Georgia,serif;font-size:20px;color:#F5F0EB;font-weight:400;letter-spacing:0.01em;">Arcvoy</span></td>
-        <td style="padding:22px 32px;text-align:right;"><span style="font-size:10px;color:#6a5a4a;letter-spacing:0.12em;text-transform:uppercase;">Talent Platform</span></td>
-      </tr>
-    </table>
+  <tr><td style="padding:0;line-height:0;font-size:0;">
+    <img src="https://arcvoy.com/og-image.png" width="580" alt="Arcvoy — Build the Future"
+      style="display:block;width:100%;max-width:580px;height:auto;border-radius:10px 10px 0 0;" />
   </td></tr>`
 
 const BRAND_FOOTER = `
@@ -160,41 +156,30 @@ export async function submitApplication({ fields, cvFile, idFrontFile, idBackFil
     throw error
   }
 
-  // Confirmation to applicant — non-blocking (email failure must not roll back submission)
+  // Confirmation to applicant
   const confirmSubject = `Application received — ${job.title}`
-  const confirmHtml = `
-    <div style="font-family:'Raleway',Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
-      <div style="background:#1A1410;padding:22px 32px;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#d97757" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#d97757" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#d97757"/></svg>
-          <span style="font-family:Georgia,serif;font-size:20px;color:#F5F0EB;font-weight:400;letter-spacing:0.01em;">Arcvoy</span>
-        </div>
-        <span style="font-size:10px;color:#6a5a4a;letter-spacing:0.1em;text-transform:uppercase;">Talent Platform</span>
-      </div>
-      <div style="background:#d97757;padding:30px 32px;">
-        <p style="margin:0 0 6px;font-size:10px;color:rgba(255,255,255,0.65);letter-spacing:0.12em;text-transform:uppercase;font-family:'Raleway',Calibri,Arial,sans-serif;">Application Received</p>
-        <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:400;line-height:1.25;letter-spacing:-0.2px;">${escHtml(job.title)}</h1>
-      </div>
-      <div style="padding:38px 32px;background:#ffffff;">
-        <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${escHtml(fields.first)},</p>
-        <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 32px;">We have received your application and we are genuinely glad you chose to apply through Arcvoy. Every application is reviewed personally by our team and we will be in touch shortly.</p>
-        <div style="border-top:1px solid #EDE8E2;margin-bottom:24px;"></div>
-        <p style="font-size:10px;color:#b0a090;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 16px;">Application Details</p>
-        <table style="width:100%;border-collapse:collapse;">
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;width:42%;border-bottom:1px solid #F5F0EB;">Position</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(job.title)}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Department</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(job.dept)}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;">Work Type</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;">${escHtml(job.type)}</td></tr>
-        </table>
-        <div style="border-top:1px solid #EDE8E2;margin:28px 0;"></div>
-        <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 32px;">Expect to hear from us within <strong style="color:#1A1410;">48 hours</strong>. If you have any questions before then, simply reply to this email.</p>
-        <p style="font-size:14px;color:#6b5e4e;margin:0;">Regards,</p>
-        <p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">Arcvoy Team</p>
-      </div>
-      <div style="background:#F5F0EB;padding:16px 32px;border-radius:0 0 10px 10px;display:flex;justify-content:space-between;align-items:center;">
-        <p style="margin:0;font-size:11px;color:#b0a090;">© 2026 Arcvoy</p>
-        <p style="margin:0;font-size:11px;color:#b0a090;"><a href="https://arcvoy.com" style="color:#b0a090;text-decoration:none;">arcvoy.com</a> &nbsp;·&nbsp; <a href="https://x.com/helloarcvoy" style="color:#b0a090;text-decoration:none;">@helloarcvoy</a></p>
-      </div>
-    </div>`
+  const confirmHtml = emailWrap(`
+    ${BRAND_HEADER}
+    <tr><td style="background:#d97757;padding:28px 32px;">
+      <p style="margin:0 0 6px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.14em;text-transform:uppercase;font-family:'Raleway',Calibri,Arial,sans-serif;">Application Received</p>
+      <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:400;line-height:1.25;letter-spacing:-0.2px;">${escHtml(job.title)}</h1>
+    </td></tr>
+    <tr><td style="padding:38px 32px;background:#ffffff;">
+      <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${escHtml(fields.first)},</p>
+      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 32px;">We have received your application and we are genuinely glad you chose to apply through Arcvoy. Every application is reviewed personally by our team and we will be in touch shortly.</p>
+      <div style="border-top:1px solid #EDE8E2;margin-bottom:24px;"></div>
+      <p style="font-size:10px;color:#b0a090;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 16px;">Application Details</p>
+      <table style="width:100%;border-collapse:collapse;">
+        <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;width:42%;border-bottom:1px solid #F5F0EB;">Position</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(job.title)}</td></tr>
+        <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Department</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(job.dept)}</td></tr>
+        <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;">Work Type</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;">${escHtml(job.type)}</td></tr>
+      </table>
+      <div style="border-top:1px solid #EDE8E2;margin:28px 0;"></div>
+      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 32px;">Expect to hear from us within <strong style="color:#1A1410;">48 hours</strong>. If you have any questions before then, simply reply to this email.</p>
+      <p style="font-size:14px;color:#6b5e4e;margin:0;">Regards,</p>
+      <p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">Arcvoy Team</p>
+    </td></tr>
+    ${BRAND_FOOTER}`)
 
   try {
     await sendEmail({ to: fields.email, from: 'Arcvoy Careers <careers@arcvoy.com>', replyTo: 'support@arcvoy.com', subject: confirmSubject, html: confirmHtml })
@@ -203,38 +188,27 @@ export async function submitApplication({ fields, cvFile, idFrontFile, idBackFil
     await logEmail({ applicationId, emailType: 'confirmation', recipientEmail: fields.email, subject: confirmSubject, status: 'failed', errorMessage: err.message })
   }
 
-  // Admin notification — non-blocking
+  // Admin notification
   const adminSubject = `New application — ${job.title} (${fields.first} ${fields.last})`
-  const adminHtml = `
-    <div style="font-family:'Raleway',Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
-      <div style="background:#1A1410;padding:22px 32px;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#cc6633"/></svg>
-          <span style="font-family:Georgia,serif;font-size:20px;color:#F5F0EB;font-weight:400;">Arcvoy</span>
-        </div>
-        <span style="font-size:10px;color:#6a5a4a;letter-spacing:0.1em;text-transform:uppercase;">Talent Platform</span>
-      </div>
-      <div style="padding:38px 32px;background:#ffffff;">
-        <p style="font-size:10px;color:#b0a090;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 12px;">New Application</p>
-        <h2 style="font-size:14px;color:#1A1410;font-weight:700;margin:0 0 28px;letter-spacing:0.06em;text-transform:uppercase;">${escHtml(job.title)} — ${escHtml(fields.first)} ${escHtml(fields.last)}</h2>
-        <table style="width:100%;border-collapse:collapse;">
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;width:42%;border-bottom:1px solid #F5F0EB;">Name</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(fields.first)} ${escHtml(fields.last)}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Email</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(fields.email)}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Phone</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(fields.phoneCode || '')}${fields.phone ? escHtml(fields.phone.replace(/\D/g, '')) : '—'}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Role</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(job.title)}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Department</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(job.dept)}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Country</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(fields.country || '—')}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">LinkedIn</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(fields.linkedin || '—')}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;">CV</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;">${escHtml(cvFilename || 'Not uploaded')}</td></tr>
-        </table>
-        <div style="border-top:1px solid #EDE8E2;margin:28px 0 0;"></div>
-        <p style="margin:20px 0 0;font-size:13px;color:#9a8f85;">Log in to the Arcvoy admin panel to review and take action.</p>
-      </div>
-      <div style="background:#F5F0EB;padding:16px 32px;border-radius:0 0 10px 10px;display:flex;justify-content:space-between;align-items:center;">
-        <p style="margin:0;font-size:11px;color:#b0a090;">© 2026 Arcvoy</p>
-        <p style="margin:0;font-size:11px;color:#b0a090;"><a href="https://arcvoy.com" style="color:#b0a090;text-decoration:none;">arcvoy.com</a> &nbsp;·&nbsp; <a href="https://x.com/helloarcvoy" style="color:#b0a090;text-decoration:none;">@helloarcvoy</a></p>
-      </div>
-    </div>`
+  const adminHtml = emailWrap(`
+    ${BRAND_HEADER}
+    <tr><td style="padding:38px 32px;background:#ffffff;">
+      <p style="font-size:10px;color:#b0a090;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 12px;">New Application</p>
+      <h2 style="font-size:14px;color:#1A1410;font-weight:700;margin:0 0 28px;letter-spacing:0.06em;text-transform:uppercase;">${escHtml(job.title)} — ${escHtml(fields.first)} ${escHtml(fields.last)}</h2>
+      <table style="width:100%;border-collapse:collapse;">
+        <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;width:42%;border-bottom:1px solid #F5F0EB;">Name</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(fields.first)} ${escHtml(fields.last)}</td></tr>
+        <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Email</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(fields.email)}</td></tr>
+        <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Phone</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(fields.phoneCode || '')}${fields.phone ? escHtml(fields.phone.replace(/\D/g, '')) : '—'}</td></tr>
+        <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Role</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(job.title)}</td></tr>
+        <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Department</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(job.dept)}</td></tr>
+        <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Country</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(fields.country || '—')}</td></tr>
+        <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">LinkedIn</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(fields.linkedin || '—')}</td></tr>
+        <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;">CV</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;">${escHtml(cvFilename || 'Not uploaded')}</td></tr>
+      </table>
+      <div style="border-top:1px solid #EDE8E2;margin:28px 0 0;"></div>
+      <p style="margin:20px 0 0;font-size:13px;color:#9a8f85;">Log in to the Arcvoy admin panel to review and take action.</p>
+    </td></tr>
+    ${BRAND_FOOTER}`)
 
   try {
     await sendEmail({ to: ADMIN_EMAIL, from: 'Arcvoy Platform <careers@arcvoy.com>', subject: adminSubject, html: adminHtml })
@@ -302,32 +276,21 @@ export async function sendStatusEmail(status, app) {
   const c = configs[status]
   if (!c || !app.email) return
 
-  const html = `
-    <div style="font-family:'Raleway',Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
-      <div style="background:#1A1410;padding:22px 32px;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 50 Q32 6 54 50" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#cc6633"/></svg>
-          <span style="font-family:Georgia,serif;font-size:20px;color:#F5F0EB;font-weight:400;letter-spacing:0.01em;">Arcvoy</span>
-        </div>
-        <span style="font-size:10px;color:#6a5a4a;letter-spacing:0.1em;text-transform:uppercase;">Talent Platform</span>
-      </div>
-      <div style="background:${c.banner};padding:30px 32px;">
-        <p style="margin:0 0 6px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.12em;text-transform:uppercase;font-family:'Raleway',Calibri,Arial,sans-serif;">${c.bannerLabel}</p>
-        <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:400;line-height:1.25;letter-spacing:-0.2px;">${c.headline}</h1>
-      </div>
-      <div style="padding:38px 32px;background:#ffffff;">
-        <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${name},</p>
-        <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 32px;">${c.body}</p>
-        <div style="border-top:1px solid #EDE8E2;margin-bottom:24px;"></div>
-        <p style="font-size:13px;color:#9a8f85;line-height:1.7;margin:0;">Questions? Simply reply to this email and our team will get back to you promptly.</p>
-        <p style="font-size:14px;color:#6b5e4e;margin:24px 0 0;">Warm regards,</p>
-        <p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">The Arcvoy Team</p>
-      </div>
-      <div style="background:#F5F0EB;padding:16px 32px;border-radius:0 0 10px 10px;display:flex;justify-content:space-between;align-items:center;">
-        <p style="margin:0;font-size:11px;color:#b0a090;">© 2026 Arcvoy</p>
-        <p style="margin:0;font-size:11px;color:#b0a090;"><a href="https://arcvoy.com" style="color:#b0a090;text-decoration:none;">arcvoy.com</a> &nbsp;·&nbsp; <a href="https://x.com/helloarcvoy" style="color:#b0a090;text-decoration:none;">@helloarcvoy</a></p>
-      </div>
-    </div>`
+  const html = emailWrap(`
+    ${BRAND_HEADER}
+    <tr><td style="background:${c.banner};padding:28px 32px;">
+      <p style="margin:0 0 6px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.14em;text-transform:uppercase;font-family:'Raleway',Calibri,Arial,sans-serif;">${c.bannerLabel}</p>
+      <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:400;line-height:1.25;letter-spacing:-0.2px;">${c.headline}</h1>
+    </td></tr>
+    <tr><td style="padding:38px 32px;background:#ffffff;">
+      <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${name},</p>
+      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 32px;">${c.body}</p>
+      <div style="border-top:1px solid #EDE8E2;margin-bottom:24px;"></div>
+      <p style="font-size:13px;color:#9a8f85;line-height:1.7;margin:0;">Questions? Simply reply to this email and our team will get back to you promptly.</p>
+      <p style="font-size:14px;color:#6b5e4e;margin:24px 0 0;">Warm regards,</p>
+      <p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">The Arcvoy Team</p>
+    </td></tr>
+    ${BRAND_FOOTER}`)
 
   const emailType = `status_${status}`
   try {
