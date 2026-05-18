@@ -12,6 +12,11 @@
   font-size: 14px;
 }
 
+@media (max-width: 380px) {
+  .wrap { width: 100px; }
+  .trigger { width: 100px; min-width: 100px; padding: 12px 6px 12px 8px; font-size: 13px; }
+}
+
 /* dropdown is wider than trigger to fit country names */
 .dropdown {
   width: 240px;

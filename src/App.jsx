@@ -65,6 +65,7 @@ const SEO_MAP = {
 export default function App() {
   const { theme, toggle }             = useTheme()
   const [candidateUser, setCandidateUser] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
   const navigate  = useNavigate()
   const location  = useLocation()
 
@@ -80,6 +81,7 @@ export default function App() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session?.user) setCandidateUser(data.session.user)
+      setAuthLoading(false)
     })
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       setCandidateUser(session?.user ?? null)
@@ -141,6 +143,7 @@ export default function App() {
     else if (page === 'helpdesk')  navigate('/helpdesk')
     else if (page === 'privacy')   navigate('/privacy')
     else if (page === 'terms')     navigate('/terms')
+    else if (page === 'sign-in')   navigate('/sign-in')
   }, [navigate])
 
   const currentPage = location.pathname === '/jobs'           ? 'jobs'
@@ -201,7 +204,7 @@ export default function App() {
           } />
           <Route path="/dashboard" element={
             <motion.div key="dashboard" variants={pageVariants} initial="initial" animate="animate" exit="exit">
-              <Dashboard user={candidateUser} onNavigate={onNavigate} />
+              <Dashboard user={candidateUser} authLoading={authLoading} onNavigate={onNavigate} />
             </motion.div>
           } />
           <Route path="/faq" element={

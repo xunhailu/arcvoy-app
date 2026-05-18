@@ -369,14 +369,15 @@ function PaymentTab({ user, w9 }) {
 }
 
 /* ── Main Dashboard ── */
-export default function Dashboard({ user, onNavigate }) {
+export default function Dashboard({ user, authLoading, onNavigate }) {
   const [activeTab, setActiveTab] = useState('applications')
   const [apps,    setApps]    = useState([])
   const [w9,      setW9]      = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!user) { onNavigate('home'); return }
+    if (authLoading) return
+    if (!user) { onNavigate('sign-in'); return }
     const load = async () => {
       try {
         const [{ data }, w9data] = await Promise.all([

@@ -2,6 +2,10 @@ import { supabase } from './supabase'
 
 const ADMIN_EMAIL = 'admin@arcvoy.com'
 
+function escHtml(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+}
+
 /* ── Shared email template parts ── */
 const BRAND_HEADER = `
   <tr><td>
@@ -169,17 +173,17 @@ export async function submitApplication({ fields, cvFile, idFrontFile, idBackFil
       </div>
       <div style="background:#d97757;padding:30px 32px;">
         <p style="margin:0 0 6px;font-size:10px;color:rgba(255,255,255,0.65);letter-spacing:0.12em;text-transform:uppercase;font-family:'Raleway',Calibri,Arial,sans-serif;">Application Received</p>
-        <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:400;line-height:1.25;letter-spacing:-0.2px;">${job.title}</h1>
+        <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:400;line-height:1.25;letter-spacing:-0.2px;">${escHtml(job.title)}</h1>
       </div>
       <div style="padding:38px 32px;background:#ffffff;">
-        <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${fields.first},</p>
+        <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${escHtml(fields.first)},</p>
         <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 32px;">We have received your application and we are genuinely glad you chose to apply through Arcvoy. Every application is reviewed personally by our team and we will be in touch shortly.</p>
         <div style="border-top:1px solid #EDE8E2;margin-bottom:24px;"></div>
         <p style="font-size:10px;color:#b0a090;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 16px;">Application Details</p>
         <table style="width:100%;border-collapse:collapse;">
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;width:42%;border-bottom:1px solid #F5F0EB;">Position</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${job.title}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Department</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${job.dept}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;">Work Type</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;">${job.type}</td></tr>
+          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;width:42%;border-bottom:1px solid #F5F0EB;">Position</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(job.title)}</td></tr>
+          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Department</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(job.dept)}</td></tr>
+          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;">Work Type</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;">${escHtml(job.type)}</td></tr>
         </table>
         <div style="border-top:1px solid #EDE8E2;margin:28px 0;"></div>
         <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 32px;">Expect to hear from us within <strong style="color:#1A1410;">48 hours</strong>. If you have any questions before then, simply reply to this email.</p>
@@ -212,16 +216,16 @@ export async function submitApplication({ fields, cvFile, idFrontFile, idBackFil
       </div>
       <div style="padding:38px 32px;background:#ffffff;">
         <p style="font-size:10px;color:#b0a090;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 12px;">New Application</p>
-        <h2 style="font-size:14px;color:#1A1410;font-weight:700;margin:0 0 28px;letter-spacing:0.06em;text-transform:uppercase;">${job.title} — ${fields.first} ${fields.last}</h2>
+        <h2 style="font-size:14px;color:#1A1410;font-weight:700;margin:0 0 28px;letter-spacing:0.06em;text-transform:uppercase;">${escHtml(job.title)} — ${escHtml(fields.first)} ${escHtml(fields.last)}</h2>
         <table style="width:100%;border-collapse:collapse;">
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;width:42%;border-bottom:1px solid #F5F0EB;">Name</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${fields.first} ${fields.last}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Email</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${fields.email}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Phone</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${fields.phoneCode || ''}${fields.phone ? fields.phone.replace(/\D/g, '') : '—'}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Role</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${job.title}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Department</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${job.dept}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Country</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${fields.country || '—'}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">LinkedIn</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${fields.linkedin || '—'}</td></tr>
-          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;">CV</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;">${cvFilename || 'Not uploaded'}</td></tr>
+          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;width:42%;border-bottom:1px solid #F5F0EB;">Name</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(fields.first)} ${escHtml(fields.last)}</td></tr>
+          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Email</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(fields.email)}</td></tr>
+          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Phone</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(fields.phoneCode || '')}${fields.phone ? escHtml(fields.phone.replace(/\D/g, '')) : '—'}</td></tr>
+          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Role</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(job.title)}</td></tr>
+          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Department</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(job.dept)}</td></tr>
+          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Country</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(fields.country || '—')}</td></tr>
+          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">LinkedIn</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(fields.linkedin || '—')}</td></tr>
+          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;">CV</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;">${escHtml(cvFilename || 'Not uploaded')}</td></tr>
         </table>
         <div style="border-top:1px solid #EDE8E2;margin:28px 0 0;"></div>
         <p style="margin:20px 0 0;font-size:13px;color:#9a8f85;">Log in to the Arcvoy admin panel to review and take action.</p>
@@ -254,8 +258,8 @@ export async function fetchApplications() {
 
 /* ── Send status update email — throws on failure ── */
 export async function sendStatusEmail(status, app) {
-  const name = app.first_name
-  const role = app.job_title
+  const name = escHtml(app.first_name)
+  const role = escHtml(app.job_title)
 
   const configs = {
     reviewing: {
@@ -345,7 +349,7 @@ export async function sendIdentityVerificationEmail(app, link) {
       <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:700;line-height:1.2;">Identity Verification</h1>
     </td></tr>
     <tr><td style="padding:38px 32px;background:#ffffff;">
-      <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${app.first_name},</p>
+      <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${escHtml(app.first_name)},</p>
       <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 28px;">Your application with Arcvoy is currently in progress. The next step is to complete your identity verification. This is a quick process and ensures we can move your application forward securely.</p>
       <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E0DAD4;border-radius:8px;margin-bottom:28px;background:#faf9f7;">
         <tr><td style="padding:24px;">
@@ -394,7 +398,7 @@ export async function sendComplianceVerificationEmail(app, link) {
       <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:700;line-height:1.2;">Compliance Verification</h1>
     </td></tr>
     <tr><td style="padding:38px 32px;background:#ffffff;">
-      <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${app.first_name},</p>
+      <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${escHtml(app.first_name)},</p>
       <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 28px;">Thank you for completing your identity verification. You are now one step away. Please complete your compliance verification to finalise your application with Arcvoy.</p>
       <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E0DAD4;border-radius:8px;margin-bottom:28px;background:#faf9f7;">
         <tr><td style="padding:24px;">
@@ -505,8 +509,8 @@ export async function sendWelcomeEmail(app) {
       <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:700;line-height:1.2;">You Have Been Selected</h1>
     </td></tr>
     <tr><td style="padding:38px 32px;background:#ffffff;">
-      <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${app.first_name},</p>
-      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 24px;">We are reaching out from Arcvoy, a specialist AI talent platform connecting exceptional professionals with leading AI-first companies. Our team has identified your profile and we are pleased to let you know that you have been selected for consideration for the <strong style="color:#1A1410;">${app.job_title}</strong> role.</p>
+      <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${escHtml(app.first_name)},</p>
+      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 24px;">We are reaching out from Arcvoy, a specialist AI talent platform connecting exceptional professionals with leading AI-first companies. Our team has identified your profile and we are pleased to let you know that you have been selected for consideration for the <strong style="color:#1A1410;">${escHtml(app.job_title)}</strong> role.</p>
       <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 28px;">This is the beginning of what we hope will be an exciting journey. A member of our team will be in touch shortly with more details about the opportunity and next steps.</p>
       <div style="height:1px;background:#EDE8E2;margin-bottom:24px;"></div>
       <p style="font-size:13px;color:#9a8f85;line-height:1.7;margin:0;">If you have any questions or would like to learn more, simply reply to this email and our team will get back to you promptly.</p>
@@ -562,13 +566,16 @@ export async function fetchSubscribers() {
 export async function sendBlastEmail(subject, body, subscribers) {
   if (!subscribers.length) return { sent: 0, failed: 0 }
 
+  const safeSubject = String(subject || '').slice(0, 200)
+  const unique = [...new Map(subscribers.map(s => [s.email, s])).values()]
+
   const html = emailWrap(`
     ${BRAND_HEADER}
     <tr><td style="background:#cc6633;padding:28px 32px;">
-      <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:700;line-height:1.25;">${subject}</h1>
+      <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:700;line-height:1.25;">${escHtml(safeSubject)}</h1>
     </td></tr>
     <tr><td style="padding:38px 32px;background:#ffffff;">
-      <div style="font-size:14px;color:#6b5e4e;line-height:1.85;">${body.replace(/\n/g, '<br>')}</div>
+      <div style="font-size:14px;color:#6b5e4e;line-height:1.85;">${escHtml(body).replace(/\n/g, '<br>')}</div>
       <div style="height:1px;background:#EDE8E2;margin:28px 0;"></div>
       <p style="font-size:14px;color:#6b5e4e;margin:0 0 2px;">Regards,</p>
       <p style="font-size:14px;color:#1A1410;margin:0;font-weight:600;">Arcvoy Team</p>
@@ -580,8 +587,8 @@ export async function sendBlastEmail(subject, body, subscribers) {
   let sent = 0
   let failed = 0
 
-  for (let i = 0; i < subscribers.length; i += BATCH_SIZE) {
-    const chunk = subscribers.slice(i, i + BATCH_SIZE)
+  for (let i = 0; i < unique.length; i += BATCH_SIZE) {
+    const chunk = unique.slice(i, i + BATCH_SIZE)
     try {
       const { error } = await supabase.functions.invoke('send-email', {
         body: {
@@ -589,7 +596,7 @@ export async function sendBlastEmail(subject, body, subscribers) {
             to: s.email,
             from: 'Arcvoy <careers@arcvoy.com>',
             replyTo: 'support@arcvoy.com',
-            subject,
+            subject: safeSubject,
             html,
           })),
         },

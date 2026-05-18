@@ -34,14 +34,17 @@ const ERROR_MESSAGES = {
 
 function StepBar({ current }) {
   return (
-    <div className={styles.stepBar}>
+    <nav className={styles.stepBar} aria-label="Application progress">
       {STEPS.map((label, i) => {
         const num  = i + 1
         const done = num < current
         const active = num === current
         return (
           <div key={num} className={styles.stepBarItem}>
-            <div className={`${styles.stepCircle} ${done ? styles.stepCircleDone : active ? styles.stepCircleActive : styles.stepCircleUpcoming}`}>
+            <div
+              className={`${styles.stepCircle} ${done ? styles.stepCircleDone : active ? styles.stepCircleActive : styles.stepCircleUpcoming}`}
+              {...(active ? { 'aria-current': 'step' } : {})}
+            >
               {done
                 ? <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 : num}
@@ -55,7 +58,7 @@ function StepBar({ current }) {
           </div>
         )
       })}
-    </div>
+    </nav>
   )
 }
 
@@ -65,10 +68,12 @@ export default function Apply({ user }) {
   const storageKey = id ? `arcvoy-apply-${id}` : null
 
   const [job, setJob]           = useState(null)
+  const [jobGone, setJobGone]   = useState(false)
   const [loading, setLoading]   = useState(() => Boolean(id))
   const [submitting, setSubmitting] = useState(false)
   const [done, setDone]         = useState(false)
   const [submitError, setSubmitError] = useState('')
+  const [storageWarning, setStorageWarning] = useState(false)
   const [errors, setErrors]     = useState({})
   const [cvFile, setCvFile]     = useState(null)
   const [cvLabel, setCvLabel]   = useState('Drop your CV here or click to upload')
@@ -106,15 +111,17 @@ export default function Apply({ user }) {
 
   useEffect(() => {
     if (!storageKey) return
-    try { localStorage.setItem(storageKey, JSON.stringify(fields)) } catch {}
+    try { localStorage.setItem(storageKey, JSON.stringify(fields)) } catch {
+      setStorageWarning(true)
+    }
   }, [fields, storageKey])
 
   useEffect(() => {
     if (!id) return
     let cancelled = false
     fetchJob(id)
-      .then(data => { if (!cancelled) setJob(data) })
-      .catch(() => { if (!cancelled) setJob(null) })
+      .then(data => { if (!cancelled) { setJob(data); if (!data) setJobGone(true) } })
+      .catch(() => { if (!cancelled) { setJob(null); setJobGone(true) } })
       .finally(() => { if (!cancelled) setLoading(false) })
     return () => { cancelled = true }
   }, [id])
@@ -214,9 +221,12 @@ export default function Apply({ user }) {
       if (storageKey) { try { localStorage.removeItem(storageKey) } catch {} }
       setDone(true)
     } catch (err) {
-      setSubmitError(err.message === 'You have already applied for this role.'
+      const msg = err.message === 'You have already applied for this role.'
         ? 'You have already applied for this role.'
-        : 'Something went wrong. Please try again.')
+        : err.message === 'Failed to fetch' || err.message?.includes('NetworkError') || err.message?.includes('network')
+        ? 'Network error — please check your connection and try again.'
+        : 'Something went wrong. Please try again or contact support@arcvoy.com.'
+      setSubmitError(msg)
     }
     setSubmitting(false)
   }
@@ -249,7 +259,7 @@ export default function Apply({ user }) {
     setErrors(prev => ({ ...prev, cv: false }))
     if (f.type === 'application/pdf') {
       setParsing(true)
-      setCvLabel('Verifying your CV…')
+      setCvLabel('Reading CV details…')
       let rejected = false
       try {
         const base64 = await new Promise((res, rej) => {
@@ -258,9 +268,13 @@ export default function Apply({ user }) {
           r.onerror = rej
           r.readAsDataURL(f)
         })
-        const { data } = await supabase.functions.invoke('parse-cv', {
+        const parsePromise = supabase.functions.invoke('parse-cv', {
           body: { fileBase64: base64, fileType: f.type },
         })
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('timeout')), 30000)
+        )
+        const { data } = await Promise.race([parsePromise, timeoutPromise])
         if (data && !data.error) {
           if (data.is_cv === false) {
             setCvFile(null)
@@ -403,6 +417,17 @@ export default function Apply({ user }) {
   }
 
   if (loading) return null
+  if (jobGone) return (
+    <div className={styles.successPage}>
+      <div className={styles.successCard}>
+        <h2 className={styles.successTitle} style={{ fontSize: 28 }}>Role no longer available</h2>
+        <p className={styles.successDesc}>This position has been filled or removed. Browse our open roles to find your next opportunity.</p>
+        <div className={styles.successBtns}>
+          <button className="btn-primary" onClick={() => navigate('/jobs')}>Browse open roles →</button>
+        </div>
+      </div>
+    </div>
+  )
   if (!job) return <Navigate to="/jobs" replace />
 
   if (done) return (
@@ -490,6 +515,15 @@ export default function Apply({ user }) {
               <h1 className={styles.formTitle}>Apply for {job.title}</h1>
             </div>
 
+            {storageWarning && (
+              <div className={styles.cvWarning} style={{ marginBottom: 20 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1 }}>
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                Your progress cannot be saved automatically in this browser session. Complete your application without navigating away.
+              </div>
+            )}
             <StepBar current={step} />
 
             <AnimatePresence mode="wait">
@@ -508,7 +542,7 @@ export default function Apply({ user }) {
                     <div className={styles.section}>
                       <div className={styles.sectionTitle}>CV / Résumé <span className={styles.optionalTag}>optional</span></div>
                       <div className={styles.cvUpload} style={{ borderColor: errors.cv ? '#a03030' : cvFile ? 'var(--gd)' : undefined }}>
-                        <input type="file" accept=".pdf,.doc,.docx" onChange={e => handleCVUpload(e.target.files[0])} />
+                        <input type="file" accept=".pdf,.doc,.docx" aria-label="Upload CV or résumé (PDF or Word, max 10MB)" onChange={e => handleCVUpload(e.target.files[0])} />
                         <div className={styles.cvInner}>
                           {cvFile
                             ? <div className={styles.cvFileIcon}>
@@ -523,7 +557,7 @@ export default function Apply({ user }) {
                               </svg>}
                           <div className={styles.cvMain}>{cvLabel}</div>
                           <div className={styles.cvSub}>
-                            {parsing ? 'Filling in your details…'
+                            {parsing ? 'Reading details — this may take a moment…'
                               : cvFile ? 'CV ready — details pre-filled below'
                               : 'PDF or DOCX · Max 10MB · Auto-fills the form'}
                           </div>
@@ -574,6 +608,7 @@ export default function Apply({ user }) {
                               <div className={styles.cvUpload} style={{ borderColor: errors.id ? '#a03030' : idFrontFile ? 'var(--gd)' : undefined }}>
                                 <input type="file"
                                   accept="image/jpeg,image/png,image/webp,.pdf"
+                                  aria-label="Upload front of driver's license"
                                   onChange={e => handleIDFrontUpload(e.target.files[0])} />
                                 <div className={styles.cvInner}>
                                   {idFrontFile
@@ -585,7 +620,7 @@ export default function Apply({ user }) {
                                   </div>
                                 </div>
                               </div>
-                              {errors.id && <span className={styles.fieldError}>{ERROR_MESSAGES.id}</span>}
+                              {errors.id && <span role="alert" className={styles.fieldError}>{ERROR_MESSAGES.id}</span>}
                             </div>
                             {/* Back */}
                             <div>
@@ -593,6 +628,7 @@ export default function Apply({ user }) {
                               <div className={styles.cvUpload} style={{ borderColor: errors.idBack ? '#a03030' : idBackFile ? 'var(--gd)' : undefined }}>
                                 <input type="file"
                                   accept="image/jpeg,image/png,image/webp,.pdf"
+                                  aria-label="Upload back of driver's license"
                                   onChange={e => handleIDBackUpload(e.target.files[0])} />
                                 <div className={styles.cvInner}>
                                   {idBackFile
@@ -604,7 +640,7 @@ export default function Apply({ user }) {
                                   </div>
                                 </div>
                               </div>
-                              {errors.idBack && <span className={styles.fieldError}>{ERROR_MESSAGES.idBack}</span>}
+                              {errors.idBack && <span role="alert" className={styles.fieldError}>{ERROR_MESSAGES.idBack}</span>}
                             </div>
                           </div>
                         ) : (
@@ -613,6 +649,7 @@ export default function Apply({ user }) {
                             <div className={styles.cvUpload} style={{ borderColor: errors.id ? '#a03030' : idFrontFile ? 'var(--gd)' : undefined }}>
                               <input type="file"
                                 accept="image/jpeg,image/png,image/webp,.pdf"
+                                aria-label={`Upload your ${idType || 'ID document'}`}
                                 onChange={e => handleIDFrontUpload(e.target.files[0])} />
                               <div className={styles.cvInner}>
                                 {idFrontFile
@@ -624,7 +661,7 @@ export default function Apply({ user }) {
                                 </div>
                               </div>
                             </div>
-                            {errors.id && <span className={styles.fieldError}>{ERROR_MESSAGES.id}</span>}
+                            {errors.id && <span role="alert" className={styles.fieldError}>{ERROR_MESSAGES.id}</span>}
                           </div>
                         )
                       )}
@@ -633,7 +670,7 @@ export default function Apply({ user }) {
                     <div className={styles.stepNav}>
                       <div />
                       <button className={styles.continueBtn} onClick={goNext} disabled={parsing || idFrontParsing}>
-                        {parsing ? 'Verifying CV…' : idFrontParsing ? 'Verifying ID…' : 'Continue →'}
+                        {parsing ? 'Reading CV…' : idFrontParsing ? 'Verifying ID…' : 'Continue →'}
                       </button>
                     </div>
                   </div>
@@ -656,21 +693,24 @@ export default function Apply({ user }) {
                         <div className={styles.fg}>
                           <label className={styles.fl}>First Name <span>*</span></label>
                           <input className={`${styles.fi} ${errors.first ? styles.fiError : ''}`}
+                            aria-invalid={errors.first ? 'true' : 'false'}
                             value={fields.first} onChange={set('first')} onBlur={() => blurCheck('first')} />
-                          {errors.first && <span className={styles.fieldError}>{ERROR_MESSAGES.first}</span>}
+                          {errors.first && <span role="alert" className={styles.fieldError}>{ERROR_MESSAGES.first}</span>}
                         </div>
                         <div className={styles.fg}>
                           <label className={styles.fl}>Surname <span>*</span></label>
                           <input className={`${styles.fi} ${errors.last ? styles.fiError : ''}`}
+                            aria-invalid={errors.last ? 'true' : 'false'}
                             value={fields.last} onChange={set('last')} onBlur={() => blurCheck('last')} />
-                          {errors.last && <span className={styles.fieldError}>{ERROR_MESSAGES.last}</span>}
+                          {errors.last && <span role="alert" className={styles.fieldError}>{ERROR_MESSAGES.last}</span>}
                         </div>
                       </div>
                       <div className={styles.fg}>
                         <label className={styles.fl}>Email Address <span>*</span></label>
                         <input type="email" className={`${styles.fi} ${errors.email ? styles.fiError : ''}`}
+                          aria-invalid={errors.email ? 'true' : 'false'}
                           value={fields.email} onChange={set('email')} onBlur={() => blurCheck('email')} />
-                        {errors.email && <span className={styles.fieldError}>{ERROR_MESSAGES.email}</span>}
+                        {errors.email && <span role="alert" className={styles.fieldError}>{ERROR_MESSAGES.email}</span>}
                       </div>
                       <div className={styles.fg}>
                         <label className={styles.fl}>Phone Number <span>*</span></label>
@@ -734,38 +774,42 @@ export default function Apply({ user }) {
                         <div className={styles.fg}>
                           <label className={styles.fl}>Country <span>*</span></label>
                           <CustomSelect value={fields.country} onChange={setCountry} options={countries} placeholder="Select country" error={errors.country} />
-                          {errors.country && <span className={styles.fieldError}>{ERROR_MESSAGES.country}</span>}
+                          {errors.country && <span role="alert" className={styles.fieldError}>{ERROR_MESSAGES.country}</span>}
                         </div>
                         <div className={styles.fg}>
                           <label className={styles.fl}>{stateOptions.length > 0 ? 'State / Province' : 'State / Region'} <span>*</span></label>
                           {stateOptions.length > 0
                             ? <CustomSelect value={fields.state} onChange={v => { setFields(f => ({ ...f, state: v })); setErrors(p => ({ ...p, state: false })) }} options={stateOptions} placeholder="Select state" error={errors.state} />
                             : <input className={`${styles.fi} ${errors.state ? styles.fiError : ''}`}
+                                aria-invalid={errors.state ? 'true' : 'false'}
                                 value={fields.state} onChange={set('state')} onBlur={() => blurCheck('state')}
                                 placeholder={fields.country ? 'Enter state or region' : ''} />}
-                          {errors.state && <span className={styles.fieldError}>{ERROR_MESSAGES.state}</span>}
+                          {errors.state && <span role="alert" className={styles.fieldError}>{ERROR_MESSAGES.state}</span>}
                         </div>
                       </div>
                       <div className={styles.grid2}>
                         <div className={styles.fg}>
                           <label className={styles.fl}>City / Town <span>*</span></label>
                           <input className={`${styles.fi} ${errors.city ? styles.fiError : ''}`}
+                            aria-invalid={errors.city ? 'true' : 'false'}
                             value={fields.city} onChange={set('city')} onBlur={() => blurCheck('city')} />
-                          {errors.city && <span className={styles.fieldError}>{ERROR_MESSAGES.city}</span>}
+                          {errors.city && <span role="alert" className={styles.fieldError}>{ERROR_MESSAGES.city}</span>}
                         </div>
                         <div className={styles.fg}>
                           <label className={styles.fl}>Postcode / Zip <span>*</span></label>
                           <input className={`${styles.fi} ${errors.zip ? styles.fiError : ''}`}
+                            aria-invalid={errors.zip ? 'true' : 'false'}
                             value={fields.zip} onChange={set('zip')} onBlur={() => blurCheck('zip')} />
-                          {errors.zip && <span className={styles.fieldError}>{ERROR_MESSAGES.zip}</span>}
+                          {errors.zip && <span role="alert" className={styles.fieldError}>{ERROR_MESSAGES.zip}</span>}
                         </div>
                       </div>
                       <div className={styles.fg}>
                         <label className={styles.fl}>Street Address <span>*</span></label>
                         <input className={`${styles.fi} ${styles.fiAddress} ${errors.address ? styles.fiError : ''}`}
+                          aria-invalid={errors.address ? 'true' : 'false'}
                           value={fields.address} onChange={set('address')} onBlur={() => blurCheck('address')}
                           placeholder="House number, street name, apartment / suite" />
-                        {errors.address && <span className={styles.fieldError}>{ERROR_MESSAGES.address}</span>}
+                        {errors.address && <span role="alert" className={styles.fieldError}>{ERROR_MESSAGES.address}</span>}
                       </div>
                     </div>
 
@@ -826,7 +870,7 @@ export default function Apply({ user }) {
                       <button className={styles.reviewEdit} onClick={() => { setErrors({}); setStep(2) }}>Edit details</button>
                     </div>
 
-                    {submitError && <div className={styles.submitError}>{submitError}</div>}
+                    {submitError && <div role="alert" className={styles.submitError}>{submitError}</div>}
 
                     <div className={styles.stepNav}>
                       <button className={styles.backBtn2} onClick={goBack}>← Back</button>
