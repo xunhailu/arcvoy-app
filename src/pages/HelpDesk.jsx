@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
+import { escHtml } from '../lib/applications'
 import CustomSelect from '../components/CustomSelect'
 import styles from './HelpDesk.module.css'
 
@@ -16,7 +17,7 @@ async function submitTicket({ name, email, category, subject, message }) {
     body: {
       from: 'Arcvoy Help Desk <careers@arcvoy.com>',
       to: 'support@arcvoy.com',
-      subject: `[${category}] ${subject}`,
+      subject: `[${escHtml(category)}] ${escHtml(subject)}`,
       html: `
         <div style="font-family:'Raleway',Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;">
           <div style="background:#1A1410;padding:22px 32px;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between;">
@@ -28,14 +29,14 @@ async function submitTicket({ name, email, category, subject, message }) {
           </div>
           <div style="padding:38px 32px;background:#ffffff;">
             <p style="font-size:10px;color:#b0a090;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 12px;">New Support Ticket</p>
-            <h2 style="font-size:14px;color:#1A1410;font-weight:700;margin:0 0 28px;letter-spacing:0.06em;text-transform:uppercase;">${subject}</h2>
+            <h2 style="font-size:14px;color:#1A1410;font-weight:700;margin:0 0 28px;letter-spacing:0.06em;text-transform:uppercase;">${escHtml(subject)}</h2>
             <table style="width:100%;border-collapse:collapse;margin-bottom:28px;">
-              <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;width:42%;border-bottom:1px solid #F5F0EB;">From</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${name} &lt;${email}&gt;</td></tr>
-              <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Category</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${category}</td></tr>
+              <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;width:42%;border-bottom:1px solid #F5F0EB;">From</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(name)} &lt;${escHtml(email)}&gt;</td></tr>
+              <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Category</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${escHtml(category)}</td></tr>
             </table>
             <p style="font-size:10px;color:#b0a090;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 12px;">Message</p>
             <div style="background:#FAF7F4;border-left:3px solid #cc6633;padding:18px 20px;font-size:14px;line-height:1.85;color:#3a2a1a;border-radius:0 4px 4px 0;">
-              ${message.replace(/\n/g, '<br>')}
+              ${escHtml(message).replace(/\n/g, '<br>')}
             </div>
           </div>
           <div style="background:#F5F0EB;padding:16px 32px;border-radius:0 0 10px 10px;display:flex;justify-content:space-between;align-items:center;">

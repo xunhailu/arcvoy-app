@@ -2,7 +2,7 @@ import { supabase } from './supabase'
 
 const ADMIN_EMAIL = 'admin@arcvoy.com'
 
-function escHtml(str) {
+export function escHtml(str) {
   return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
 }
 
