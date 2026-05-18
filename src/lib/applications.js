@@ -86,12 +86,12 @@ export async function fetchEmailLogs(applicationId) {
 export async function submitApplication({ fields, cvFile, idFrontFile, idBackFile, idType, job }) {
   const { data: existing } = await supabase
     .from('applications')
-    .select('id')
+    .select('id, job_title')
     .eq('email', fields.email)
-    .eq('job_id', job.id)
+    .in('status', ['applied', 'reviewing', 'interviewed', 'offered'])
     .maybeSingle()
 
-  if (existing) throw new Error('You have already applied for this role.')
+  if (existing) throw new Error(`You already have an active application for ${existing.job_title}. Please wait for a decision before applying to another role.`)
 
   const applicationId = crypto.randomUUID()
 
