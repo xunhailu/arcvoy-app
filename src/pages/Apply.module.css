@@ -281,20 +281,6 @@
 
 /* ── Phone field ── */
 .phoneRow { display: flex; gap: 8px; align-items: stretch; }
-
-.dialSelect {
-  background: var(--input-bg); border: 1px solid var(--bd2);
-  color: var(--tx); font-family: 'Raleway', sans-serif; font-size: 14px;
-  padding: 12px 28px 12px 12px; outline: none; border-radius: 6px;
-  transition: border-color .2s, box-shadow .2s;
-  cursor: pointer; min-width: 108px; flex-shrink: 0;
-  appearance: none; -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 10px center;
-}
-.dialSelect:focus { border-color: rgba(204,102,51,.5); box-shadow: 0 0 0 3px rgba(204,102,51,.07); }
-.dialSelectError { border-color: #a03030 !important; }
-
 .phoneInput { flex: 1; min-width: 0; }
 
 @media (max-width: 900px) {

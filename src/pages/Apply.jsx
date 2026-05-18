@@ -8,6 +8,7 @@ import { useSEO } from '../hooks/useSEO'
 import CustomSelect from '../components/CustomSelect'
 import { STATES_BY_COUNTRY } from '../data/states'
 import { DIAL_CODES, dialCodeForCountry, validatePhone } from '../lib/phone'
+import DialCodeSelect from '../components/DialCodeSelect'
 import styles from './Apply.module.css'
 
 const STEPS = ['Documents', 'Your Details', 'Professional']
@@ -674,21 +675,16 @@ export default function Apply({ user }) {
                       <div className={styles.fg}>
                         <label className={styles.fl}>Phone Number <span>*</span></label>
                         <div className={styles.phoneRow}>
-                          <select
-                            className={`${styles.dialSelect} ${errors.phoneCode ? styles.dialSelectError : ''}`}
+                          <DialCodeSelect
                             value={fields.phoneCode}
-                            onChange={e => {
-                              setFields(f => ({ ...f, phoneCode: e.target.value }))
+                            onChange={v => {
+                              setFields(f => ({ ...f, phoneCode: v }))
                               setErrors(prev => ({ ...prev, phoneCode: false, phone: false }))
                             }}
-                          >
-                            <option value="">Code</option>
-                            {DIAL_CODES.map(d => (
-                              <option key={d.country} value={d.code}>
-                                {d.flag} {d.code}
-                              </option>
-                            ))}
-                          </select>
+                            codes={DIAL_CODES}
+                            placeholder="Code"
+                            error={errors.phoneCode}
+                          />
                           <input
                             type="tel"
                             className={`${styles.fi} ${styles.phoneInput} ${errors.phone ? styles.fiError : ''}`}
