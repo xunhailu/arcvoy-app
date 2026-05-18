@@ -162,11 +162,11 @@ export async function submitApplication({ fields, cvFile, idFrontFile, idBackFil
     ${BRAND_HEADER}
     <tr><td style="background:#d97757;padding:28px 32px;">
       <p style="margin:0 0 6px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.14em;text-transform:uppercase;font-family:'Raleway',Calibri,Arial,sans-serif;">Application Received</p>
-      <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:400;line-height:1.25;letter-spacing:-0.2px;">${escHtml(job.title)}</h1>
+      <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:400;line-height:1.25;text-transform:uppercase;">${escHtml(job.title)}</h1>
     </td></tr>
     <tr><td style="padding:38px 32px;background:#ffffff;">
       <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${escHtml(fields.first)},</p>
-      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 32px;">We have received your application and we are genuinely glad you chose to apply through Arcvoy. Every application is reviewed personally by our team and we will be in touch shortly.</p>
+      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 32px;">Your application has landed with Arcvoy. Thank you for taking the time to share your work with us. We are reviewing your profile against the role requirements and the hiring team's current priorities.</p>
       <div style="border-top:1px solid #EDE8E2;margin-bottom:24px;"></div>
       <p style="font-size:10px;color:#b0a090;letter-spacing:0.1em;text-transform:uppercase;margin:0 0 16px;">Application Details</p>
       <table style="width:100%;border-collapse:collapse;">
@@ -175,7 +175,7 @@ export async function submitApplication({ fields, cvFile, idFrontFile, idBackFil
         <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;">Work Type</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;">${escHtml(job.type)}</td></tr>
       </table>
       <div style="border-top:1px solid #EDE8E2;margin:28px 0;"></div>
-      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 32px;">Expect to hear from us within <strong style="color:#1A1410;">48 hours</strong>. If you have any questions before then, simply reply to this email.</p>
+      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 32px;">You can expect an update within <strong style="color:#1A1410;">48 hours</strong>. If anything in your application changes before then, you can reply directly to this email.</p>
       <p style="font-size:14px;color:#6b5e4e;margin:0;">Regards,</p>
       <p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">Arcvoy Team</p>
     </td></tr>
@@ -241,35 +241,40 @@ export async function sendStatusEmail(status, app) {
       banner: '#cc6633',
       bannerLabel: 'Application Update',
       headline: 'Under Review',
-      body: `We have received your application for <strong style="color:#1A1410;">${role}</strong> and our team is currently reviewing it. We will be in touch within 48 hours with next steps.`,
+      body: `Your application for <strong style="color:#1A1410;">${role}</strong> has moved into team review. At this stage, we are looking closely at your recent projects, technical depth, and fit for the role's operating environment.`,
+      note: 'No action is needed from you right now. We will send a clear update as soon as the review is complete.',
     },
     interviewed: {
       subject: 'You have been selected for an interview — Arcvoy',
       banner: '#378add',
       bannerLabel: 'Next Step',
-      headline: 'Interview Stage',
-      body: `Congratulations — your application for <strong style="color:#1A1410;">${role}</strong> has progressed to the interview stage. A member of our team will contact you shortly with details.`,
+      headline: 'Interview Invitation',
+      body: `Good news — the hiring team would like to meet with you for the <strong style="color:#1A1410;">${role}</strong> role. We saw strong alignment between your background and the work this team is building.`,
+      note: 'We will follow up with scheduling details, interview format, and anything useful to prepare. You do not need to send anything extra yet.',
     },
     offered: {
       subject: 'You have received an offer — Arcvoy',
       banner: '#7F77DD',
       bannerLabel: 'Offer',
       headline: 'You Have an Offer',
-      body: `We are pleased to extend an offer to you for the <strong style="color:#1A1410;">${role}</strong> role. Our team will follow up shortly with the full details and next steps.`,
+      body: `We are pleased to move forward with an offer for the <strong style="color:#1A1410;">${role}</strong> role. Your experience, judgment, and approach stood out through the process.`,
+      note: 'A formal offer packet will follow with compensation, start date, and onboarding details. Please review it carefully once it arrives, and reply here with any questions.',
     },
     hired: {
       subject: 'Welcome to Arcvoy',
       banner: '#1a9e4a',
-      bannerLabel: 'Welcome',
-      headline: 'You Are In',
-      body: `Congratulations — you are officially part of the Arcvoy team as <strong style="color:#1A1410;">${role}</strong>. We are excited to have you. Onboarding details are on their way.`,
+      bannerLabel: 'Confirmed',
+      headline: 'Welcome to Arcvoy',
+      body: `Congratulations, ${name}. You are confirmed for the <strong style="color:#1A1410;">${role}</strong> role. We are looking forward to helping you settle in and get connected with the right people from day one.`,
+      note: 'Your onboarding details are on their way. We will send first-day timing, access steps, and the main contacts you will hear from next.',
     },
     rejected: {
       subject: 'An update on your Arcvoy application',
       banner: '#888888',
       bannerLabel: 'Application Update',
       headline: 'Thank You for Applying',
-      body: `Thank you for your interest in Arcvoy and for taking the time to apply for the <strong style="color:#1A1410;">${role}</strong> role. After careful review, we have decided to move forward with other candidates at this time. We genuinely appreciate your effort and encourage you to apply again in the future.`,
+      body: `Thank you for taking the time to apply for the <strong style="color:#1A1410;">${role}</strong> role. After reviewing the current shortlist, we will not be moving forward with your application for this opening.`,
+      note: 'We appreciate the care you put into your application. Your profile will remain welcome for future Arcvoy roles that may be a closer match.',
     },
   }
 
@@ -280,13 +285,13 @@ export async function sendStatusEmail(status, app) {
     ${BRAND_HEADER}
     <tr><td style="background:${c.banner};padding:28px 32px;">
       <p style="margin:0 0 6px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.14em;text-transform:uppercase;font-family:'Raleway',Calibri,Arial,sans-serif;">${c.bannerLabel}</p>
-      <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:400;line-height:1.25;letter-spacing:-0.2px;">${c.headline}</h1>
+      <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;color:#ffffff;font-weight:400;line-height:1.25;text-transform:uppercase;">${c.headline}</h1>
     </td></tr>
     <tr><td style="padding:38px 32px;background:#ffffff;">
       <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${name},</p>
       <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 32px;">${c.body}</p>
       <div style="border-top:1px solid #EDE8E2;margin-bottom:24px;"></div>
-      <p style="font-size:13px;color:#9a8f85;line-height:1.7;margin:0;">Questions? Simply reply to this email and our team will get back to you promptly.</p>
+      <p style="font-size:13px;color:#9a8f85;line-height:1.7;margin:0;">${c.note}</p>
       <p style="font-size:14px;color:#6b5e4e;margin:24px 0 0;">Warm regards,</p>
       <p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">The Arcvoy Team</p>
     </td></tr>
@@ -469,14 +474,14 @@ export async function sendWelcomeEmail(app) {
     ${BRAND_HEADER}
     <tr><td style="background:#cc6633;padding:28px 32px;">
       <p style="margin:0 0 8px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.14em;text-transform:uppercase;font-family:'Raleway',Calibri,Arial,sans-serif;">Talent Opportunity</p>
-      <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:700;line-height:1.2;">You Have Been Selected</h1>
+      <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:400;line-height:1.2;text-transform:uppercase;">An Opportunity with Arcvoy</h1>
     </td></tr>
     <tr><td style="padding:38px 32px;background:#ffffff;">
       <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${escHtml(app.first_name)},</p>
-      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 24px;">We are reaching out from Arcvoy, a specialist AI talent platform connecting exceptional professionals with leading AI-first companies. Our team has identified your profile and we are pleased to let you know that you have been selected for consideration for the <strong style="color:#1A1410;">${escHtml(app.job_title)}</strong> role.</p>
-      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 28px;">This is the beginning of what we hope will be an exciting journey. A member of our team will be in touch shortly with more details about the opportunity and next steps.</p>
+      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 24px;">We are reaching out from Arcvoy, a specialist talent platform for AI-first teams. Your profile came up in our search for candidates with the right mix of engineering depth, product sense, and frontier AI experience.</p>
+      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 28px;">We would like to consider you for the <strong style="color:#1A1410;">${escHtml(app.job_title)}</strong> role. If the timing is right, our team will share the role context, company details, and next steps so you can decide whether it is worth exploring.</p>
       <div style="height:1px;background:#EDE8E2;margin-bottom:24px;"></div>
-      <p style="font-size:13px;color:#9a8f85;line-height:1.7;margin:0;">If you have any questions or would like to learn more, simply reply to this email and our team will get back to you promptly.</p>
+      <p style="font-size:13px;color:#9a8f85;line-height:1.7;margin:0;">If you are open to hearing more, reply to this email and we will send the next details. If now is not the right time, no action is needed.</p>
       <p style="font-size:14px;color:#6b5e4e;margin:24px 0 0;">Regards,</p>
       <p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">Arcvoy Team</p>
     </td></tr>

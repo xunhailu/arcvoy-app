@@ -2,145 +2,337 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Arcvoy Email Previews</title>
   <style>
-    body { background: #e8e4e0; font-family: sans-serif; padding: 40px 20px; }
-    h2 { font-family: Georgia, serif; color: #1A1410; margin: 48px 0 16px; font-size: 15px; letter-spacing: .1em; text-transform: uppercase; }
-    .wrap { max-width: 580px; margin: 0 auto; }
-    .spacer { height: 60px; }
-    .copy-btn {
-      background: #1A1410; color: #ffffff;
-      font-family: Calibri, Arial, sans-serif; font-size: 11px; font-weight: 700;
-      letter-spacing: 0.06em; text-transform: uppercase; padding: 0 18px;
-      border: none; cursor: pointer; white-space: nowrap; flex-shrink: 0;
-      border-radius: 0 4px 4px 0; height: 100%;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { min-height: 100vh; background: #120d0a; background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px), radial-gradient(circle at 50% 0%, rgba(204,102,51,0.22), transparent 34%); background-size: 72px 72px, 72px 72px, 100% 100%; font-family: 'Segoe UI', Arial, sans-serif; padding: 28px 20px 56px; }
+    .preview-shell { width: min(100%, 960px); margin: 0 auto; }
+    .preview-head { display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: end; margin-bottom: 18px; }
+    .preview-title { color: #F5F0EB; font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+    .preview-subtitle { color: #a79a90; font-size: 13px; line-height: 1.6; }
+    .asset-pill { align-self: center; border: 1px solid rgba(245,240,235,0.12); border-radius: 999px; background: rgba(245,240,235,0.06); color: #dacfc6; font: 700 11px/1 'Segoe UI', Arial, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 13px; white-space: nowrap; }
+    .asset-pill span { color: #e58155; }
+    .preview-tools { position: sticky; top: 12px; z-index: 10; margin: 0 auto 30px; padding: 8px; border: 1px solid rgba(245,240,235,0.12); border-radius: 14px; background: rgba(23,18,15,0.82); box-shadow: 0 18px 50px rgba(0,0,0,0.28); backdrop-filter: blur(18px); }
+    .tabs { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+    .tab { appearance: none; background: transparent; color: #c8bbae; border: 1px solid transparent; padding: 10px 13px; border-radius: 9px; cursor: pointer; font: 700 11px/1 'Segoe UI', Arial, sans-serif; letter-spacing: 0.06em; text-transform: uppercase; transition: transform .2s, background .2s, color .2s, border-color .2s, box-shadow .2s; }
+    .tab:hover, .tab:focus-visible, .tab.active { background: #f4eee8; color: #1A1410; border-color: #f4eee8; box-shadow: 0 10px 24px rgba(0,0,0,0.2); outline: none; }
+    .tab:hover { transform: translateY(-1px); }
+    .email-frame { display: none; max-width: 580px; margin: 0 auto; }
+    .email-frame.active { display: block; animation: liftIn .22s ease-out; }
+    .email { max-width: 580px; margin: 0 auto; background: #fff; border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; overflow: hidden; font-family: 'Raleway', Calibri, Arial, sans-serif; box-shadow: 0 26px 90px rgba(0,0,0,0.42); }
+    .email img.hero { display: block; width: 100%; height: auto; border-radius: 14px 14px 0 0; background: #1A1410; }
+    .accent { padding: 28px 32px; }
+    .accent .label { font-size: 10px; color: rgba(255,255,255,0.7); letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 6px; }
+    .accent h1 { margin: 0; font-family: Georgia, serif; font-size: 26px; color: #fff; font-weight: 400; line-height: 1.25; text-transform: uppercase; }
+    .body { padding: 38px 32px; background: linear-gradient(180deg, #fff 0%, #fff 72%, #fdfbf9 100%); }
+    .body .hi { font-size: 14px; color: #1A1410; margin: 0 0 4px; font-weight: 600; }
+    .body .intro { font-size: 14px; color: #6b5e4e; line-height: 1.85; margin: 0 0 32px; }
+    .divider { border: none; border-top: 1px solid #EDE8E2; margin: 0 0 24px; }
+    .section-label { font-size: 10px; color: #b0a090; letter-spacing: 0.1em; text-transform: uppercase; margin: 0 0 16px; }
+    table.details { width: 100%; border-collapse: collapse; }
+    table.details td { padding: 10px 0; font-size: 13px; border-bottom: 1px solid #F5F0EB; }
+    table.details td:first-child { color: #9a8f85; width: 42%; }
+    table.details td:last-child { color: #1A1410; font-weight: 600; }
+    table.details tr:last-child td { border-bottom: none; }
+    .body .regards { font-size: 14px; color: #6b5e4e; margin: 0; }
+    .body .sig { font-size: 14px; color: #1A1410; margin: 4px 0 0; font-weight: 600; }
+    .footer { background: #F5F0EB; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 14px 14px; }
+    .footer span, .footer a { font-size: 11px; color: #7d6f64; font-weight: 700; text-decoration: none; }
+    .note-meta { text-align: center; margin-top: 16px; font-size: 11px; color: #6a5a4a; letter-spacing: 0.06em; }
+    .note-text { font-size: 13px; color: #9a8f85; line-height: 1.7; margin: 0; }
+    .verify-box { border: 1px solid #E0DAD4; border-radius: 8px; margin-bottom: 28px; background: #faf9f7; padding: 24px; }
+    .verify-box .vb-title { font-size: 13px; color: #1A1410; font-weight: 700; margin: 0 0 12px; line-height: 1.5; }
+    .verify-box ul { margin: 0 0 16px; padding-left: 18px; }
+    .verify-box li { font-size: 13px; color: #6b5e4e; padding: 3px 0; line-height: 1.6; }
+    .verify-box .vb-note { font-size: 13px; color: #6b5e4e; line-height: 1.7; margin: 0 0 18px; }
+    .btn { display: inline-block; color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 12px 24px; border-radius: 5px; text-decoration: none; margin-bottom: 14px; }
+    .link-row { border: 1px solid #D8D2CC; border-radius: 5px; display: flex; margin-top: 4px; overflow: hidden; }
+    .link-row .url { background: #f0ece8; padding: 11px 14px; font-size: 12px; color: #9a8f85; flex: 1; word-break: break-all; }
+    .link-row .open { background: #1A1410; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 11px 14px; text-decoration: none; white-space: nowrap; }
+    .aside { border-left: 3px solid #cc6633; margin-bottom: 28px; padding: 10px 16px; }
+    .aside p { font-size: 13px; color: #6b5e4e; line-height: 1.7; margin: 0; }
+    @keyframes liftIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 640px) {
+      body { padding: 18px 12px 32px; }
+      .preview-head { grid-template-columns: 1fr; gap: 12px; margin-bottom: 14px; }
+      .preview-title { margin-bottom: 6px; text-align: left; }
+      .asset-pill { justify-self: start; }
+      .preview-tools { top: 8px; margin-bottom: 22px; border-radius: 10px; }
+      .tabs { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; scrollbar-width: none; }
+      .tabs::-webkit-scrollbar { display: none; }
+      .tab { flex: 0 0 auto; padding: 9px 12px; }
+      .accent, .body { padding-left: 22px; padding-right: 22px; }
+      .accent h1 { font-size: 23px; text-align: left; letter-spacing: 0; }
+      .footer { gap: 8px; flex-direction: column; align-items: flex-start; padding-left: 22px; padding-right: 22px; }
+      .link-row { display: block; }
+      .link-row .url, .link-row .open { display: block; }
+      .link-row .open { text-align: center; }
     }
-    .copy-btn:hover { background: #2d2018; }
   </style>
-  <script>
-    function copyLink(url, btn) {
-      navigator.clipboard.writeText(url).then(() => {
-        btn.textContent = 'Copied!'
-        setTimeout(() => { btn.textContent = 'Copy Link' }, 2000)
-      })
-    }
-  </script>
 </head>
 <body>
-<div class="wrap">
-
-  <h2>① Identity Verification Email</h2>
-  <div style="font-family:Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,.12);">
-
-    <!-- Header -->
-    <div style="background:#1A1410;padding:22px 32px;display:flex;align-items:center;justify-content:space-between;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <svg width="22" height="22" viewBox="0 0 64 64" fill="none"><path d="M10 50 Q32 6 54 50" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#cc6633"/></svg>
-        <span style="font-family:Georgia,serif;font-size:20px;color:#F5F0EB;font-weight:400;letter-spacing:0.01em;">Arcvoy</span>
-      </div>
-      <span style="font-size:10px;color:#6a5a4a;letter-spacing:0.12em;text-transform:uppercase;">Talent Platform</span>
+  <main class="preview-shell">
+  <header class="preview-head">
+    <div>
+      <h1 class="preview-title">Arcvoy · Email Previews</h1>
+      <p class="preview-subtitle">Template previews using the selected Arcvoy brand image at its full banner ratio.</p>
     </div>
+    <div class="asset-pill"><span>Image</span> /og-image.png</div>
+  </header>
 
-    <!-- Orange banner -->
-    <div style="background:#cc6633;padding:28px 32px;">
-      <p style="margin:0 0 8px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.14em;text-transform:uppercase;">Action Required</p>
-      <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:700;line-height:1.2;text-transform:uppercase;letter-spacing:0.01em;">Identity Verification</h1>
-    </div>
-
-    <!-- Body -->
-    <div style="padding:38px 32px;background:#ffffff;">
-      <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi <strong>Breyana</strong>,</p>
-      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 28px;">Your application with Arcvoy is currently in progress. The next step is to complete your identity verification. This is a quick process and ensures we can move your application forward securely.</p>
-
-      <!-- Tips card -->
-      <div style="border:1px solid #E0DAD4;border-radius:8px;padding:24px;margin-bottom:28px;background:#faf9f7;">
-        <p style="font-size:13px;color:#1A1410;font-weight:700;margin:0 0 12px;line-height:1.5;">To help your verification go through quickly, please follow these tips:</p>
-        <ul style="margin:0 0 16px;padding-left:18px;">
-          <li style="font-size:13px;color:#6b5e4e;padding:3px 0;line-height:1.6;">Use a valid, non-expired ID</li>
-          <li style="font-size:13px;color:#6b5e4e;padding:3px 0;line-height:1.6;">Take photos in good lighting (no glare or shadows)</li>
-          <li style="font-size:13px;color:#6b5e4e;padding:3px 0;line-height:1.6;">Make sure the entire ID is visible and clear (not blurry)</li>
-          <li style="font-size:13px;color:#6b5e4e;padding:3px 0;line-height:1.6;">Ensure all details match what you entered</li>
-          <li style="font-size:13px;color:#6b5e4e;padding:3px 0;line-height:1.6;">For selfies: look straight at the camera and avoid hats or sunglasses</li>
-        </ul>
-        <p style="font-size:13px;color:#6b5e4e;line-height:1.7;margin:0 0 18px;">Click the button below to begin. If it doesn't open, use the copy button to copy the link and paste it directly into your browser.</p>
-
-        <a href="#" onclick="return false;" style="display:inline-block;background:#cc6633;color:#ffffff;font-family:Calibri,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:5px;text-decoration:none;margin-bottom:14px;">Verify Identity</a>
-
-        <div style="display:flex;align-items:stretch;border:1px solid #D8D2CC;border-radius:5px;overflow:hidden;height:38px;">
-          <div style="flex:1;background:#f0ece8;padding:0 14px;font-size:12px;color:#9a8f85;display:flex;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">https://verify.arcvoy.com/identity/xxxxx</div>
-          <button class="copy-btn" onclick="copyLink('https://verify.arcvoy.com/identity/xxxxx', this)">Copy Link</button>
-        </div>
-      </div>
-
-      <!-- Support note -->
-      <div style="border-left:3px solid #cc6633;padding:10px 16px;margin-bottom:28px;">
-        <p style="font-size:13px;color:#6b5e4e;line-height:1.7;margin:0;">If you have any issues completing this step, reply to this email and our team will assist you as soon as possible.</p>
-      </div>
-
-      <p style="font-size:14px;color:#6b5e4e;margin:0 0 2px;">Warm regards,</p>
-      <p style="font-size:14px;color:#1A1410;margin:0;font-weight:700;">The Arcvoy Team</p>
-    </div>
-
-    <!-- Footer -->
-    <div style="background:#F5F0EB;padding:16px 32px;display:flex;justify-content:space-between;align-items:center;">
-      <p style="margin:0;font-size:11px;color:#b0a090;">© 2026 Arcvoy</p>
-      <p style="margin:0;font-size:11px;color:#b0a090;"><a href="https://arcvoy.com" style="color:#b0a090;text-decoration:none;">arcvoy.com</a> &nbsp;·&nbsp; <a href="https://x.com/helloarcvoy" style="color:#b0a090;text-decoration:none;">@helloarcvoy</a></p>
+  <div class="preview-tools">
+    <div class="tabs" role="tablist" aria-label="Email preview templates">
+      <button class="tab active" type="button" role="tab" aria-selected="true" onclick="show('confirm', this)">Application Received</button>
+      <button class="tab" type="button" role="tab" aria-selected="false" onclick="show('reviewing', this)">Under Review</button>
+      <button class="tab" type="button" role="tab" aria-selected="false" onclick="show('interviewed', this)">Interview</button>
+      <button class="tab" type="button" role="tab" aria-selected="false" onclick="show('offered', this)">Offer</button>
+      <button class="tab" type="button" role="tab" aria-selected="false" onclick="show('hired', this)">Hired</button>
+      <button class="tab" type="button" role="tab" aria-selected="false" onclick="show('rejected', this)">Rejected</button>
+      <button class="tab" type="button" role="tab" aria-selected="false" onclick="show('identity', this)">Identity Verify</button>
+      <button class="tab" type="button" role="tab" aria-selected="false" onclick="show('compliance', this)">Compliance</button>
+      <button class="tab" type="button" role="tab" aria-selected="false" onclick="show('welcome', this)">Welcome</button>
+      <button class="tab" type="button" role="tab" aria-selected="false" onclick="show('blast', this)">Email Blast</button>
     </div>
   </div>
 
-  <div class="spacer"></div>
-  <h2>② Compliance Verification Email</h2>
-  <div style="font-family:Calibri,Arial,sans-serif;max-width:580px;margin:0 auto;background:#ffffff;border-radius:10px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,.12);">
-
-    <!-- Header -->
-    <div style="background:#1A1410;padding:22px 32px;display:flex;align-items:center;justify-content:space-between;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <svg width="22" height="22" viewBox="0 0 64 64" fill="none"><path d="M10 50 Q32 6 54 50" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><path d="M22 37 L42 37" stroke="#cc6633" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="50" r="3.5" fill="#cc6633"/></svg>
-        <span style="font-family:Georgia,serif;font-size:20px;color:#F5F0EB;font-weight:400;letter-spacing:0.01em;">Arcvoy</span>
+  <!-- Application Received -->
+  <div class="email-frame active" id="confirm">
+    <div class="email">
+      <img class="hero" src="/og-image.png" alt="Arcvoy" />
+      <div class="accent" style="background:#d97757;">
+        <p class="label">Application Received</p>
+        <h1>Senior AI Engineer</h1>
       </div>
-      <span style="font-size:10px;color:#6a5a4a;letter-spacing:0.12em;text-transform:uppercase;">Talent Platform</span>
-    </div>
-
-    <!-- Blue banner -->
-    <div style="background:#378add;padding:28px 32px;">
-      <p style="margin:0 0 8px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.14em;text-transform:uppercase;">Final Step</p>
-      <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:700;line-height:1.2;text-transform:uppercase;letter-spacing:0.01em;">Compliance Verification</h1>
-    </div>
-
-    <!-- Body -->
-    <div style="padding:38px 32px;background:#ffffff;">
-      <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi <strong>Breyana</strong>,</p>
-      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 28px;">Thank you for completing your identity verification. You are now one step away. Please complete your compliance verification to finalise your application with Arcvoy.</p>
-
-      <!-- Action card -->
-      <div style="border:1px solid #E0DAD4;border-radius:8px;padding:24px;margin-bottom:28px;background:#faf9f7;">
-        <p style="font-size:13px;color:#1A1410;font-weight:700;margin:0 0 12px;line-height:1.5;">Click the button below to complete your compliance check:</p>
-        <p style="font-size:13px;color:#6b5e4e;line-height:1.7;margin:0 0 18px;">If the button doesn't open, use the copy button to copy the link and paste it directly into your browser.</p>
-
-        <a href="#" onclick="return false;" style="display:inline-block;background:#378add;color:#ffffff;font-family:Calibri,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:5px;text-decoration:none;margin-bottom:14px;">Begin Compliance Check</a>
-
-        <div style="display:flex;align-items:stretch;border:1px solid #D8D2CC;border-radius:5px;overflow:hidden;height:38px;">
-          <div style="flex:1;background:#f0ece8;padding:0 14px;font-size:12px;color:#9a8f85;display:flex;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">https://verify.arcvoy.com/compliance/xxxxx</div>
-          <button class="copy-btn" onclick="copyLink('https://verify.arcvoy.com/compliance/xxxxx', this)">Copy Link</button>
-        </div>
+      <div class="body">
+        <p class="hi">Hi Sarah,</p>
+        <p class="intro">Your application has landed with Arcvoy. Thank you for taking the time to share your work with us. We are reviewing your profile against the role requirements and the hiring team's current priorities.</p>
+        <hr class="divider" />
+        <p class="section-label">Application Details</p>
+        <table class="details">
+          <tr><td>Position</td><td>Senior AI Engineer</td></tr>
+          <tr><td>Department</td><td>Engineering</td></tr>
+          <tr><td>Work Type</td><td>Full-time Remote</td></tr>
+        </table>
+        <hr class="divider" style="margin-top:28px;" />
+        <p class="intro" style="margin-bottom:0;">You can expect an update within <strong style="color:#1A1410;">48 hours</strong>. If anything in your application changes before then, you can reply directly to this email.</p>
+        <p class="regards" style="margin-top:24px;">Regards,</p>
+        <p class="sig">Arcvoy Team</p>
       </div>
-
-      <!-- Support note -->
-      <div style="border-left:3px solid #378add;padding:10px 16px;margin-bottom:28px;">
-        <p style="font-size:13px;color:#6b5e4e;line-height:1.7;margin:0;">If you have any issues completing this step, reply to this email and our team will assist you as soon as possible.</p>
-      </div>
-
-      <p style="font-size:14px;color:#6b5e4e;margin:0 0 2px;">Warm regards,</p>
-      <p style="font-size:14px;color:#1A1410;margin:0;font-weight:700;">The Arcvoy Team</p>
+      <div class="footer"><span>© 2026 Arcvoy</span><span><a href="#">arcvoy.com</a> &nbsp;·&nbsp; <a href="#">@helloarcvoy</a></span></div>
     </div>
-
-    <!-- Footer -->
-    <div style="background:#F5F0EB;padding:16px 32px;display:flex;justify-content:space-between;align-items:center;">
-      <p style="margin:0;font-size:11px;color:#b0a090;">© 2026 Arcvoy</p>
-      <p style="margin:0;font-size:11px;color:#b0a090;"><a href="https://arcvoy.com" style="color:#b0a090;text-decoration:none;">arcvoy.com</a> &nbsp;·&nbsp; <a href="https://x.com/helloarcvoy" style="color:#b0a090;text-decoration:none;">@helloarcvoy</a></p>
-    </div>
+    <p class="note-meta">Subject: Application received — Senior AI Engineer</p>
   </div>
 
-</div>
+  <!-- Under Review -->
+  <div class="email-frame" id="reviewing">
+    <div class="email">
+      <img class="hero" src="/og-image.png" alt="Arcvoy" />
+      <div class="accent" style="background:#cc6633;"><p class="label">Application Update</p><h1>Under Review</h1></div>
+      <div class="body">
+        <p class="hi">Hi Sarah,</p>
+        <p class="intro">Your application for <strong style="color:#1A1410;">Senior AI Engineer</strong> has moved into team review. At this stage, we are looking closely at your recent projects, technical depth, and fit for the role's operating environment.</p>
+        <hr class="divider" />
+        <p class="note-text">No action is needed from you right now. We will send a clear update as soon as the review is complete.</p>
+        <p class="regards" style="margin-top:24px;">Warm regards,</p><p class="sig">The Arcvoy Team</p>
+      </div>
+      <div class="footer"><span>© 2026 Arcvoy</span><span><a href="#">arcvoy.com</a> &nbsp;·&nbsp; <a href="#">@helloarcvoy</a></span></div>
+    </div>
+    <p class="note-meta">Subject: Your application is under review — Arcvoy</p>
+  </div>
+
+  <!-- Interview -->
+  <div class="email-frame" id="interviewed">
+    <div class="email">
+      <img class="hero" src="/og-image.png" alt="Arcvoy" />
+      <div class="accent" style="background:#9f4f2d;"><p class="label">Next Step</p><h1>Interview Invitation</h1></div>
+      <div class="body">
+        <p class="hi">Hi Sarah,</p>
+        <p class="intro">Good news: the hiring team would like to meet with you for the <strong style="color:#1A1410;">Senior AI Engineer</strong> role. We saw strong alignment between your background and the work this team is building.</p>
+        <hr class="divider" />
+        <p class="note-text">We will follow up with scheduling details, interview format, and anything useful to prepare. You do not need to send anything extra yet.</p>
+        <p class="regards" style="margin-top:24px;">Warm regards,</p><p class="sig">The Arcvoy Team</p>
+      </div>
+      <div class="footer"><span>© 2026 Arcvoy</span><span><a href="#">arcvoy.com</a> &nbsp;·&nbsp; <a href="#">@helloarcvoy</a></span></div>
+    </div>
+    <p class="note-meta">Subject: You have been selected for an interview — Arcvoy</p>
+  </div>
+
+  <!-- Offer -->
+  <div class="email-frame" id="offered">
+    <div class="email">
+      <img class="hero" src="/og-image.png" alt="Arcvoy" />
+      <div class="accent" style="background:#6f3f2d;"><p class="label">Offer</p><h1>You Have an Offer</h1></div>
+      <div class="body">
+        <p class="hi">Hi Sarah,</p>
+        <p class="intro">We are pleased to move forward with an offer for the <strong style="color:#1A1410;">Senior AI Engineer</strong> role. Your experience, judgment, and approach stood out through the process.</p>
+        <hr class="divider" />
+        <p class="note-text">A formal offer packet will follow with compensation, start date, and onboarding details. Please review it carefully once it arrives, and reply here with any questions.</p>
+        <p class="regards" style="margin-top:24px;">Warm regards,</p><p class="sig">The Arcvoy Team</p>
+      </div>
+      <div class="footer"><span>© 2026 Arcvoy</span><span><a href="#">arcvoy.com</a> &nbsp;·&nbsp; <a href="#">@helloarcvoy</a></span></div>
+    </div>
+    <p class="note-meta">Subject: You have received an offer — Arcvoy</p>
+  </div>
+
+  <!-- Hired -->
+  <div class="email-frame" id="hired">
+    <div class="email">
+      <img class="hero" src="/og-image.png" alt="Arcvoy" />
+      <div class="accent" style="background:#7a5a34;"><p class="label">Confirmed</p><h1>Welcome to Arcvoy</h1></div>
+      <div class="body">
+        <p class="hi">Hi Sarah,</p>
+        <p class="intro">Congratulations, Sarah. You are confirmed for the <strong style="color:#1A1410;">Senior AI Engineer</strong> role. We are looking forward to helping you settle in and get connected with the right people from day one.</p>
+        <hr class="divider" />
+        <p class="note-text">Your onboarding note will include first-day timing, access steps, and the main contacts you will hear from next.</p>
+        <p class="regards" style="margin-top:24px;">Warm regards,</p><p class="sig">The Arcvoy Team</p>
+      </div>
+      <div class="footer"><span>© 2026 Arcvoy</span><span><a href="#">arcvoy.com</a> &nbsp;·&nbsp; <a href="#">@helloarcvoy</a></span></div>
+    </div>
+    <p class="note-meta">Subject: Welcome to Arcvoy</p>
+  </div>
+
+  <!-- Rejected -->
+  <div class="email-frame" id="rejected">
+    <div class="email">
+      <img class="hero" src="/og-image.png" alt="Arcvoy" />
+      <div class="accent" style="background:#5b5149;"><p class="label">Application Update</p><h1>Thank You for Applying</h1></div>
+      <div class="body">
+        <p class="hi">Hi Sarah,</p>
+        <p class="intro">Thank you for taking the time to apply for the <strong style="color:#1A1410;">Senior AI Engineer</strong> role. After reviewing the current shortlist, we will not be moving forward with your application for this opening.</p>
+        <hr class="divider" />
+        <p class="note-text">We appreciate the care you put into your application. Your profile will remain welcome for future Arcvoy roles that may be a closer match.</p>
+        <p class="regards" style="margin-top:24px;">Warm regards,</p><p class="sig">The Arcvoy Team</p>
+      </div>
+      <div class="footer"><span>© 2026 Arcvoy</span><span><a href="#">arcvoy.com</a> &nbsp;·&nbsp; <a href="#">@helloarcvoy</a></span></div>
+    </div>
+    <p class="note-meta">Subject: An update on your Arcvoy application</p>
+  </div>
+
+  <!-- Identity Verification -->
+  <div class="email-frame" id="identity">
+    <div class="email">
+      <img class="hero" src="/og-image.png" alt="Arcvoy" />
+      <div class="accent" style="background:#cc6633;"><p class="label">Action Required</p><h1>Identity Verification</h1></div>
+      <div class="body">
+        <p class="hi">Hi Sarah,</p>
+        <p class="intro" style="margin-bottom:28px;">Your application is moving forward. Before we continue, please complete identity verification so we can keep the process secure and confirm that your candidate record matches your legal identity.</p>
+        <div class="verify-box">
+          <p class="vb-title">A few details will help the check complete without delay:</p>
+          <ul>
+            <li>Use a valid, non-expired ID</li>
+            <li>Take photos in good lighting (no glare or shadows)</li>
+            <li>Make sure the entire ID is visible and clear (not blurry)</li>
+            <li>Ensure all details match what you entered</li>
+            <li>For selfies: look straight at the camera and avoid hats or sunglasses</li>
+          </ul>
+          <p class="vb-note" style="margin-top:16px;">Use the secure link below when you are ready. If the button does not open, copy the link and paste it into your browser.</p>
+          <a class="btn" style="background:#cc6633;" href="#">Verify Identity</a>
+          <div class="link-row">
+            <span class="url">https://verify.example.com/arcvoy/abc123xyz</span>
+            <a class="open" href="#">Open Link</a>
+          </div>
+        </div>
+        <div class="aside"><p>If anything looks unfamiliar or you have trouble completing the check, reply to this email before submitting another attempt.</p></div>
+        <p class="regards">Regards,</p><p class="sig">Arcvoy Team</p>
+      </div>
+      <div class="footer"><span>© 2026 Arcvoy</span><span><a href="#">arcvoy.com</a> &nbsp;·&nbsp; <a href="#">@helloarcvoy</a></span></div>
+    </div>
+    <p class="note-meta">Subject: Identity Verification — Arcvoy</p>
+  </div>
+
+  <!-- Compliance -->
+  <div class="email-frame" id="compliance">
+    <div class="email">
+      <img class="hero" src="/og-image.png" alt="Arcvoy" />
+      <div class="accent" style="background:#8a4a2f;"><p class="label">Final Step</p><h1>Compliance Verification</h1></div>
+      <div class="body">
+        <p class="hi">Hi Sarah,</p>
+        <p class="intro" style="margin-bottom:28px;">Thank you for completing identity verification. The final required step is a short compliance check tied to the role and location requirements for this application.</p>
+        <div class="verify-box">
+          <p class="vb-title">Please complete this check using the secure link below.</p>
+          <p class="vb-note">It should only take a few minutes. If the button does not open, copy the link and paste it into your browser.</p>
+          <a class="btn" style="background:#8a4a2f;" href="#">Begin Compliance Check</a>
+          <div class="link-row">
+            <span class="url">https://comply.example.com/arcvoy/abc123xyz</span>
+            <a class="open" href="#">Open Link</a>
+          </div>
+        </div>
+        <div class="aside" style="border-color:#8a4a2f;"><p>Once this is complete, we can continue with the next stage of your Arcvoy application.</p></div>
+        <p class="regards">Regards,</p><p class="sig">Arcvoy Team</p>
+      </div>
+      <div class="footer"><span>© 2026 Arcvoy</span><span><a href="#">arcvoy.com</a> &nbsp;·&nbsp; <a href="#">@helloarcvoy</a></span></div>
+    </div>
+    <p class="note-meta">Subject: Compliance Verification — Arcvoy</p>
+  </div>
+
+  <!-- Welcome Sourced -->
+  <div class="email-frame" id="welcome">
+    <div class="email">
+      <img class="hero" src="/og-image.png" alt="Arcvoy" />
+      <div class="accent" style="background:#cc6633;"><p class="label">Talent Opportunity</p><h1>An Opportunity with Arcvoy</h1></div>
+      <div class="body">
+        <p class="hi">Hi Sarah,</p>
+        <p class="intro">We are reaching out from Arcvoy, a specialist talent platform for AI-first teams. Your profile came up in our search for candidates with the right mix of engineering depth, product sense, and frontier AI experience.</p>
+        <p class="intro">We would like to consider you for the <strong style="color:#1A1410;">Senior AI Engineer</strong> role. If the timing is right, our team will share the role context, company details, and next steps so you can decide whether it is worth exploring.</p>
+        <hr class="divider" />
+        <p class="note-text">If you are open to hearing more, reply to this email and we will send the next details. If now is not the right time, no action is needed.</p>
+        <p class="regards" style="margin-top:24px;">Regards,</p><p class="sig">Arcvoy Team</p>
+      </div>
+      <div class="footer"><span>© 2026 Arcvoy</span><span><a href="#">arcvoy.com</a> &nbsp;·&nbsp; <a href="#">@helloarcvoy</a></span></div>
+    </div>
+    <p class="note-meta">Subject: You have been selected for consideration — Arcvoy</p>
+  </div>
+
+  <!-- Email Blast -->
+  <div class="email-frame" id="blast">
+    <div class="email">
+      <img class="hero" src="/og-image.png" alt="Arcvoy" />
+      <div class="accent" style="background:#cc6633;"><p class="label">Now Hiring</p><h1>New Roles Open</h1></div>
+      <div class="body">
+        <p class="intro">A new group of roles is now live across Engineering, Product, and Research. These openings are built for people who want to work close to applied AI, distributed teams, and fast-moving technical products.<br><br>Browse the full list at arcvoy.com/jobs and apply directly to the roles that fit your background.</p>
+        <hr class="divider" style="margin:28px 0;" />
+        <p class="regards">Regards,</p><p class="sig">Arcvoy Team</p>
+        <p style="font-size:11px;color:#b0a090;margin:20px 0 0;line-height:1.6;">You are receiving this because you subscribed to Arcvoy role updates. Reply to unsubscribe.</p>
+      </div>
+      <div class="footer"><span>© 2026 Arcvoy</span><span><a href="#">arcvoy.com</a> &nbsp;·&nbsp; <a href="#">@helloarcvoy</a></span></div>
+    </div>
+    <p class="note-meta">Subject: Configured when sending from admin panel</p>
+  </div>
+
+  </main>
+
+  <script>
+    const tabs = [...document.querySelectorAll('.tab')]
+    const frames = [...document.querySelectorAll('.email-frame')]
+
+    function show(id, el, updateHash = true) {
+      const frame = document.getElementById(id)
+      if (!frame) return
+      frames.forEach(f => f.classList.remove('active'))
+      tabs.forEach(t => {
+        t.classList.remove('active')
+        t.setAttribute('aria-selected', 'false')
+      })
+      frame.classList.add('active')
+      el.classList.add('active')
+      el.setAttribute('aria-selected', 'true')
+      if (updateHash) history.replaceState(null, '', `#${id}`)
+    }
+
+    const initialId = location.hash.replace('#', '')
+    const initialTab = initialId && tabs.find(tab => tab.getAttribute('onclick').includes(`'${initialId}'`))
+    if (initialTab) show(initialId, initialTab, false)
+
+    document.addEventListener('keydown', event => {
+      if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return
+      const activeIndex = tabs.findIndex(tab => tab.classList.contains('active'))
+      const nextIndex = event.key === 'ArrowRight'
+        ? (activeIndex + 1) % tabs.length
+        : (activeIndex - 1 + tabs.length) % tabs.length
+      tabs[nextIndex].click()
+      tabs[nextIndex].focus()
+    })
+  </script>
 </body>
 </html>
