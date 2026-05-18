@@ -7,15 +7,18 @@ import { supabase } from '../lib/supabase'
 import { useSEO } from '../hooks/useSEO'
 import CustomSelect from '../components/CustomSelect'
 import { STATES_BY_COUNTRY } from '../data/states'
+import { DIAL_CODES, dialCodeForCountry, validatePhone } from '../lib/phone'
 import styles from './Apply.module.css'
 
 const STEPS = ['Documents', 'Your Details', 'Professional']
 
 const ERROR_MESSAGES = {
-  first:   'First name is required',
-  last:    'Surname is required',
-  email:   'Enter a valid email address',
-  country: 'Please select your country',
+  first:     'First name is required',
+  last:      'Surname is required',
+  email:     'Enter a valid email address',
+  phoneCode: 'Please select a country dial code',
+  phone:     'Enter a valid phone number',
+  country:   'Please select your country',
   state:   'State or region is required',
   city:    'City is required',
   zip:     'Postcode is required',
@@ -94,6 +97,7 @@ export default function Apply({ user }) {
       dobDay: saved.dobDay || '', dobMonth: saved.dobMonth || '', dobYear: saved.dobYear || '',
       country: saved.country || '', state: saved.state || '', city: saved.city || '',
       zip: saved.zip || '', address: saved.address || '',
+      phoneCode: saved.phoneCode || '', phone: saved.phone || '',
       linkedin: saved.linkedin || meta.linkedin || '',
       lang1: saved.lang1 || '', lang2: saved.lang2 || '',
     }
@@ -132,11 +136,20 @@ export default function Apply({ user }) {
   }
 
   const setCountry = v => {
-    setFields(f => ({ ...f, country: v, state: '' }))
+    const code = dialCodeForCountry(v)
+    setFields(f => ({ ...f, country: v, state: '', phoneCode: code || f.phoneCode }))
     if (errors.country) setErrors(prev => ({ ...prev, country: false }))
   }
 
   const blurCheck = (key) => {
+    if (key === 'phone') {
+      if (!fields.phoneCode) {
+        setErrors(prev => ({ ...prev, phoneCode: true }))
+        return
+      }
+      setErrors(prev => ({ ...prev, phone: !validatePhone(fields.phoneCode, fields.phone) }))
+      return
+    }
     const val = fields[key]
     let invalid = false
     if (key === 'email') invalid = !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)
@@ -162,6 +175,8 @@ export default function Apply({ user }) {
     if (!fields.first.trim())   e.first   = true
     if (!fields.last.trim())    e.last    = true
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)) e.email = true
+    if (!fields.phoneCode)      e.phoneCode = true
+    if (!validatePhone(fields.phoneCode, fields.phone)) e.phone = true
     if (!fields.country)        e.country = true
     if (!fields.state.trim())   e.state   = true
     if (!fields.city.trim())    e.city    = true
@@ -657,6 +672,39 @@ export default function Apply({ user }) {
                         {errors.email && <span className={styles.fieldError}>{ERROR_MESSAGES.email}</span>}
                       </div>
                       <div className={styles.fg}>
+                        <label className={styles.fl}>Phone Number <span>*</span></label>
+                        <div className={styles.phoneRow}>
+                          <select
+                            className={`${styles.dialSelect} ${errors.phoneCode ? styles.dialSelectError : ''}`}
+                            value={fields.phoneCode}
+                            onChange={e => {
+                              setFields(f => ({ ...f, phoneCode: e.target.value }))
+                              setErrors(prev => ({ ...prev, phoneCode: false, phone: false }))
+                            }}
+                          >
+                            <option value="">Code</option>
+                            {DIAL_CODES.map(d => (
+                              <option key={d.country} value={d.code}>
+                                {d.flag} {d.code}
+                              </option>
+                            ))}
+                          </select>
+                          <input
+                            type="tel"
+                            className={`${styles.fi} ${styles.phoneInput} ${errors.phone ? styles.fiError : ''}`}
+                            value={fields.phone}
+                            onChange={set('phone')}
+                            onBlur={() => blurCheck('phone')}
+                            placeholder="Phone number"
+                          />
+                        </div>
+                        {(errors.phoneCode || errors.phone) && (
+                          <span className={styles.fieldError}>
+                            {errors.phoneCode ? ERROR_MESSAGES.phoneCode : ERROR_MESSAGES.phone}
+                          </span>
+                        )}
+                      </div>
+                      <div className={styles.fg}>
                         <label className={styles.fl}>Date of Birth <span>*</span></label>
                         <div className={styles.grid3}>
                           <CustomSelect value={fields.dobDay}   onChange={v => { setFields(f => ({ ...f, dobDay: v }));   setErrors(p => ({ ...p, dob: false })) }} options={DOB_DAYS}   placeholder="Day"   error={errors.dob} />
@@ -770,6 +818,7 @@ export default function Apply({ user }) {
                       <div className={styles.reviewGrid}>
                         <div className={styles.reviewItem}><span>Name</span><strong>{fields.first} {fields.last}</strong></div>
                         <div className={styles.reviewItem}><span>Email</span><strong>{fields.email}</strong></div>
+                        <div className={styles.reviewItem}><span>Phone</span><strong>{fields.phoneCode} {fields.phone}</strong></div>
                         <div className={styles.reviewItem}><span>Date of Birth</span><strong>{fields.dobDay && fields.dobMonth && fields.dobYear ? `${fields.dobDay} ${fields.dobMonth} ${fields.dobYear}` : '—'}</strong></div>
                         <div className={styles.reviewItem}><span>Location</span><strong>{[fields.city, fields.country].filter(Boolean).join(', ')}</strong></div>
                         <div className={styles.reviewItem}><span>CV</span><strong>{cvFile?.name || 'Not provided'}</strong></div>

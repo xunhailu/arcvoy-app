@@ -125,6 +125,9 @@ export async function submitApplication({ fields, cvFile, idFrontFile, idBackFil
       first_name: fields.first,
       last_name: fields.last,
       email: fields.email,
+      phone: fields.phoneCode && fields.phone
+        ? fields.phoneCode + fields.phone.replace(/\D/g, '')
+        : null,
       address: fields.address,
       city: fields.city,
       state: fields.state,
@@ -213,6 +216,7 @@ export async function submitApplication({ fields, cvFile, idFrontFile, idBackFil
         <table style="width:100%;border-collapse:collapse;">
           <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;width:42%;border-bottom:1px solid #F5F0EB;">Name</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${fields.first} ${fields.last}</td></tr>
           <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Email</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${fields.email}</td></tr>
+          <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Phone</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${fields.phoneCode || ''}${fields.phone ? fields.phone.replace(/\D/g, '') : '—'}</td></tr>
           <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Role</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${job.title}</td></tr>
           <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Department</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${job.dept}</td></tr>
           <tr><td style="padding:10px 0;font-size:13px;color:#9a8f85;border-bottom:1px solid #F5F0EB;">Country</td><td style="padding:10px 0;font-size:13px;color:#1A1410;font-weight:600;border-bottom:1px solid #F5F0EB;">${fields.country || '—'}</td></tr>
