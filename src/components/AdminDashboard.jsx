@@ -187,6 +187,29 @@ function LoginScreen({ onLogin, onClose }) {
   )
 }
 
+/* ── Copy button ── */
+function CopyBtn({ value }) {
+  const [copied, setCopied] = useState(false)
+  if (!value || value === '—') return null
+  const handle = () => {
+    navigator.clipboard.writeText(value).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    })
+  }
+  return (
+    <button onClick={handle} title="Copy" style={{
+      background: 'none', border: 'none', cursor: 'pointer', padding: '0 0 0 6px',
+      color: copied ? 'var(--gd)' : 'var(--td)', flexShrink: 0,
+      display: 'inline-flex', alignItems: 'center', transition: 'color .2s',
+    }}>
+      {copied
+        ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>}
+    </button>
+  )
+}
+
 /* ── Applicant Detail Drawer ── */
 function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onLinksChange }) {
   const [notes, setNotes] = useState(app.notes || '')
@@ -413,24 +436,31 @@ function ApplicantDrawer({ app, onClose, onStatusChange, onNotesChange, onLinksC
         <div className={styles.section}>
           <div className={styles.sectionTitle}>Personal Details</div>
           <div className={styles.detailGrid}>
-            <div className={styles.detailItem}><span>Email</span><strong>{app.email || '—'}</strong></div>
-            <div className={styles.detailItem}><span>Date of Birth</span><strong>{app.dob ? new Date(app.dob).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '—'}</strong></div>
-            <div className={styles.detailItem}><span>Country</span><strong>{app.country || '—'}</strong></div>
-            <div className={styles.detailItem}><span>City</span><strong>{app.city || '—'}</strong></div>
-            <div className={styles.detailItem}><span>State</span><strong>{app.state || '—'}</strong></div>
-            <div className={styles.detailItem}><span>Postcode</span><strong>{app.zip || '—'}</strong></div>
-            <div className={styles.detailItem}><span>Address</span><strong>{app.address || '—'}</strong></div>
-            <div className={styles.detailItem}><span>LinkedIn</span>
-              <strong>{app.linkedin
-                ? <a href={app.linkedin} target="_blank" rel="noopener" style={{ color: 'var(--gd)' }}>View Profile</a>
-                : '—'}
-              </strong>
-            </div>
-            <div className={styles.detailItem}><span>Languages</span>
-              <strong>{[app.lang1, app.lang2].filter(Boolean).join(', ') || '—'}</strong>
-            </div>
-            <div className={styles.detailItem}><span>Applied</span>
-              <strong>{new Date(app.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</strong>
+            {[
+              { label: 'Email',         value: app.email },
+              { label: 'Phone',         value: app.phone },
+              { label: 'Date of Birth', value: app.dob ? new Date(app.dob).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : null },
+              { label: 'Address',       value: [app.address, app.city, app.state, app.zip, app.country].filter(Boolean).join(', ') },
+              { label: 'Languages',     value: [app.lang1, app.lang2].filter(Boolean).join(', ') },
+              { label: 'Applied',       value: new Date(app.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) },
+            ].map(({ label, value }) => (
+              <div key={label} className={styles.detailItem}>
+                <span>{label}</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 0, minWidth: 0 }}>
+                  <strong style={{ textAlign: 'right', wordBreak: 'break-word' }}>{value || '—'}</strong>
+                  <CopyBtn value={value} />
+                </div>
+              </div>
+            ))}
+            <div className={styles.detailItem}>
+              <span>LinkedIn</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+                <strong>{app.linkedin
+                  ? <a href={app.linkedin} target="_blank" rel="noopener" style={{ color: 'var(--gd)' }}>View Profile</a>
+                  : '—'}
+                </strong>
+                <CopyBtn value={app.linkedin} />
+              </div>
             </div>
           </div>
         </div>

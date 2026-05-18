@@ -415,7 +415,7 @@
 .detailGrid { display: flex; flex-direction: column; gap: 0; }
 .detailItem { display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--bd); font-size: 12px; gap: 12px; font-family: 'Raleway',sans-serif; }
 .detailItem span { color: var(--td); flex-shrink: 0; }
-.detailItem strong { color: var(--tx); font-weight: 500; text-align: right; word-break: break-all; }
+.detailItem strong { color: var(--tx); font-weight: 500; text-align: right; word-break: break-word; }
 
 .cvBtn { display: flex; align-items: center; gap: 10px; background: var(--ga); border: 1px solid var(--gb); color: var(--gd); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; padding: 12px 18px; cursor: pointer; font-family: 'Raleway',sans-serif; font-weight: 600; transition: all .2s; width: 100%; }
 .cvBtn:hover:not(:disabled) { background: var(--gb); }
