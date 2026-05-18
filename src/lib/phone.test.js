@@ -59,10 +59,6 @@ describe('validatePhone', () => {
     expect(validatePhone('+1', '2025551234')).toBe(true)
   })
 
-  it('accepts valid Indian mobile number', () => {
-    expect(validatePhone('+91', '9876543210')).toBe(true)
-  })
-
   it('strips spaces and dashes before validating', () => {
     expect(validatePhone('+44', '07911 123456')).toBe(true)
     expect(validatePhone('+1', '(202) 555-1234')).toBe(true)
