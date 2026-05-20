@@ -367,11 +367,15 @@ export async function sendComplianceVerificationEmail(app, link) {
     </td></tr>
     <tr><td style="padding:38px 32px;background:#ffffff;">
       <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${escHtml(app.first_name)},</p>
-      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 28px;">Thank you for completing your identity verification. You are now one step away. Please complete your compliance verification to finalise your application with Arcvoy.</p>
+      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 16px;">Thank you for completing your identity verification. We appreciate your cooperation.</p>
+      <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 28px;">As legally required, all businesses must conduct sanction screening and global compliance checks. Please click the button below to be directed to our third party vendor's site and follow the instructions provided to complete the process.</p>
       <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #E0DAD4;border-radius:8px;margin-bottom:28px;background:#faf9f7;">
         <tr><td style="padding:24px;">
-          <p style="font-size:13px;color:#1A1410;font-weight:700;margin:0 0 12px;line-height:1.5;">Click the button below to complete your compliance check:</p>
-          <p style="font-size:13px;color:#6b5e4e;line-height:1.7;margin:0 0 18px;">If the button does not open, copy the link and paste it into your browser.</p>
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #f0c48a;border-radius:6px;background:#fffaf3;margin-bottom:20px;">
+            <tr><td style="padding:14px 16px;">
+              <p style="font-size:13px;color:#1A1410;line-height:1.75;margin:0;"><strong>Important</strong> &ndash; the following verification link is personalized and can only be used by a single individual. Do not share this link with other individuals. Sharing of the link is considered a violation of our Contributor Standards and will result in account deactivation.</p>
+            </td></tr>
+          </table>
           <a href="${link}" style="display:inline-block;background:#378add;color:#ffffff;font-family:'Raleway',Calibri,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:5px;text-decoration:none;margin-bottom:14px;">Begin Compliance Check</a><br/>
           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #D8D2CC;border-radius:5px;table-layout:fixed;margin-top:4px;">
             <tr>
@@ -379,6 +383,7 @@ export async function sendComplianceVerificationEmail(app, link) {
               <td width="96" style="padding:0;vertical-align:middle;"><a href="${link}" style="display:block;background:#1A1410;color:#ffffff;font-family:'Raleway',Calibri,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:11px 14px;text-decoration:none;text-align:center;white-space:nowrap;">Open Link</a></td>
             </tr>
           </table>
+          <p style="font-size:12px;color:#9a8f85;line-height:1.6;margin:12px 0 0;">If the button does not open, copy the link above and paste it directly into your browser.</p>
         </td></tr>
       </table>
       <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-left:3px solid #378add;margin-bottom:28px;">
