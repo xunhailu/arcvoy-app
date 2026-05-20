@@ -246,7 +246,7 @@ export async function sendStatusEmail(status, app) {
     },
     interviewed: {
       subject: 'You have been selected for an interview — Arcvoy',
-      banner: '#378add',
+      banner: '#9f4f2d',
       bannerLabel: 'Next Step',
       headline: 'Interview Invitation',
       body: `Good news — the hiring team would like to meet with you for the <strong style="color:#1A1410;">${role}</strong> role. We saw strong alignment between your background and the work this team is building.`,
@@ -254,7 +254,7 @@ export async function sendStatusEmail(status, app) {
     },
     offered: {
       subject: 'You have received an offer — Arcvoy',
-      banner: '#7F77DD',
+      banner: '#6f3f2d',
       bannerLabel: 'Offer',
       headline: 'You Have an Offer',
       body: `We are pleased to move forward with an offer for the <strong style="color:#1A1410;">${role}</strong> role. Your experience, judgment, and approach stood out through the process.`,
@@ -262,7 +262,7 @@ export async function sendStatusEmail(status, app) {
     },
     hired: {
       subject: 'Welcome to Arcvoy',
-      banner: '#1a9e4a',
+      banner: '#7a5a34',
       bannerLabel: 'Confirmed',
       headline: 'Welcome to Arcvoy',
       body: `Congratulations, ${name}. You are confirmed for the <strong style="color:#1A1410;">${role}</strong> role. We are looking forward to helping you settle in and get connected with the right people from day one.`,
@@ -270,7 +270,7 @@ export async function sendStatusEmail(status, app) {
     },
     rejected: {
       subject: 'An update on your Arcvoy application',
-      banner: '#888888',
+      banner: '#5b5149',
       bannerLabel: 'Application Update',
       headline: 'Thank You for Applying',
       body: `Thank you for taking the time to apply for the <strong style="color:#1A1410;">${role}</strong> role. After reviewing the current shortlist, we will not be moving forward with your application for this opening.`,
