@@ -361,9 +361,9 @@ export async function sendComplianceVerificationEmail(app, link) {
   const subject = 'Compliance Verification — Arcvoy'
   const html = emailWrap(`
     ${BRAND_HEADER}
-    <tr><td style="background:#378add;padding:28px 32px;">
+    <tr><td style="background:#8a4a2f;padding:28px 32px;">
       <p style="margin:0 0 8px;font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:0.14em;text-transform:uppercase;">Final Step</p>
-      <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:700;line-height:1.2;">Compliance Verification</h1>
+      <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;color:#ffffff;font-weight:700;line-height:1.2;text-transform:uppercase;">Compliance Verification</h1>
     </td></tr>
     <tr><td style="padding:38px 32px;background:#ffffff;">
       <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi ${escHtml(app.first_name)},</p>
@@ -376,7 +376,7 @@ export async function sendComplianceVerificationEmail(app, link) {
               <p style="font-size:13px;color:#1A1410;line-height:1.75;margin:0;"><strong>Important</strong> &ndash; the following verification link is personalized and can only be used by a single individual. Do not share this link with other individuals. Sharing of the link is considered a violation of our Contributor Standards and will result in account deactivation.</p>
             </td></tr>
           </table>
-          <a href="${link}" style="display:inline-block;background:#378add;color:#ffffff;font-family:'Raleway',Calibri,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:5px;text-decoration:none;margin-bottom:14px;">Begin Compliance Check</a><br/>
+          <a href="${link}" style="display:inline-block;background:#8a4a2f;color:#ffffff;font-family:'Raleway',Calibri,Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:5px;text-decoration:none;margin-bottom:14px;">Begin Compliance Check</a><br/>
           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #D8D2CC;border-radius:5px;table-layout:fixed;margin-top:4px;">
             <tr>
               <td style="background:#f0ece8;padding:11px 14px;font-size:12px;color:#9a8f85;word-break:break-all;width:100%;">${link}</td>
@@ -386,7 +386,7 @@ export async function sendComplianceVerificationEmail(app, link) {
           <p style="font-size:12px;color:#9a8f85;line-height:1.6;margin:12px 0 0;">If the button does not open, copy the link above and paste it directly into your browser.</p>
         </td></tr>
       </table>
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-left:3px solid #378add;margin-bottom:28px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-left:3px solid #8a4a2f;margin-bottom:28px;">
         <tr><td style="padding:10px 16px;"><p style="font-size:13px;color:#6b5e4e;line-height:1.7;margin:0;">If you have any issues completing this step, reply to this email and our team will assist you as soon as possible.</p></td></tr>
       </table>
       <p style="font-size:14px;color:#6b5e4e;margin:0 0 2px;">Regards,</p>
