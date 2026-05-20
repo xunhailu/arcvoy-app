@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arcvoy Gmail Template</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: #120d0a;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+        radial-gradient(circle at 50% 0%, rgba(204,102,51,0.22), transparent 34%);
+      background-size: 72px 72px, 72px 72px, 100% 100%;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 28px 20px 64px;
+      color: #F5F0EB;
+    }
+    .shell { width: min(100%, 680px); margin: 0 auto; }
+
+    /* header */
+    .page-head { margin-bottom: 18px; }
+    .page-title { font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; color: #F5F0EB; margin-bottom: 6px; }
+    .page-sub { font-size: 13px; color: #a79a90; line-height: 1.6; }
+
+    /* toolbar */
+    .toolbar {
+      position: sticky; top: 12px; z-index: 10;
+      margin-bottom: 24px;
+      padding: 10px 12px;
+      border: 1px solid rgba(245,240,235,0.12);
+      border-radius: 14px;
+      background: rgba(23,18,15,0.82);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.28);
+      backdrop-filter: blur(18px);
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    }
+    .toolbar-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #7d6f64; margin-right: 4px;
+    }
+    .preset {
+      appearance: none; background: transparent;
+      color: #c8bbae; border: 1px solid transparent;
+      padding: 8px 12px; border-radius: 8px; cursor: pointer;
+      font: 700 10px/1 'Segoe UI', Arial, sans-serif;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      transition: background .18s, color .18s, border-color .18s;
+    }
+    .preset:hover, .preset.active {
+      background: #f4eee8; color: #1A1410;
+      border-color: #f4eee8;
+    }
+    .toolbar-sep { width: 1px; height: 22px; background: rgba(245,240,235,0.12); margin: 0 4px; }
+    .btn-copy {
+      margin-left: auto;
+      background: #cc6633; color: #fff; border: none;
+      padding: 10px 18px; border-radius: 8px; cursor: pointer;
+      font: 700 11px/1 'Segoe UI', Arial, sans-serif;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      transition: background .18s, transform .18s;
+    }
+    .btn-copy:hover { background: #b85a2d; transform: translateY(-1px); }
+    .btn-reset {
+      background: transparent; color: #a79a90;
+      border: 1px solid rgba(245,240,235,0.12);
+      padding: 10px 14px; border-radius: 8px; cursor: pointer;
+      font: 700 11px/1 'Segoe UI', Arial, sans-serif;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      transition: color .18s, border-color .18s;
+    }
+    .btn-reset:hover { color: #F5F0EB; border-color: rgba(245,240,235,0.3); }
+
+    /* subject field */
+    .subject-row { margin-bottom: 18px; }
+    .subject-label {
+      display: block; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #7d6f64; margin-bottom: 8px;
+    }
+    .subject-input {
+      width: 100%; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(245,240,235,0.12); border-radius: 10px;
+      color: #F5F0EB; font: 14px/1.5 'Segoe UI', Arial, sans-serif;
+      padding: 12px 16px; outline: none;
+      transition: border-color .2s;
+    }
+    .subject-input:focus { border-color: rgba(204,102,51,0.5); }
+    .subject-input::placeholder { color: #5a4f47; }
+
+    /* email card */
+    .card-wrap {
+      background: #e8e0d8;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 28px 90px rgba(0,0,0,0.45);
+    }
+    .email-card {
+      max-width: 580px; margin: 0 auto;
+      background: #fff; border-radius: 14px;
+      overflow: hidden; font-family: 'Raleway', Calibri, Arial, sans-serif;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+    }
+    .email-card img { display: block; width: 100%; height: auto; border-radius: 14px 14px 0 0; }
+    .email-body { padding: 36px 32px; background: #fff; }
+    .editable {
+      outline: none; cursor: text;
+      border-radius: 6px;
+      transition: box-shadow .18s, background .18s;
+    }
+    .editable:focus { box-shadow: 0 0 0 2px rgba(204,102,51,0.25); background: #fffaf7; }
+    .email-footer {
+      background: #F5F0EB; padding: 15px 32px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-radius: 0 0 14px 14px;
+    }
+    .email-footer span, .email-footer a {
+      font-size: 11px; color: #7d6f64; font-weight: 700; text-decoration: none;
+    }
+
+    /* status */
+    .status { min-height: 20px; margin-top: 14px; font-size: 13px; color: #a79a90; text-align: center; }
+
+    @media (max-width: 600px) {
+      .toolbar { top: 8px; border-radius: 10px; }
+      .card-wrap { padding: 12px; border-radius: 12px; }
+      .email-body { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+
+    <header class="page-head">
+      <h1 class="page-title">Arcvoy · Gmail Template</h1>
+      <p class="page-sub">Pick a preset or write your own. Copy, then paste into Gmail compose and save as a template.</p>
+    </header>
+
+    <div class="toolbar">
+      <span class="toolbar-label">Preset</span>
+      <button class="preset active" onclick="applyPreset('blank', this)">Blank</button>
+      <button class="preset" onclick="applyPreset('followup', this)">Follow-up</button>
+      <button class="preset" onclick="applyPreset('interview', this)">Interview</button>
+      <button class="preset" onclick="applyPreset('offer', this)">Offer</button>
+      <button class="preset" onclick="applyPreset('checkin', this)">Check-in</button>
+      <div class="toolbar-sep"></div>
+      <button class="btn-reset" onclick="resetAll()">Reset</button>
+      <button class="btn-copy" onclick="copyTemplate()">Copy Template</button>
+    </div>
+
+    <div class="subject-row">
+      <label class="subject-label" for="subjectLine">Subject line</label>
+      <input id="subjectLine" class="subject-input" type="text" placeholder="e.g. Following up on your application — Arcvoy" />
+    </div>
+
+    <div class="card-wrap">
+      <div class="email-card" id="emailCard">
+        <img src="/og-image.png" alt="Arcvoy — Build the Future" />
+        <div class="email-body">
+          <div id="emailBody" class="editable" contenteditable="true">
+            <p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi [Name],</p>
+            <p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:16px 0;">Write your message here.</p>
+            <p style="font-size:14px;color:#6b5e4e;margin:24px 0 0;">Regards,</p>
+            <p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">Arcvoy Team</p>
+          </div>
+        </div>
+        <div class="email-footer">
+          <span>© 2026 Arcvoy</span>
+          <span><a href="https://arcvoy.com">arcvoy.com</a> &nbsp;·&nbsp; @helloarcvoy</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="status" id="status"></p>
+  </main>
+
+  <script>
+    const presets = {
+      blank: {
+        subject: '',
+        body: `<p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi [Name],</p>
+<p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:16px 0;">Write your message here.</p>
+<p style="font-size:14px;color:#6b5e4e;margin:24px 0 0;">Regards,</p>
+<p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">Arcvoy Team</p>`
+      },
+      followup: {
+        subject: 'Following up on your application — Arcvoy',
+        body: `<p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi [Name],</p>
+<p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:16px 0;">I wanted to follow up on your application for the <strong style="color:#1A1410;">[Role]</strong> role. We are currently in the review stage and will have a clear update for you within the next few days.</p>
+<p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 0;">If you have any questions in the meantime, feel free to reply here.</p>
+<p style="font-size:14px;color:#6b5e4e;margin:24px 0 0;">Warm regards,</p>
+<p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">Arcvoy Team</p>`
+      },
+      interview: {
+        subject: 'Interview invitation — [Role] at Arcvoy',
+        body: `<p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi [Name],</p>
+<p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:16px 0;">We would like to invite you to interview for the <strong style="color:#1A1410;">[Role]</strong> role. The hiring team was impressed by your background and would like to learn more.</p>
+<p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 0;">Please let us know your availability for a <strong style="color:#1A1410;">[30 / 45 / 60]-minute</strong> call over the next week and we will confirm a time.</p>
+<p style="font-size:14px;color:#6b5e4e;margin:24px 0 0;">Warm regards,</p>
+<p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">Arcvoy Team</p>`
+      },
+      offer: {
+        subject: 'Your offer — [Role] at Arcvoy',
+        body: `<p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi [Name],</p>
+<p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:16px 0;">We are pleased to move forward with a formal offer for the <strong style="color:#1A1410;">[Role]</strong> role. Your experience and approach stood out throughout the process.</p>
+<p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 0;">Please review the attached offer letter and reply with any questions. We are aiming to have everything confirmed by <strong style="color:#1A1410;">[Date]</strong>.</p>
+<p style="font-size:14px;color:#6b5e4e;margin:24px 0 0;">Warm regards,</p>
+<p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">Arcvoy Team</p>`
+      },
+      checkin: {
+        subject: 'Checking in — Arcvoy',
+        body: `<p style="font-size:14px;color:#1A1410;margin:0 0 4px;font-weight:600;">Hi [Name],</p>
+<p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:16px 0;">Just checking in to see how things are going on your end. We want to make sure you have everything you need and that the process has been clear so far.</p>
+<p style="font-size:14px;color:#6b5e4e;line-height:1.85;margin:0 0 0;">Feel free to reply with any questions or updates — we are always happy to help.</p>
+<p style="font-size:14px;color:#6b5e4e;margin:24px 0 0;">Warm regards,</p>
+<p style="font-size:14px;color:#1A1410;margin:4px 0 0;font-weight:600;">Arcvoy Team</p>`
+      }
+    }
+
+    function applyPreset(key, el) {
+      const p = presets[key]
+      document.getElementById('emailBody').innerHTML = p.body
+      if (p.subject) document.getElementById('subjectLine').value = p.subject
+      document.querySelectorAll('.preset').forEach(b => b.classList.remove('active'))
+      el.classList.add('active')
+      document.getElementById('status').textContent = ''
+    }
+
+    async function copyTemplate() {
+      const card = document.getElementById('emailCard')
+      const subject = document.getElementById('subjectLine').value.trim()
+      const status = document.getElementById('status')
+
+      // Build clean email HTML for pasting into Gmail
+      const bodyContent = document.getElementById('emailBody').innerHTML
+      const emailHtml = `<table role="presentation" width="580" cellpadding="0" cellspacing="0" border="0" style="width:580px;max-width:100%;margin:0 auto;background:#ffffff;font-family:Arial,Helvetica,sans-serif;border-radius:14px;overflow:hidden;">
+  <tr><td style="padding:0;line-height:0;font-size:0;">
+    <a href="https://arcvoy.com" style="display:block;"><img src="https://arcvoy.com/og-image.png" width="580" alt="Arcvoy" style="display:block;width:100%;max-width:580px;height:auto;border-radius:14px 14px 0 0;" /></a>
+  </td></tr>
+  <tr><td style="padding:36px 32px;background:#ffffff;">${bodyContent}</td></tr>
+  <tr><td style="padding:15px 32px;background:#F5F0EB;border-radius:0 0 14px 14px;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td style="font-size:11px;color:#7d6f64;font-weight:700;">© 2026 Arcvoy</td>
+      <td style="text-align:right;font-size:11px;color:#7d6f64;font-weight:700;"><a href="https://arcvoy.com" style="color:#7d6f64;text-decoration:none;">arcvoy.com</a> &nbsp;·&nbsp; @helloarcvoy</td>
+    </tr></table>
+  </td></tr>
+</table>`
+
+      try {
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/html': new Blob([emailHtml], { type: 'text/html' }),
+            'text/plain': new Blob([card.innerText], { type: 'text/plain' })
+          })
+        ])
+        status.textContent = subject
+          ? `Copied. Subject: "${subject}" — paste into Gmail and save as a template.`
+          : 'Copied. Paste into Gmail compose, then save as a template.'
+      } catch {
+        status.textContent = 'Copy failed. Select the email card below, copy manually, then paste into Gmail.'
+      }
+    }
+
+    function resetAll() {
+      applyPreset('blank', document.querySelector('.preset'))
+      document.getElementById('subjectLine').value = ''
+      document.getElementById('status').textContent = 'Reset.'
+    }
+  </script>
+</body>
+</html>
